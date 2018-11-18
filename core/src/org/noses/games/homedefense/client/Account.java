@@ -3,7 +3,7 @@ package org.noses.games.homedefense.client;
 import lombok.Data;
 
 @Data
-public class AccountDTO {
+public class Account {
 
     private String email;
     private String username;

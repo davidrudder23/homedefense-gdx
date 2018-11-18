@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class WayDTO {
+public class Way {
     String name;
     int lanes;
     int maxSpeed;
@@ -16,13 +16,13 @@ public class WayDTO {
 
     Color color;
 
-    List<NodeDTO> nodes;
+    List<Node> nodes;
 
-    public WayDTO() {
+    public Way() {
         this.nodes = new ArrayList<>();
     }
 
-    public void addNode(NodeDTO node) {
+    public void addNode(Node node) {
         nodes.add(node);
     }
 
@@ -38,7 +38,7 @@ public class WayDTO {
         if (nodes == null || nodes.size() <= 0) {
             return null;
         }
-        NodeDTO startNode = nodes.get(0);
+        Node startNode = nodes.get(0);
         return new Point(startNode.getX(), startNode.getY());
     }
 
@@ -46,48 +46,48 @@ public class WayDTO {
         if (nodes == null || nodes.size() <= 0) {
             return null;
         }
-        NodeDTO endNode = nodes.get(nodes.size() - 1);
+        Node endNode = nodes.get(nodes.size() - 1);
         return new Point(endNode.getX(), endNode.getY());
     }
 
     @Override
     public boolean equals(Object other) {
 
-        if (!(other instanceof WayDTO)) {
+        if (!(other instanceof Way)) {
             return false;
         }
 
-        WayDTO otherWayDto = (WayDTO)other;
+        Way otherWay = (Way)other;
 
-        if (!otherWayDto.getHighway().equals(getHighway())) {
+        if (!otherWay.getHighway().equals(getHighway())) {
             return false;
         }
 
-        if (otherWayDto.getLanes() != getLanes()) {
+        if (otherWay.getLanes() != getLanes()) {
             return false;
         }
 
-        if (otherWayDto.getMaxSpeed() != getMaxSpeed()) {
+        if (otherWay.getMaxSpeed() != getMaxSpeed()) {
             return false;
         }
 
-        if (otherWayDto.getNodes().size() != getNodes().size()) {
+        if (otherWay.getNodes().size() != getNodes().size()) {
             return false;
         }
 
-        if (otherWayDto.firstPoint().x != firstPoint().x) {
+        if (otherWay.firstPoint().x != firstPoint().x) {
             return false;
         }
 
-        if (otherWayDto.firstPoint().y != firstPoint().y) {
+        if (otherWay.firstPoint().y != firstPoint().y) {
             return false;
         }
 
-        if (otherWayDto.lastPoint().x != lastPoint().x) {
+        if (otherWay.lastPoint().x != lastPoint().x) {
             return false;
         }
 
-        if (otherWayDto.lastPoint().y != lastPoint().y) {
+        if (otherWay.lastPoint().y != lastPoint().y) {
             return false;
         }
 
@@ -95,19 +95,19 @@ public class WayDTO {
 
     }
 
-    public NodeDTO firstNode() {
+    public Node firstNode() {
         if (nodes == null || nodes.size() <= 0) {
             return null;
         }
-        NodeDTO startNode = nodes.get(0);
+        Node startNode = nodes.get(0);
         return startNode;
     }
 
-    public NodeDTO lastNode() {
+    public Node lastNode() {
         if (nodes == null || nodes.size() <= 0) {
             return null;
         }
-        NodeDTO endNode = nodes.get(nodes.size() - 1);
+        Node endNode = nodes.get(nodes.size() - 1);
         return endNode;
     }
 

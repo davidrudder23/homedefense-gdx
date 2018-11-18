@@ -14,19 +14,19 @@ public class MapClient {
         client = new OkHttpClient();
     }
 
-    public AccountDTO register(String name,
-                               String email,
-                               String password,
-                               float latitude,
-                               float longitude) throws IOException {
+    public Account register(String name,
+                            String email,
+                            String password,
+                            float latitude,
+                            float longitude) throws IOException {
         String registerURL = "http://localhost:8080/users/register";
         String updateURL = "http://localhost:8080/users/user";
 
-        RegisterDTO registerDTO = new RegisterDTO();
-        registerDTO.setUsername(name);
-        registerDTO.setPassword(password);
-        registerDTO.setEmail(email);
-        String jsonPost = objectMapper.writeValueAsString(registerDTO);
+        Register register = new Register();
+        register.setUsername(name);
+        register.setPassword(password);
+        register.setEmail(email);
+        String jsonPost = objectMapper.writeValueAsString(register);
 
         System.out.println("Registering with "+jsonPost);
 
@@ -36,25 +36,25 @@ public class MapClient {
                 .build();
 
         Response response = client.newCall(request).execute();
-        AccountDTO accountDTO = objectMapper.readValue(response.body().string(), AccountDTO.class);
+        Account account = objectMapper.readValue(response.body().string(), Account.class);
 
-        accountDTO = login(name, password);
+        account = login(name, password);
 
-        setHomeLocation(latitude, longitude, updateURL, accountDTO);
+        setHomeLocation(latitude, longitude, updateURL, account);
 
-        return accountDTO;
+        return account;
     }
 
-    private void setHomeLocation(float latitude, float longitude, String updateURL, AccountDTO accountDTO) throws IOException {
-        System.out.println("Register Response="+accountDTO.getToken());
+    private void setHomeLocation(float latitude, float longitude, String updateURL, Account account) throws IOException {
+        System.out.println("Register Response="+ account.getToken());
 
-        accountDTO.setHomeLatitude(latitude);
-        accountDTO.setHomeLongitude(longitude);
-        String jsonPost = objectMapper.writeValueAsString(accountDTO);
+        account.setHomeLatitude(latitude);
+        account.setHomeLongitude(longitude);
+        String jsonPost = objectMapper.writeValueAsString(account);
 
         Request request = new Request.Builder()
                 .url(updateURL)
-                .addHeader("X-Authorization-Token", accountDTO.getToken())
+                .addHeader("X-Authorization-Token", account.getToken())
                 .post(RequestBody.create(MediaType.parse("application/json"), jsonPost))
                 .build();
 
@@ -63,16 +63,16 @@ public class MapClient {
         // Update is a write operation, just throw away the response
         String responseJSON = response.body().string();
         System.out.println("Set Home Response="+responseJSON);
-        objectMapper.readValue(responseJSON, AccountDTO.class);
+        objectMapper.readValue(responseJSON, Account.class);
     }
 
-    public AccountDTO login(String name, String password) throws IOException {
+    public Account login(String name, String password) throws IOException {
         String url = "http://localhost:8080/users/login";
 
-        LoginDTO loginDTO = new LoginDTO();
-        loginDTO.setUsername(name);
-        loginDTO.setPassword(password);
-        String jsonPost = objectMapper.writeValueAsString(loginDTO);
+        Login login = new Login();
+        login.setUsername(name);
+        login.setPassword(password);
+        String jsonPost = objectMapper.writeValueAsString(login);
 
         System.out.println("Logging in with "+jsonPost);
 
@@ -82,24 +82,24 @@ public class MapClient {
                 .build();
 
         Response response = client.newCall(request).execute();
-        AccountDTO accountDTO = objectMapper.readValue(response.body().string(), AccountDTO.class);
-        System.out.println("Login Response="+accountDTO.getToken());
-        return accountDTO;
+        Account account = objectMapper.readValue(response.body().string(), Account.class);
+        System.out.println("Login Response="+ account.getToken());
+        return account;
     }
 
-    public MapDTO getMap(AccountDTO accountDTO, int width, int height) throws IOException {
+    public Map getMap(Account account, int width, int height) throws IOException {
         String url = "http://localhost:8080/maps/"+width+"/"+height;
 
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("X-Authorization-Token", accountDTO.getToken())
+                .addHeader("X-Authorization-Token", account.getToken())
                 .build();
 
         Response response = client.newCall(request).execute();
 
         String mapJSON = response.body().string();
         //System.out.println(mapJSON);
-        MapDTO mapDTO = objectMapper.readValue(mapJSON, MapDTO.class);
-        return mapDTO;
+        Map map = objectMapper.readValue(mapJSON, Map.class);
+        return map;
     }
 }
