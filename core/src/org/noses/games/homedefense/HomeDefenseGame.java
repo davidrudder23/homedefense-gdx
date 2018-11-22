@@ -44,11 +44,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         intersections = Intersection.buildIntersectionsFromMap(map);
 
-        List<Intersection> djikstrasIntersections = new ArrayList<>();
-        djikstrasIntersections.addAll(intersections.values());
-
-        Djikstra djikstra = new Djikstra(djikstrasIntersections);
-        Intersection djikstraIntersection = djikstra.getIntersectionForNode(djikstrasIntersections,
+        Djikstra djikstra = new Djikstra(intersections);
+        Intersection djikstraIntersection = djikstra.getIntersectionForNode(intersections,
                 enemies.get(0).getWay().firstNode());
 
         PathStep pathStep = djikstra.getBestPath(

@@ -4,17 +4,17 @@ import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.client.Way;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Djikstra {
     private List<Intersection> visitedIntersections;
     private List<Intersection> unvisitedIntersections;
-    private List<Intersection> allIntersections;
+    private HashMap<String, Intersection> allIntersections;
 
     private Intersection destination;
 
-
-    public Djikstra(List<Intersection> intersections) {
+    public Djikstra(HashMap<String, Intersection> intersections) {
         allIntersections = intersections;
 
         unvisitedIntersections = new ArrayList<>();
@@ -71,19 +71,20 @@ public class Djikstra {
                         continue;
                     }
 
-                    pathStep = new PathStep();
-                    pathStep.setConnectingWay(way);
-                    pathStep.setIntersection(intersection);
-                    pathStep.setPreviousPath(from.getPathStep());
-
-                    //System.out.println ("intersection="+intersection);
-                    //System.out.println ("way="+way);
                     double weight = intersection.getWeightFromIntersection(from, way);
                     if (from.getPathStep() != null) {
                         weight += from.getPathStep().getWeight();
                     }
-                    pathStep.setWeight(weight);
-                    intersection.setPathStep(pathStep);
+                    if ((intersection.getPathStep() == null) ||
+                            (intersection.getPathStep().getWeight() > weight)) {
+                        pathStep = new PathStep();
+                        pathStep.setConnectingWay(way);
+                        pathStep.setIntersection(intersection);
+                        pathStep.setPreviousPath(from.getPathStep());
+                        pathStep.setWeight(weight);
+
+                        intersection.setPathStep(pathStep);
+                    }
 
                     unvisitedIntersections.add(intersection);
                 }
@@ -99,16 +100,12 @@ public class Djikstra {
         }
 
         long endTime = System.currentTimeMillis();
-        System.out.println("Djikstra took "+(endTime-startTime)+" millis");
+        System.out.println("Djikstra took " + (endTime - startTime) + " millis");
         return destination.getPathStep();
     }
 
-    public Intersection getIntersectionForNode(List<Intersection> intersections, Node node) {
-        for (Intersection intersection : intersections) {
-            if ((intersection.getLatitude() == node.getLat()) && (intersection.getLongitude() == node.getLon())) {
-                return intersection;
-            }
-        }
-        return null;
+    public Intersection getIntersectionForNode(HashMap<String, Intersection> intersections, Node node) {
+        String key = node.getLat()+"_"+node.getLon();
+        return intersections.get(key);
     }
 }
