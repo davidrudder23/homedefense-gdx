@@ -21,4 +21,36 @@ public class Node {
     int order;
 
     double progress;
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Node)) {
+            return false;
+        }
+
+        Node otherNode = (Node)other;
+
+        if (otherNode.getLon() != getLon()) {
+            return false;
+        }
+
+        if (((Node) other).getLat() != getLat()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public int distanceFrom(Node other) {
+        int lengthX = other.getX() - getX();
+        int lengthY = other.getY() - getY();
+        int totalLength = (int)(Math.sqrt((lengthX*lengthX)+(lengthY*lengthY)));
+
+        return Math.abs(totalLength);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

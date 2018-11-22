@@ -20,6 +20,7 @@ public class Way {
 
     public Way() {
         this.nodes = new ArrayList<>();
+        this.color = Color.WHITE;
     }
 
     public void addNode(Node node) {
@@ -109,6 +110,10 @@ public class Way {
         }
         Node endNode = nodes.get(nodes.size() - 1);
         return endNode;
+    }
+
+    public int getDistance() {
+        return firstNode().distanceFrom(lastNode());
     }
 
     @Override

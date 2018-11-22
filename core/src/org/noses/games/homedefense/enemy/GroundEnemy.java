@@ -61,7 +61,22 @@ public class GroundEnemy extends Enemy {
         }
 
         float speed = way.getMaxSpeed();
-        progressAlong += direction * baseSpeed * delta * speed;
+
+        if (way.getDistance()!=0) {
+            double newProgress = direction * baseSpeed * delta * speed * (1.0f/Math.sqrt(way.getDistance()));
+            /*System.out.printf ("total=%f ", newProgress);
+            System.out.println("  "
+                    +" way distance="+way.getDistance()
+                    +" first="+way.firstPoint()
+                    +" last="+way.lastPoint()
+                    +" baseSpeed="+baseSpeed
+                    +" delta="+delta
+                    +" speed="+speed
+                    +" inv distance="+(1f/(double)way.getDistance())
+                    +" progressAlong="+(progressAlong+newProgress));
+                    */
+            progressAlong += newProgress;
+        }
         if (progressAlong < 0) {
             progressAlong = 0;
             direction = 1;

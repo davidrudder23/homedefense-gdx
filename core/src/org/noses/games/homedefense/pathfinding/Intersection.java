@@ -19,13 +19,17 @@ public class Intersection {
 
     List<Way> wayList;
 
+    Node node;
+
+    PathStep pathStep;
+
     public static HashMap<String, Intersection> buildIntersectionsFromMap(Map map) {
         HashMap<String, Intersection> intersections = new HashMap<>();
 
         for (Way way : map.getWays()) {
             for (Node node: way.getNodes()) {
                 String key = node.getLat()+"_"+node.getLon();
-                System.out.println("key="+key);
+                //System.out.println("key="+key);
 
                 Intersection intersection = intersections.get(key);
                 if (intersection == null) {
@@ -46,4 +50,51 @@ public class Intersection {
 
         return intersections;
     }
+
+    public Node getNode() {
+        if (node == null) {
+            for (Way way: getWayList()) {
+                for (Node wayNode: way.getNodes()) {
+                    if ((wayNode.getLat() == getLatitude()) &&
+                            (wayNode.getLon() == getLongitude())) {
+                        node = wayNode;
+                        break;
+                    }
+                }
+            }
+        }
+        return node;
+    }
+
+    public double getWeightFromIntersection(Intersection other, Way connectingWay) {
+        Node node = getNode();
+        double distance = node.distanceFrom(other.getNode());
+        double inversedSpeed =  1/connectingWay.getMaxSpeed();
+        double weight = distance * inversedSpeed;
+
+        return  weight;
+    }
+
+    public boolean closeTo(int x, int y) {
+        Node node = getNode();
+        //System.out.println ("Comparing closeTo "+x+" vs "+node.getX()+", "+y+" vs "+node.getY());
+        if (Math.abs(x - node.getX()) > 10) {
+            return false;
+        }
+        if (Math.abs(y - node.getY()) > 10) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean equals(Object other) {
+        if (!(other instanceof  Intersection)) {
+            return false;
+        }
+
+        Intersection otherIntersection = (Intersection)other;
+        return ((otherIntersection.getLatitude() == getLatitude()) &&
+                (otherIntersection.getLongitude() == getLongitude()));
+    }
+
 }
