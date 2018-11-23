@@ -20,7 +20,6 @@ public class Way {
 
     public Way() {
         this.nodes = new ArrayList<>();
-        this.color = Color.WHITE;
     }
 
     public void addNode(Node node) {

@@ -66,6 +66,18 @@ public class Intersection {
         return node;
     }
 
+    public Node getNode(Way way) {
+        Node node = null;
+        for (Node wayNode: way.getNodes()) {
+            if ((wayNode.getLat() == getLatitude()) &&
+                    (wayNode.getLon() == getLongitude())) {
+                node = wayNode;
+                break;
+            }
+        }
+        return node;
+    }
+
     public double getWeightFromIntersection(Intersection other, Way connectingWay) {
         Node node = getNode();
         double distance = node.distanceFrom(other.getNode());

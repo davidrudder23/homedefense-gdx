@@ -44,25 +44,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         intersections = Intersection.buildIntersectionsFromMap(map);
 
-        Djikstra djikstra = new Djikstra(intersections);
-        Intersection djikstraIntersection = djikstra.getIntersectionForNode(intersections,
-                enemies.get(0).getWay().firstNode());
+        createEnemies(640, 480);
 
-        PathStep pathStep = djikstra.getBestPath(
-                djikstraIntersection,
-                320, 240);
-        if (pathStep == null) {
-            System.out.println ("PathStep was null");
-        } else {
-            System.out.println ("Starting from "+enemies.get(0).getWay().firstPoint());
-            System.out.println ("Starting intersection "+djikstraIntersection.getNode());
-            do {
-                System.out.println("Found step " + pathStep);
-                pathStep.getConnectingWay().setColor(Color.RED);
-                pathStep = pathStep.getPreviousPath();
-            } while (pathStep.getPreviousPath() != null);
-            System.out.println ("Final step "+pathStep);
-        }
 
         Timer.schedule(new Timer.Task() {
                            @Override
@@ -90,15 +73,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
             ;
         }
 
-        SecureRandom random = new SecureRandom();
-        random.setSeed(System.currentTimeMillis());
-
-        for (int i = 0; i < 5; i++) {
-            Way way = map.getWays().get(random.nextInt(map.getWays().size()));
-            GroundEnemy mage = new GroundEnemy(this, way, "mage.png", 64, 64);
-            enemies.add(mage);
-
-        }
 /*        for (Way way : map.getWays()) {
             GroundEnemy mage = new GroundEnemy(this, way, "mage.png", 64, 64);
             enemies.add(mage);
@@ -116,6 +90,23 @@ public class HomeDefenseGame extends ApplicationAdapter {
                     node.setProgress(delta / length);
                 }
             }
+        }
+    }
+
+    public void createEnemies(int width, int height) {
+        SecureRandom random = new SecureRandom();
+        random.setSeed(System.currentTimeMillis());
+
+        for (int i = 0; i < 5; i++) {
+            Way way = map.getWays().get(random.nextInt(map.getWays().size()));
+            GroundEnemy mage = new GroundEnemy(this, way, "mage.png", 64, 64);
+
+            Djikstra djikstra = new Djikstra(intersections);
+            Intersection intersection = djikstra.getIntersectionForNode(intersections, way.firstNode());
+            PathStep pathStep = djikstra.getBestPath(intersection, width/2, height/2);
+            mage.setPathStep(pathStep);
+
+            enemies.add(mage);
         }
     }
 

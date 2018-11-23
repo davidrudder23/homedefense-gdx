@@ -17,6 +17,7 @@ plugins {
     id 'io.franzbecker.gradle-lombok' version '1.10'
     id 'java'
 }
+
 lombok {
     sha256 = "" // skip verifyLombok task
 }

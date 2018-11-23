@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Djikstra {
-    private List<Intersection> visitedIntersections;
     private List<Intersection> unvisitedIntersections;
     private HashMap<String, Intersection> allIntersections;
+    private HashMap<String, Boolean> seen;
 
     private Intersection destination;
 
@@ -18,7 +18,8 @@ public class Djikstra {
         allIntersections = intersections;
 
         unvisitedIntersections = new ArrayList<>();
-        visitedIntersections = new ArrayList<>();
+
+        seen = new HashMap<>();
     }
 
     public void getBestPath(Node from, int toX, int toY) {
@@ -39,6 +40,7 @@ public class Djikstra {
         }
         from.pathStep = pathStep;
         unvisitedIntersections.add(from);
+        seen.put(from.getLatitude()+"_"+from.getLongitude(), Boolean.TRUE);
 
         while (unvisitedIntersections.size() > 0) {
             from = unvisitedIntersections.get(0);
@@ -52,7 +54,7 @@ public class Djikstra {
             }
 
             unvisitedIntersections.remove(0);
-            visitedIntersections.add(from);
+            seen.put(from.getLatitude()+"_"+from.getLongitude(), Boolean.TRUE);
 
             for (Way way : from.getWayList()) {
                 for (Node node : way.getNodes()) {
@@ -61,13 +63,7 @@ public class Djikstra {
                         continue;
                     }
 
-                    if (visitedIntersections.contains(intersection)) {
-                        //System.out.println ("Visited contains "+intersection);
-                        continue;
-                    }
-
-                    if (unvisitedIntersections.contains(intersection)) {
-                        //System.out.println ("Unvisited contains "+intersection);
+                    if (seen.get(intersection.getLatitude()+"_"+intersection.getLongitude()) != null) {
                         continue;
                     }
 
@@ -87,6 +83,7 @@ public class Djikstra {
                     }
 
                     unvisitedIntersections.add(intersection);
+                    seen.put(intersection.getLatitude()+"_"+intersection.getLongitude(), Boolean.TRUE);
                 }
             }
 

@@ -1,6 +1,7 @@
 package org.noses.games.homedefense.pathfinding;
 
 import lombok.Data;
+import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.client.Way;
 
 @Data
@@ -10,6 +11,9 @@ public class PathStep {
     Way connectingWay;
     Intersection intersection;
     double weight = Double.MAX_VALUE;
+
+    Node startingNode;
+    Node endingNode;
 
     public String toString() {
         StringBuffer string = new StringBuffer();
