@@ -29,6 +29,9 @@ public class Djikstra {
     }
 
     public PathStep getBestPath(Intersection from, int toX, int toY) {
+        for (Intersection intersection: allIntersections.values()) {
+            intersection.setPathStep(null);
+        }
 
         long startTime = System.currentTimeMillis();
 
@@ -78,6 +81,8 @@ public class Djikstra {
                         pathStep.setIntersection(intersection);
                         pathStep.setPreviousPath(from.getPathStep());
                         pathStep.setWeight(weight);
+                        pathStep.setStartingNode(from.getNode(way));
+                        pathStep.setEndingNode(node);
 
                         intersection.setPathStep(pathStep);
                     }

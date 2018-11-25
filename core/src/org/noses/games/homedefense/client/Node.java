@@ -3,12 +3,10 @@ package org.noses.games.homedefense.client;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class Node {
     int x;
     int y;
@@ -47,6 +45,11 @@ public class Node {
         int totalLength = (int)(Math.sqrt((lengthX*lengthX)+(lengthY*lengthY)));
 
         return Math.abs(totalLength);
+    }
+
+    @Override
+    public String toString() {
+        return "coords=("+getX()+","+getY()+") latlong=("+getLat()+","+getLon()+")";
     }
 
     @Override

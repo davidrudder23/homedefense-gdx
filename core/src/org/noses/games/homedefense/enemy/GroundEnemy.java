@@ -17,11 +17,12 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class GroundEnemy extends Enemy {
-    private final float baseSpeed = 1 / 25f;
+    private final float baseSpeed = 1 / 5f;
     private Way way;
     private double progressAlong = 0;
     private double direction;
     private List<PathStep> pathSteps;
+    private int currentPathStep;
 
     public GroundEnemy(HomeDefenseGame parent, Way way, String spriteFilename, int tileWidth, int tileHeight) {
         super(parent, spriteFilename, tileWidth, tileHeight);
@@ -30,15 +31,17 @@ public class GroundEnemy extends Enemy {
         direction = 1;
     }
 
-    public void setPathStep(PathStep pathStep) {
+    public void setPath(PathStep finalPathStep) {
         pathSteps = new ArrayList<>();
+
+        PathStep pathStep = finalPathStep;
         while (pathStep != null) {
             pathSteps.add(0, pathStep);
             pathStep = pathStep.getPreviousPath();
         }
         pathStep = pathSteps.get(0);
 
-        if (pathSteps.size()<2) {
+        if (pathSteps.size() < 2) {
             return;
         }
 
@@ -47,11 +50,45 @@ public class GroundEnemy extends Enemy {
         Intersection intersection = pathStep.getIntersection();
         progressAlong = intersection.getNode(way).getProgress();
 
-        double progressTowards = pathSteps.get(1).getIntersection().getNode(way).getProgress();
-        if (progressTowards>progressAlong) {
-            direction = 1;
-        } else {
-            direction = -1;
+        System.out.println("Reconfigured finalPath: ");
+        for (PathStep debugPathStep : pathSteps) {
+            System.out.println("  " + debugPathStep);
+        }
+
+        System.out.println("Starting on " + way.getName() + " " + progressAlong);
+
+        currentPathStep = 1;
+        putOnPathStep(pathSteps.get(1));
+    }
+
+    public void putOnPathStep(PathStep newPathStep) {
+        if (newPathStep == null) {
+            return;
+        }
+
+        if (newPathStep.getStartingNode() == null) {
+            return;
+        }
+
+        way = newPathStep.getConnectingWay();
+        progressAlong = newPathStep.getStartingNode().getProgress();
+        direction = ((newPathStep.getEndingNode().getProgress() - newPathStep.getStartingNode().getProgress()) > 0) ? 1 : -1;
+        if (currentPathStep >= 2) {
+            /*System.out.println("Moving from " + pathSteps.get(currentPathStep - 1).getConnectingWay().getName() +
+                    pathSteps.get(currentPathStep - 1).getEndingNode().getX()+"x"+
+                    pathSteps.get(currentPathStep - 1).getEndingNode().getY()+" "+
+                    " to " + pathSteps.get(currentPathStep).getConnectingWay().getName() +
+                    pathSteps.get(currentPathStep).getStartingNode().getX()+"x"+
+                    pathSteps.get(currentPathStep).getStartingNode().getY());
+                    */
+            System.out.println("Moving from " + getWay().getName() + " " +
+                    getLocation().getX() + "x" +
+                    getLocation().getY() + " " +
+                    " to " + newPathStep.getConnectingWay().getName() + " " +
+                    newPathStep.getStartingNode().getX() + "x" +
+                    newPathStep.getStartingNode().getY() + " but actually " +
+                    getLocation().getX() + "x" +
+                    getLocation().getY());
         }
     }
 
@@ -70,23 +107,7 @@ public class GroundEnemy extends Enemy {
     }
 
     public void clockTick(float delta) {
-        Intersection crossedIntersection = crossesIntersection(delta);
-        if (crossedIntersection != null) {
-            int newWayNum = (int) (Math.random() * crossedIntersection.getWayList().size());
-            Way newWay = crossedIntersection.getWayList().get(newWayNum);
-            if (!newWay.equals(way)) {
-                Node crossedNode = null;
-                for (Node node : newWay.getNodes()) {
-                    if ((node.getLat() == crossedIntersection.getLatitude()) && (node.getLon() == crossedIntersection.getLongitude())) {
-                        crossedNode = node;
-                    }
-                }
-                System.out.println(way.getName() + " crossed intersection with " + crossedIntersection.getWayList().size() + " nodes and moved to " + newWay.getName());
-                way = newWay;
-                progressAlong = crossedNode.getProgress();
-                direction = 1;
-            }
-        }
+        crossesIntersection(delta);
 
         float speed = way.getMaxSpeed();
 
@@ -114,15 +135,51 @@ public class GroundEnemy extends Enemy {
         }
     }
 
-    private Intersection crossesIntersection(float delta) {
-        float speed = way.getMaxSpeed();
-        double newProgress = progressAlong + (direction * baseSpeed * delta * speed);
+    private void crossesIntersection(float delta) {
+        if (pathSteps.size() <= currentPathStep) {
+            return;
+        }
 
-        for (Node node : way.getNodes()) {
-            if ((progressAlong < node.getProgress()) && (newProgress > node.getProgress())) {
-                return parent.getIntersectionForNode(node);
+        if (pathSteps.size() < 2) {
+            System.out.println(getWay().getName() + " has only " + pathSteps.size() + " paths");
+            return;
+        }
+
+        float speed = way.getMaxSpeed();
+        //double newProgress = progressAlong + (direction * baseSpeed * delta * speed);
+        double newProgress = progressAlong + (direction * baseSpeed * delta * speed * (1.0f / Math.sqrt(way.getDistance())));
+
+        Node node = pathSteps.get(currentPathStep).getEndingNode();
+        while ((node == null) && (currentPathStep < (pathSteps.size() - 1))) {
+            System.out.println("NODE IS NULL");
+            currentPathStep++;
+            node = pathSteps.get(currentPathStep).getEndingNode();
+        }
+
+        if (node == null) {
+            System.out.println(getWay().getName() + " could not find the next path");
+            return;
+        }
+
+        boolean needsNewPath = false;
+        if (direction > 0) {
+            if (newProgress >= node.getProgress()) {
+                needsNewPath = true;
+            }
+        } else {
+            if (newProgress <= node.getProgress()) {
+                needsNewPath = true;
             }
         }
-        return null;
+        if (needsNewPath) {
+            currentPathStep++;
+            if (currentPathStep >= pathSteps.size()) {
+                // TODO
+                System.out.println("BOOM!!!");
+                parent.killEnemy(this);
+            } else {
+                putOnPathStep(pathSteps.get(currentPathStep));
+            }
+        }
     }
 }

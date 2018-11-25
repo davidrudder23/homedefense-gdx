@@ -19,17 +19,28 @@ public class PathStep {
         StringBuffer string = new StringBuffer();
 
         if (connectingWay != null) {
-            string.append("connectingWay=" + connectingWay.getName()+", ");
+            string.append("connectingWay=" + connectingWay.getName() + ", ");
         } else {
             string.append("connectingWay=null, ");
         }
 
         if (intersection != null) {
-            string.append("intersection="+intersection.getNode().getX()+"x"+intersection.getNode().getY()+", ");
-        } else {
-            string.append("intersection=null, ");
+            string.append("intersection=" + intersection.getNode().getX() + "x" + intersection.getNode().getY() + ", ");
         }
-        string.append("weight="+weight);
+        string.append("from " + getStartingNode() + " to " + getEndingNode() + ", ");
+        string.append("weight=" + weight);
         return string.toString();
+    }
+
+    public String getPath() {
+        StringBuffer pathString = new StringBuffer();
+        pathString.append(toString());
+        PathStep thisPathStep = getPreviousPath();
+        while (thisPathStep != null) {
+            pathString.append("\n");
+            pathString.append(thisPathStep.toString());
+            thisPathStep = thisPathStep.getPreviousPath();
+        }
+        return pathString.toString();
     }
 }

@@ -16,13 +16,15 @@ public abstract class Enemy {
     HomeDefenseGame parent;
     int frame = 0;
 
+    Timer.Task timer;
+
     protected Enemy(HomeDefenseGame parent, String spriteFilename, int tileWidth, int tileHeight) {
         this.parent = parent;
 
         Texture avatarAnimationSheet = new Texture(spriteFilename);
         animation = TextureRegion.split(avatarAnimationSheet, tileWidth, tileHeight);
 
-        Timer.schedule(new Timer.Task() {
+        timer = Timer.schedule(new Timer.Task() {
                            @Override
                            public void run() {
                                frame++;
@@ -31,5 +33,9 @@ public abstract class Enemy {
                            }
                        }
                 , 0f, 1 / 10.0f);
+    }
+
+    public void kill() {
+        timer.cancel();;
     }
 }

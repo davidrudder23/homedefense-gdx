@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
 import org.noses.games.homedefense.client.*;
+import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.GroundEnemy;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
@@ -97,17 +98,36 @@ public class HomeDefenseGame extends ApplicationAdapter {
         SecureRandom random = new SecureRandom();
         random.setSeed(System.currentTimeMillis());
 
-        for (int i = 0; i < 5; i++) {
-            Way way = map.getWays().get(random.nextInt(map.getWays().size()));
-            GroundEnemy mage = new GroundEnemy(this, way, "mage.png", 64, 64);
+        /*System.out.println ("Ways");
+        for (Way way: map.getWays()) {
+            System.out.println("  "+way.getName());
+        }*/
 
-            Djikstra djikstra = new Djikstra(intersections);
-            Intersection intersection = djikstra.getIntersectionForNode(intersections, way.firstNode());
-            PathStep pathStep = djikstra.getBestPath(intersection, width/2, height/2);
-            mage.setPathStep(pathStep);
-
-            enemies.add(mage);
+        for (int i = 0; i < 1; i++) {
+            createEnemy(width, height, random);
         }
+    }
+
+    private void createEnemy(int width, int height, SecureRandom random) {
+        if (random == null) {
+            random = new SecureRandom();
+            random.setSeed(System.currentTimeMillis());
+        }
+
+        Way way = map.getWays().get(random.nextInt(map.getWays().size()));
+        //Way way = map.getWays().get(i*3);
+        System.out.println ("In create enemy, starting on way "+way.getName());
+        GroundEnemy mage = new GroundEnemy(this, way, "mage.png", 64, 64);
+
+        Djikstra djikstra = new Djikstra(intersections);
+        Intersection intersection = djikstra.getIntersectionForNode(intersections, way.firstNode());
+        System.out.println("Intersection=("+intersection.getLatitude()+"x"+intersection.getLongitude());
+        PathStep pathStep = djikstra.getBestPath(intersection, width/2, height/2);
+        System.out.println ("Enemy's path - "+pathStep.getPath());
+
+        mage.setPath(pathStep);
+
+        enemies.add(mage);
     }
 
     public Intersection getIntersectionForNode(Node node) {
@@ -118,6 +138,12 @@ public class HomeDefenseGame extends ApplicationAdapter {
         for (GroundEnemy groundEnemy : enemies) {
             groundEnemy.clockTick(delta);
         }
+    }
+
+    public void killEnemy(Enemy enemy) {
+        enemy.kill();
+        enemies.remove(enemy);
+        createEnemy(Gdx.graphics.getWidth(), Gdx.graphics.getWidth(), null);
     }
 
     @Override
