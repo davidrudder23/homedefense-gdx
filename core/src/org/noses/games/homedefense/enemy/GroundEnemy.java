@@ -26,8 +26,8 @@ public class GroundEnemy extends Enemy {
     private int width;
     private int height;
 
-    public GroundEnemy(HomeDefenseGame parent, Way way, String spriteFilename, int width, int height) {
-        super(parent, spriteFilename, width, height);
+    public GroundEnemy(HomeDefenseGame parent, Way way) {
+        super(parent, "mage.png", 64, 64);
         this.way = way;
         progressAlong = 0;
         direction = 1;

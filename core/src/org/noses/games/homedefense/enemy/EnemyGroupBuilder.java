@@ -58,7 +58,7 @@ public class EnemyGroupBuilder {
 
         for (int i = 0; i < numEnemies; i++) {
 
-            GroundEnemy enemy = new GroundEnemy(game, way, "mage.png", 64, 64);
+            GroundEnemy enemy = new GroundEnemy(game, way);
             Djikstra djikstra = new Djikstra(intersections);
             Intersection intersection = djikstra.getIntersectionForNode(intersections, way.firstNode());
             System.out.println("Intersection=("+intersection.getLatitude()+"x"+intersection.getLongitude());
