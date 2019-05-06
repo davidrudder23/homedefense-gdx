@@ -7,12 +7,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
+import lombok.Getter;
+import lombok.experimental.var;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.Enemy;
+import org.noses.games.homedefense.enemy.EnemyGroup;
+import org.noses.games.homedefense.enemy.EnemyGroupBuilder;
 import org.noses.games.homedefense.enemy.GroundEnemy;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.pathfinding.PathStep;
+import org.noses.games.homedefense.player.Shot;
 
 import java.awt.*;
 import java.io.IOException;
@@ -23,15 +28,19 @@ import java.util.List;
 
 public class HomeDefenseGame extends ApplicationAdapter {
     SpriteBatch batch;
+
+    @Getter
     Map map = null;
 
-    List<GroundEnemy> enemies;
+    List<EnemyGroup> enemyGroups;
+    List<Shot> shots;
 
     HashMap<String, Intersection> intersections;
 
     @Override
     public void create() {
-        enemies = new ArrayList<>();
+        enemyGroups = new ArrayList<>();
+        shots = new ArrayList<>();
 
 	    /*GroundEnemyTest groundEnemyTest = new GroundEnemyTest();
 	    groundEnemyTest.testMovingMultiplePointsXDoubleY();
@@ -46,7 +55,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
         intersections = Intersection.buildIntersectionsFromMap(map);
 
         createEnemies(640, 480);
-
 
         Timer.schedule(new Timer.Task() {
                            @Override
@@ -87,7 +95,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 if (length == 0) {
                     node.setProgress(0);
                 } else {
-                    int delta = way.firstNode().distanceFrom(node);
+                    float delta = way.firstNode().distanceFrom(node);
                     node.setProgress(delta / length);
                 }
             }
@@ -95,19 +103,27 @@ public class HomeDefenseGame extends ApplicationAdapter {
     }
 
     public void createEnemies(int width, int height) {
-        SecureRandom random = new SecureRandom();
-        random.setSeed(System.currentTimeMillis());
 
         /*System.out.println ("Ways");
         for (Way way: map.getWays()) {
             System.out.println("  "+way.getName());
         }*/
 
-        for (int i = 0; i < 1; i++) {
+        /*for (int i = 0; i < 1; i++) {
             createEnemy(width, height, random);
-        }
+        }*/
+        EnemyGroup enemyGroup = EnemyGroup.builder()
+                .intersections(intersections)
+                .game(this)
+                .delay(10)
+                .height(height)
+                .width(width)
+                .numEnemies(10)
+                .build();
+        enemyGroups.add(enemyGroup);
     }
 
+    /*
     private void createEnemy(int width, int height, SecureRandom random) {
         if (random == null) {
             random = new SecureRandom();
@@ -128,22 +144,34 @@ public class HomeDefenseGame extends ApplicationAdapter {
         mage.setPath(pathStep);
 
         enemies.add(mage);
-    }
+    }*/
 
     public Intersection getIntersectionForNode(Node node) {
         return intersections.get(node.getLat() + "_" + node.getLon());
     }
 
     public void clockTick(float delta) {
-        for (GroundEnemy groundEnemy : enemies) {
-            groundEnemy.clockTick(delta);
+        for (EnemyGroup enemyGroup : enemyGroups) {
+            enemyGroup.clockTick(delta);
         }
     }
 
     public void killEnemy(Enemy enemy) {
         enemy.kill();
-        enemies.remove(enemy);
-        createEnemy(Gdx.graphics.getWidth(), Gdx.graphics.getWidth(), null);
+        for (EnemyGroup enemyGroup : enemyGroups) {
+            List<Enemy> enemies = enemyGroup.getEnemies();
+
+            if (enemyGroup.isEmpty()) {
+                System.out.println("Empty group!");
+                enemyGroup = EnemyGroup.builder()
+                        .intersections(intersections)
+                        .game(this)
+                        .delay(10)
+                        .width(enemyGroup.getWidth())
+                        .height(enemyGroup.getHeight())
+                        .build();
+            }
+        }
     }
 
     @Override
@@ -159,11 +187,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
             Gdx.gl.glLineWidth(way.getMaxSpeed() - 24);
 
             sr.setColor(Color.WHITE);
-            for (GroundEnemy enemy : enemies) {
-                //if (enemy.getWay().equals(way)) {
-                    sr.setColor(way.getColor());
-                //}
-            }
+            sr.setColor(way.getColor());
 
             sr.begin(ShapeRenderer.ShapeType.Line);
             Node prevNode = null;
@@ -178,11 +202,15 @@ public class HomeDefenseGame extends ApplicationAdapter {
         }
 
         batch.begin();
-        for (GroundEnemy enemy : enemies) {
-            Point location = enemy.getLocation();
-            int x = location.x - 32;
-            int y = Gdx.graphics.getHeight() - (location.y + 32);
-            batch.draw(enemy.getAnimation()[0][enemy.getFrame()], x, y);
+
+        for (EnemyGroup enemyGroup : enemyGroups) {
+            List<Enemy> enemies = enemyGroup.getEnemies();
+            for (Enemy enemy : enemies) {
+                Point location = enemy.getLocation();
+                int x = location.x - 32;
+                int y = Gdx.graphics.getHeight() - (location.y + 32);
+                batch.draw(enemy.getAnimation()[0][enemy.getFrame()], x, y);
+            }
         }
 
         batch.end();
@@ -193,19 +221,18 @@ public class HomeDefenseGame extends ApplicationAdapter {
         int originalWidth = Gdx.graphics.getWidth();
         int originalHeight = Gdx.graphics.getHeight();
 
-        double xRatio = width/originalWidth;
-        double yRatio = height/originalHeight;
+        double xRatio = width / originalWidth;
+        double yRatio = height / originalHeight;
 
-        System.out.println("xRatio="+xRatio);
-        System.out.println("yRatio="+yRatio);
-        for (Way way: map.getWays()) {
-            for (Node node: way.getNodes()) {
-                node.setX((int)((double)node.getX()*xRatio));
-                node.setY((int)((double)node.getY()*yRatio));
+        System.out.println("xRatio=" + xRatio);
+        System.out.println("yRatio=" + yRatio);
+        for (Way way : map.getWays()) {
+            for (Node node : way.getNodes()) {
+                node.setX((int) ((double) node.getX() * xRatio));
+                node.setY((int) ((double) node.getY() * yRatio));
             }
         }
     }
-
 
     @Override
     public void dispose() {

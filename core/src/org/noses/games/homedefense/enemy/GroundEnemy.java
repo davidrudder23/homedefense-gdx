@@ -23,9 +23,11 @@ public class GroundEnemy extends Enemy {
     private double direction;
     private List<PathStep> pathSteps;
     private int currentPathStep;
+    private int width;
+    private int height;
 
-    public GroundEnemy(HomeDefenseGame parent, Way way, String spriteFilename, int tileWidth, int tileHeight) {
-        super(parent, spriteFilename, tileWidth, tileHeight);
+    public GroundEnemy(HomeDefenseGame parent, Way way, String spriteFilename, int width, int height) {
+        super(parent, spriteFilename, width, height);
         this.way = way;
         progressAlong = 0;
         direction = 1;
@@ -50,12 +52,13 @@ public class GroundEnemy extends Enemy {
         Intersection intersection = pathStep.getIntersection();
         progressAlong = intersection.getNode(way).getProgress();
 
-        System.out.println("Reconfigured finalPath: ");
+        /*System.out.println("Reconfigured finalPath: ");
         for (PathStep debugPathStep : pathSteps) {
             System.out.println("  " + debugPathStep);
         }
 
         System.out.println("Starting on " + way.getName() + " " + progressAlong);
+        */
 
         currentPathStep = 1;
         putOnPathStep(pathSteps.get(1));
@@ -71,6 +74,7 @@ public class GroundEnemy extends Enemy {
         }
 
         way = newPathStep.getConnectingWay();
+
         progressAlong = newPathStep.getStartingNode().getProgress();
         direction = ((newPathStep.getEndingNode().getProgress() - newPathStep.getStartingNode().getProgress()) > 0) ? 1 : -1;
         if (currentPathStep >= 2) {
@@ -88,7 +92,7 @@ public class GroundEnemy extends Enemy {
                     newPathStep.getStartingNode().getX() + "x" +
                     newPathStep.getStartingNode().getY() + " but actually " +
                     getLocation().getX() + "x" +
-                    getLocation().getY());
+                    getLocation().getY() +  " direction="+direction+" progress along="+progressAlong);
         }
     }
 
@@ -175,7 +179,9 @@ public class GroundEnemy extends Enemy {
             currentPathStep++;
             if (currentPathStep >= pathSteps.size()) {
                 // TODO
+                System.out.println("\n\n\n");
                 System.out.println("BOOM!!!");
+                System.out.println("\n\n\n");
                 parent.killEnemy(this);
             } else {
                 putOnPathStep(pathSteps.get(currentPathStep));
