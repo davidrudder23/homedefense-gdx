@@ -9,8 +9,8 @@ import org.noses.games.homedefense.HomeDefenseGame;
 @Data
 public abstract class Animation {
     protected HomeDefenseGame parent;
-    protected int frame = 0;
-    TextureRegion[][] animation;
+    protected int frameNumber = 0;
+    protected TextureRegion[][] animation;
     Timer.Task timer;
 
     protected Animation(HomeDefenseGame parent, String spriteFilename, int tileWidth, int tileHeight) {
@@ -22,12 +22,22 @@ public abstract class Animation {
         timer = Timer.schedule(new Timer.Task() {
                                    @Override
                                    public void run() {
-                                       frame++;
-                                       if (frame >= animation[0].length)
-                                           frame = 0;
+                                       clockTick(0.1f);
                                    }
-                               }
-                , 0f, 1 / 10.0f);
+                               },
+                0f, 1 / 10.0f);
+    }
+
+    protected void clockTick(float delay) {
+        frameNumber++;
+        if (frameNumber >= animation[0].length) {
+            frameNumber = 0;
+        }
+
+    }
+
+    public TextureRegion getFrameTextureRegion() {
+        return animation[0][frameNumber];
     }
 
 }

@@ -1,5 +1,7 @@
 package org.noses.games.homedefense.enemy;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -182,7 +184,12 @@ public class GroundEnemy extends Enemy {
                 System.out.println("\n\n\n");
                 System.out.println("BOOM!!!");
                 System.out.println("\n\n\n");
-                parent.killEnemy(this);
+                Texture avatarAnimationSheet = new Texture("explosion.png");
+                frameNumber = 0;
+
+                animation = TextureRegion.split(avatarAnimationSheet, 64,64);
+
+                //parent.killEnemy(this);
             } else {
                 putOnPathStep(pathSteps.get(currentPathStep));
             }

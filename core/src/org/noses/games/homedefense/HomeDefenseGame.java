@@ -4,24 +4,20 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
 import lombok.Getter;
-import lombok.experimental.var;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
-import org.noses.games.homedefense.enemy.EnemyGroupBuilder;
-import org.noses.games.homedefense.enemy.GroundEnemy;
-import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
-import org.noses.games.homedefense.pathfinding.PathStep;
+import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.player.Shot;
 
 import java.awt.*;
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +33,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     HashMap<String, Intersection> intersections;
 
+    Home home;
+
     @Override
     public void create() {
         enemyGroups = new ArrayList<>();
@@ -47,6 +45,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
 	    groundEnemyTest.testMovingMultiplePointsXEqualY();
 	    groundEnemyTest.testMovingTwoPointsXDoubleY();
 */
+
+        home = new Home(this, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 
         batch = new SpriteBatch();
 
@@ -121,30 +121,16 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .numEnemies(10)
                 .build();
         enemyGroups.add(enemyGroup);
+        EnemyGroup enemyGroup2 = EnemyGroup.builder()
+                .intersections(intersections)
+                .game(this)
+                .delay(20)
+                .height(height)
+                .width(width)
+                .numEnemies(5)
+                .build();
+        enemyGroups.add(enemyGroup2);
     }
-
-    /*
-    private void createEnemy(int width, int height, SecureRandom random) {
-        if (random == null) {
-            random = new SecureRandom();
-            random.setSeed(System.currentTimeMillis());
-        }
-
-        Way way = map.getWays().get(random.nextInt(map.getWays().size()));
-        //Way way = map.getWays().get(i*3);
-        System.out.println ("In create enemy, starting on way "+way.getName());
-        GroundEnemy mage = new GroundEnemy(this, way, "mage.png", 64, 64);
-
-        Djikstra djikstra = new Djikstra(intersections);
-        Intersection intersection = djikstra.getIntersectionForNode(intersections, way.firstNode());
-        System.out.println("Intersection=("+intersection.getLatitude()+"x"+intersection.getLongitude());
-        PathStep pathStep = djikstra.getBestPath(intersection, width/2, height/2);
-        System.out.println ("Enemy's path - "+pathStep.getPath());
-
-        mage.setPath(pathStep);
-
-        enemies.add(mage);
-    }*/
 
     public Intersection getIntersectionForNode(Node node) {
         return intersections.get(node.getLat() + "_" + node.getLon());
@@ -154,24 +140,27 @@ public class HomeDefenseGame extends ApplicationAdapter {
         for (EnemyGroup enemyGroup : enemyGroups) {
             enemyGroup.clockTick(delta);
         }
+
     }
 
     public void killEnemy(Enemy enemy) {
         enemy.kill();
         for (EnemyGroup enemyGroup : enemyGroups) {
-            List<Enemy> enemies = enemyGroup.getEnemies();
 
             if (enemyGroup.isEmpty()) {
                 System.out.println("Empty group!");
-                enemyGroup = EnemyGroup.builder()
-                        .intersections(intersections)
-                        .game(this)
-                        .delay(10)
-                        .width(enemyGroup.getWidth())
-                        .height(enemyGroup.getHeight())
-                        .build();
             }
         }
+    }
+
+    public List<Enemy> getEnemies() {
+        List<Enemy> enemies = new ArrayList<>();
+
+        for (EnemyGroup enemyGroup: enemyGroups) {
+            enemies.addAll(enemyGroup.getEnemies());
+        }
+
+        return enemies;
     }
 
     @Override
@@ -201,6 +190,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
             sr.end();
         }
 
+        // render the enemies
+
         batch.begin();
 
         for (EnemyGroup enemyGroup : enemyGroups) {
@@ -209,11 +200,20 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 Point location = enemy.getLocation();
                 int x = location.x - 32;
                 int y = Gdx.graphics.getHeight() - (location.y + 32);
-                batch.draw(enemy.getAnimation()[0][enemy.getFrame()], x, y);
+                batch.draw(enemy.getFrameTextureRegion(), x, y);
             }
         }
 
+        // render our home
+
+        Sprite homeSprite = home.getSprite();
+        homeSprite.setCenterX(home.getX());
+        homeSprite.setCenterY(home.getY());
+
+        homeSprite.draw(batch);
+
         batch.end();
+
     }
 
     @Override
