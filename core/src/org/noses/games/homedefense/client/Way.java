@@ -2,8 +2,8 @@ package org.noses.games.homedefense.client;
 
 import com.badlogic.gdx.graphics.Color;
 import lombok.Data;
+import org.noses.games.homedefense.geometry.Point;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,19 +75,19 @@ public class Way {
             return false;
         }
 
-        if (otherWay.firstPoint().x != firstPoint().x) {
+        if (otherWay.firstPoint().getX() != firstPoint().getX()) {
             return false;
         }
 
-        if (otherWay.firstPoint().y != firstPoint().y) {
+        if (otherWay.firstPoint().getY() != firstPoint().getY()) {
             return false;
         }
 
-        if (otherWay.lastPoint().x != lastPoint().x) {
+        if (otherWay.lastPoint().getX() != lastPoint().getX()) {
             return false;
         }
 
-        if (otherWay.lastPoint().y != lastPoint().y) {
+        if (otherWay.lastPoint().getY() != lastPoint().getY()) {
             return false;
         }
 

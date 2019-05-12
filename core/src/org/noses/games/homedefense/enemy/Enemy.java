@@ -1,14 +1,11 @@
 package org.noses.games.homedefense.enemy;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Data;
 import org.noses.games.homedefense.HomeDefenseGame;
 
-import com.badlogic.gdx.utils.Timer;
 import org.noses.games.homedefense.game.ClockTickHandler;
-
-import java.awt.*;
+import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.geometry.Rectangle;
 
 @Data
 public abstract class Enemy extends Animation implements ClockTickHandler {
@@ -33,4 +30,10 @@ public abstract class Enemy extends Animation implements ClockTickHandler {
     public abstract int getWidth();
 
     public abstract int getHeight();
+
+    public Rectangle getBoundingBox() {
+        Rectangle boundingBox = new Rectangle(getLocation(),
+                new Point(getLocation().getX()+tileWidth, getLocation().getY()+tileHeight));
+        return boundingBox;
+    }
 }

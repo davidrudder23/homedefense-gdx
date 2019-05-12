@@ -5,6 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.enemy.Animation;
+import org.noses.games.homedefense.enemy.Enemy;
+import org.noses.games.homedefense.geometry.Rectangle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BaseBullet extends Animation  {
 
@@ -45,11 +50,27 @@ public abstract class BaseBullet extends Animation  {
         return currentY;
     }
 
+    public abstract int getRadius();
+
     public void move(float delta) {
         distanceTraveled += delta*speed;
 
         double rad = angle* Math.PI/180;
         currentX = (int)(originalX+(Math.cos(rad)*distanceTraveled));
         currentY = (int)(originalY+(Math.sin(rad)*distanceTraveled));
+
+        List<Enemy> hitEnemies = whichEnemiesHit();
+    }
+
+    public List<Enemy> whichEnemiesHit() {
+        List<Enemy> enemiesHit = new ArrayList<>();
+
+        Rectangle boundingBox = new Rectangle(currentX, currentY, currentX+getRadius(), currentY+getRadius());
+
+        for (Enemy enemy: parent.getEnemies()) {
+
+        }
+
+        return enemiesHit;
     }
 }

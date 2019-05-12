@@ -16,4 +16,8 @@ public class NormalBullet extends BaseBullet {
         this.angle = angle;
         this.speed = speed;
     }
+
+    public int getRadius() {
+        return 5;
+    }
 }

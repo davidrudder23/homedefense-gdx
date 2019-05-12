@@ -13,6 +13,9 @@ public abstract class Animation {
     protected TextureRegion[][] animation;
     Timer.Task timer;
 
+    protected int tileWidth;
+    protected int tileHeight;
+
     protected Animation(HomeDefenseGame parent, String spriteFilename, int tileWidth, int tileHeight) {
         this.parent = parent;
 

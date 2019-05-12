@@ -1,17 +1,16 @@
 package org.noses.games.homedefense.enemy;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.client.Way;
+import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.pathfinding.PathStep;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 

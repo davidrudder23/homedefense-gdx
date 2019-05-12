@@ -10,9 +10,8 @@ import org.noses.games.homedefense.bullet.BaseBullet;
 import org.noses.games.homedefense.bullet.NormalBullet;
 import org.noses.games.homedefense.enemy.Animation;
 import org.noses.games.homedefense.enemy.Enemy;
-import org.noses.games.homedefense.player.Bullet;
+import org.noses.games.homedefense.geometry.Point;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

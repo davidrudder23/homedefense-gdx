@@ -1,10 +1,11 @@
 package org.noses.games.homedefense;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
@@ -12,11 +13,11 @@ import lombok.Getter;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
+import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.player.Shot;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +30,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
     Map map = null;
 
     List<EnemyGroup> enemyGroups;
-    List<Shot> shots;
 
     HashMap<String, Intersection> intersections;
 
@@ -38,13 +38,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
     @Override
     public void create() {
         enemyGroups = new ArrayList<>();
-        shots = new ArrayList<>();
-
-	    /*GroundEnemyTest groundEnemyTest = new GroundEnemyTest();
-	    groundEnemyTest.testMovingMultiplePointsXDoubleY();
-	    groundEnemyTest.testMovingMultiplePointsXEqualY();
-	    groundEnemyTest.testMovingTwoPointsXDoubleY();
-*/
 
         home = new Home(this, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 
@@ -55,6 +48,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
         intersections = Intersection.buildIntersectionsFromMap(map);
 
         createEnemies(640, 480);
+
+        setupSound();
 
         Timer.schedule(new Timer.Task() {
                            @Override
@@ -82,11 +77,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
             ;
         }
 
-/*        for (Way way : map.getWays()) {
-            GroundEnemy mage = new GroundEnemy(this, way, "mage.png", 64, 64);
-            enemies.add(mage);
-        }*/
-
         for (Way way : map.getWays()) {
             for (Node node : way.getNodes()) {
 
@@ -104,14 +94,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     public void createEnemies(int width, int height) {
 
-        /*System.out.println ("Ways");
-        for (Way way: map.getWays()) {
-            System.out.println("  "+way.getName());
-        }*/
-
-        /*for (int i = 0; i < 1; i++) {
-            createEnemy(width, height, random);
-        }*/
         EnemyGroup enemyGroup = EnemyGroup.builder()
                 .intersections(intersections)
                 .game(this)
@@ -129,7 +111,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .width(width)
                 .numEnemies(5)
                 .build();
-        //enemyGroups.add(enemyGroup2);
+        enemyGroups.add(enemyGroup2);
     }
 
     public Intersection getIntersectionForNode(Node node) {
@@ -161,6 +143,11 @@ public class HomeDefenseGame extends ApplicationAdapter {
         }
 
         return enemies;
+    }
+
+    public void setupSound() {
+        Sound backgroundLoop= Gdx.audio.newSound(Gdx.files.internal("background.mp3"));
+        backgroundLoop.loop();
     }
 
     @Override
@@ -198,8 +185,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
             List<Enemy> enemies = enemyGroup.getEnemies();
             for (Enemy enemy : enemies) {
                 Point location = enemy.getLocation();
-                int x = location.x - 32;
-                int y = Gdx.graphics.getHeight() - (location.y + 32);
+                int x = location.getX() - 32;
+                int y = Gdx.graphics.getHeight() - (location.getY() + 32);
                 batch.draw(enemy.getFrameTextureRegion(), x, y);
             }
         }
