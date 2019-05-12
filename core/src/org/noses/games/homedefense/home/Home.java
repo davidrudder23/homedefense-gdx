@@ -81,10 +81,10 @@ public class Home extends Animation {
                 }
 
                 if (aCalc < bCalc) {
-                    return -1;
+                    return 1;
                 }
 
-                return 1;
+                return -1;
             }
         });
 
