@@ -86,14 +86,14 @@ public class GroundEnemy extends Enemy {
                     pathSteps.get(currentPathStep).getStartingNode().getX()+"x"+
                     pathSteps.get(currentPathStep).getStartingNode().getY());
                     */
-            System.out.println("Moving from " + getWay().getName() + " " +
+            /*System.out.println("Moving from " + getWay().getName() + " " +
                     getLocation().getX() + "x" +
                     getLocation().getY() + " " +
                     " to " + newPathStep.getConnectingWay().getName() + " " +
                     newPathStep.getStartingNode().getX() + "x" +
                     newPathStep.getStartingNode().getY() + " but actually " +
                     getLocation().getX() + "x" +
-                    getLocation().getY() +  " direction="+direction+" progress along="+progressAlong);
+                    getLocation().getY() +  " direction="+direction+" progress along="+progressAlong);*/
         }
     }
 
@@ -107,6 +107,9 @@ public class GroundEnemy extends Enemy {
 
         double currentX = ((lastPoint.getX() - firstPoint.getX()) * progressAlong) + firstPoint.getX();
         double currentY = ((lastPoint.getY() - firstPoint.getY()) * progressAlong) + firstPoint.getY();
+
+        //currentX -= tileWidth/2;
+        //currentY += tileHeight/2;
 
         return new Point((int) currentX, (int) currentY);
     }

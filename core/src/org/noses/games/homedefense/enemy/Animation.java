@@ -19,6 +19,9 @@ public abstract class Animation {
     protected Animation(HomeDefenseGame parent, String spriteFilename, int tileWidth, int tileHeight) {
         this.parent = parent;
 
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
+
         Texture avatarAnimationSheet = new Texture(spriteFilename);
         animation = TextureRegion.split(avatarAnimationSheet, tileWidth, tileHeight);
 

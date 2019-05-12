@@ -14,6 +14,11 @@ public class Rectangle {
         lowerRight = new Point(right, bottom);
     }
 
+    public boolean doBoundsOverlap(Rectangle rectangle) {
+        return (isInBoundingBox(rectangle.upperLeft) || isInBoundingBox((rectangle.lowerRight))) ||
+                (rectangle.isInBoundingBox(upperLeft) || (rectangle.isInBoundingBox(lowerRight)) );
+    }
+
     public boolean isInBoundingBox(Point point) {
         if ((point.getX() >= upperLeft.getX()) &&
                 (point.getY() >= upperLeft.getY()) &&
@@ -22,5 +27,11 @@ public class Rectangle {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        String string = upperLeft.toString()+" through "+lowerRight.toString();
+        return string;
     }
 }

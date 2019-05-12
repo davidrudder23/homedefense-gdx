@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
@@ -14,6 +15,7 @@ import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.geometry.Rectangle;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.player.Shot;
@@ -37,6 +39,12 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     @Override
     public void create() {
+
+        Rectangle test1 = new Rectangle(10, 10, 100, 100);
+        Rectangle test2 = new Rectangle(0, 0, 110, 110);
+        System.out.println("This shoudl be true="+test1.doBoundsOverlap(test2));
+        System.out.println("This shoudl be true="+test2.doBoundsOverlap(test1));
+
         enemyGroups = new ArrayList<>();
 
         home = new Home(this, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
@@ -120,7 +128,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .width(width)
                 .numEnemies(5)
                 .build();
-        enemyGroups.add(enemyGroup2);
+        //enemyGroups.add(enemyGroup2);
     }
 
     public Intersection getIntersectionForNode(Node node) {
@@ -165,6 +173,14 @@ public class HomeDefenseGame extends ApplicationAdapter {
         return sound;
     }
 
+    public int getScreenWidth() {
+        return Gdx.graphics.getWidth();
+    }
+
+    public int getScreenHeight() {
+        return Gdx.graphics.getHeight();
+    }
+
     @Override
     public void render() {
         Gdx.gl.glClearColor(0.2f, 0.25f, 0.95f, 1);
@@ -200,6 +216,11 @@ public class HomeDefenseGame extends ApplicationAdapter {
             List<Enemy> enemies = enemyGroup.getEnemies();
             for (Enemy enemy : enemies) {
                 Point location = enemy.getLocation();
+                Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
+                sprite.setCenterX(location.getX());
+                sprite.setCenterY(location.getY());
+                //batch.draw(enemy.getFrameTextureRegion(), location.getX(), location.getY());
+
                 int x = location.getX() - 32;
                 int y = Gdx.graphics.getHeight() - (location.getY() + 32);
                 batch.draw(enemy.getFrameTextureRegion(), x, y);
