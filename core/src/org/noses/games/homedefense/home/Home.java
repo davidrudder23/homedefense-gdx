@@ -1,5 +1,6 @@
 package org.noses.games.homedefense.home;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -27,6 +28,8 @@ public class Home extends Animation {
 
     List<BaseBullet> bullets;
 
+    Sound shotSound;
+
     @Getter
     int x;
 
@@ -42,6 +45,8 @@ public class Home extends Animation {
         bullets = new ArrayList<>();
 
         timeSinceLastFired = timeBetweenShots;
+
+        shotSound = parent.loadSound("normal_shot.mp3");
     }
 
     public void clockTick(float delay) {
@@ -101,7 +106,8 @@ public class Home extends Animation {
 
     private void shoot() {
         System.out.println ("Shooting");
-        NormalBullet normalBullet = new NormalBullet(parent, getX(), getY(), angle, 50);
+        NormalBullet normalBullet = new NormalBullet(parent, shotSound, getX(), getY(), angle, 50);
+        normalBullet.shoot();
         bullets.add(normalBullet);
     }
 

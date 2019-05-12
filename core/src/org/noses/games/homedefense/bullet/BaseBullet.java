@@ -1,5 +1,6 @@
 package org.noses.games.homedefense.bullet;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Timer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,8 +27,12 @@ public abstract class BaseBullet extends Animation  {
 
     Timer.Task timer;
 
-    public BaseBullet(HomeDefenseGame parent, String spriteFilename, int tileWidth, int tileHeight) {
+    Sound shotSound;
+
+    public BaseBullet(HomeDefenseGame parent, String spriteFilename, Sound shotSound, int tileWidth, int tileHeight) {
         super(parent, spriteFilename, tileWidth, tileHeight);
+
+        this.shotSound = shotSound;
 
         timer = Timer.schedule(new Timer.Task() {
                                    @Override
@@ -48,6 +53,10 @@ public abstract class BaseBullet extends Animation  {
 
     public int getY() {
         return currentY;
+    }
+
+    public void shoot() {
+        shotSound.play();
     }
 
     public abstract int getRadius();

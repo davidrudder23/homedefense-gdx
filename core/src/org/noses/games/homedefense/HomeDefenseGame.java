@@ -43,11 +43,11 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         batch = new SpriteBatch();
 
-        initializeMap(640, 480);
+        initializeMap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         intersections = Intersection.buildIntersectionsFromMap(map);
 
-        createEnemies(640, 480);
+        createEnemies(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         setupSound();
 
@@ -63,12 +63,21 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     public void initializeMap(int width, int height) {
         try {
+
+            float denverLatitude = 39.7392f;
+            float denverLongitude = -104.9874f;
+
+            float austinLatitude = 30.2746f;
+            float austinLongitude = -97.7404f;
+
             MapClient mapClient = new MapClient();
             Account account = mapClient.register("drig1",
                     "drig1@noses.org",
                     "test1",
-                    39.7392f,
-                    -104.9874f);
+                    denverLatitude,
+                    denverLongitude);
+            //        austinLatitude,
+            //        austinLongitude);
 
             map = mapClient.getMap(account, width, height);
             //System.out.println(map);
@@ -146,8 +155,14 @@ public class HomeDefenseGame extends ApplicationAdapter {
     }
 
     public void setupSound() {
-        Sound backgroundLoop= Gdx.audio.newSound(Gdx.files.internal("background.mp3"));
+        Sound backgroundLoop = loadSound("background.mp3");
         backgroundLoop.loop();
+    }
+
+    public Sound loadSound(String fileName) {
+        Sound sound = Gdx.audio.newSound(Gdx.files.internal(fileName));
+
+        return sound;
     }
 
     @Override
