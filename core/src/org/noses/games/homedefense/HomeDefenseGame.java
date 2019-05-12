@@ -129,7 +129,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .width(width)
                 .numEnemies(5)
                 .build();
-        enemyGroups.add(enemyGroup2);
+        //enemyGroups.add(enemyGroup2);
     }
 
     public Intersection getIntersectionForNode(Node node) {
@@ -204,13 +204,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
             }
         }
 
-        // render our home
-
-        Sprite homeSprite = home.getSprite();
-        homeSprite.setCenterX(home.getX());
-        homeSprite.setCenterY(home.getY());
-
-        homeSprite.draw(batch);
+        home.render(batch);
 
         batch.end();
 

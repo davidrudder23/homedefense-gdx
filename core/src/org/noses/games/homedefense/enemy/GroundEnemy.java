@@ -115,7 +115,7 @@ public class GroundEnemy extends Enemy {
     public void clockTick(float delta) {
         crossesIntersection(delta);
 
-        float speed = way.getMaxSpeed();
+        float speed = way.getMaxSpeed()/4;
 
         if (way.getDistance() != 0) {
             double newProgress = direction * baseSpeed * delta * speed * (1.0f / Math.sqrt(way.getDistance()));
@@ -187,9 +187,9 @@ public class GroundEnemy extends Enemy {
                 Texture avatarAnimationSheet = new Texture("explosion.png");
                 frameNumber = 0;
 
-                animation = TextureRegion.split(avatarAnimationSheet, 64,64);
+                //animation = TextureRegion.split(avatarAnimationSheet, 64,64);
 
-                //parent.killEnemy(this);
+                parent.killEnemy(this);
             } else {
                 putOnPathStep(pathSteps.get(currentPathStep));
             }

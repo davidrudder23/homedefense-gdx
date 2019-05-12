@@ -1,28 +1,32 @@
 package org.noses.games.homedefense.home;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.bullet.BaseBullet;
 import org.noses.games.homedefense.bullet.NormalBullet;
-import org.noses.games.homedefense.client.Way;
 import org.noses.games.homedefense.enemy.Animation;
 import org.noses.games.homedefense.enemy.Enemy;
+import org.noses.games.homedefense.player.Bullet;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 public class Home extends Animation {
 
-    final double timeBetweenShots = 5;
+    final double timeBetweenShots = 1;
 
     double angle;
 
-    float timeSinceLastFired = 0;
+    double timeSinceLastFired = 0;
+
+    List<BaseBullet> bullets;
 
     @Getter
     int x;
@@ -35,6 +39,10 @@ public class Home extends Animation {
         this.x = x;
         this.y = y;
         angle = 0;
+
+        bullets = new ArrayList<>();
+
+        timeSinceLastFired = timeBetweenShots;
     }
 
     public void clockTick(float delay) {
@@ -43,15 +51,16 @@ public class Home extends Animation {
 
         timeSinceLastFired += delay;
 
-        if (timeSinceLastFired > timeSinceLastFired) {
+        if (timeSinceLastFired > timeBetweenShots) {
             shoot();
+            timeSinceLastFired = 0;
         }
 
-        angle = getAim();
+        angle = getAngle();
 
     }
 
-    private double getAim() {
+    private double getAngle() {
         // find enemy
         List<Enemy> sortedEnemies = parent.getEnemies();
         if ((sortedEnemies == null) || (sortedEnemies.size() == 0)) {
@@ -80,18 +89,40 @@ public class Home extends Animation {
             }
         });
 
-        System.out.println("Aiming at " + sortedEnemies.get(0).getLocation());
-
         Enemy enemy = sortedEnemies.get(0);
 
-        double angle = Math.atan2(getX() - enemy.getLocation().getX(),
-                getY() - enemy.getLocation().getY());
-        angle = angle * (180/Math.PI);
+        double angle = Math.atan2(getY() - enemy.getLocation().getY(),
+                getX() - enemy.getLocation().getX());
+        angle = 180 - (angle * (180/Math.PI));
+
+        System.out.println("Aiming at " + enemy.getLocation()+" angle="+angle);
+
         return angle;
     }
 
     private void shoot() {
-        //NormalBullet normalBullet = NormalBullet.builder().
+        System.out.println ("Shooting");
+        NormalBullet normalBullet = new NormalBullet(parent, getX(), getY(), angle, 50);
+        bullets.add(normalBullet);
+    }
+
+    public void render(Batch batch) {
+
+        Sprite homeSprite = getSprite();
+        homeSprite.setCenterX(getX());
+        homeSprite.setCenterY(getY());
+
+        homeSprite.draw(batch);
+
+        //System.out.println ("Rendering "+bullets.size()+" bullets");
+        for (BaseBullet bullet: bullets) {
+            TextureRegion textureRegion = bullet.getFrameTextureRegion();
+            Sprite bulletSprite = new Sprite(textureRegion);
+            bulletSprite.setCenterX(bullet.getX());
+            bulletSprite.setCenterY(bullet.getY());
+            bulletSprite.draw(batch);
+        }
+
     }
 
     public Sprite getSprite() {
@@ -99,7 +130,7 @@ public class Home extends Animation {
 
         Sprite sprite = new Sprite(frame);
 
-        System.out.println("Rotating " + angle);
+        //System.out.println("Rotating " + angle);
         sprite.setRotation((float)angle);
 
         return sprite;
