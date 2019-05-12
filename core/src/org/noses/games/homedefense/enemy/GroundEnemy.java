@@ -108,10 +108,7 @@ public class GroundEnemy extends Enemy {
         double currentX = ((lastPoint.getX() - firstPoint.getX()) * progressAlong) + firstPoint.getX();
         double currentY = ((lastPoint.getY() - firstPoint.getY()) * progressAlong) + firstPoint.getY();
 
-        //currentX -= tileWidth/2;
-        //currentY += tileHeight/2;
-
-        return new Point((int) currentX, (int) currentY);
+        return new Point((int) currentX, 480 - (int) currentY);
     }
 
     public void clockTick(float delta) {

@@ -216,14 +216,17 @@ public class HomeDefenseGame extends ApplicationAdapter {
             List<Enemy> enemies = enemyGroup.getEnemies();
             for (Enemy enemy : enemies) {
                 Point location = enemy.getLocation();
-                Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
-                sprite.setCenterX(location.getX());
-                sprite.setCenterY(location.getY());
-                //batch.draw(enemy.getFrameTextureRegion(), location.getX(), location.getY());
 
-                int x = location.getX() - 32;
-                int y = Gdx.graphics.getHeight() - (location.getY() + 32);
-                batch.draw(enemy.getFrameTextureRegion(), x, y);
+                int x = location.getX();
+                int y = location.getY();
+
+                //batch.draw(enemy.getFrameTextureRegion(), x, y);
+
+                Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
+                sprite.setCenterX(x);
+                sprite.setCenterY(y);
+                sprite.draw(batch);
+
             }
         }
 
