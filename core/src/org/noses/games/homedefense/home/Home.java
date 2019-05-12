@@ -99,7 +99,7 @@ public class Home extends Animation {
 
         double angle = Math.atan2(getY() - enemy.getLocation().getY(),
                 getX() - enemy.getLocation().getX());
-        angle = 180 - (angle * (180 / Math.PI));
+        angle = 360 - (180 - (angle * (180 / Math.PI)));
 
         //System.out.println("Aiming at " + enemy.getLocation()+" angle="+angle);
 
