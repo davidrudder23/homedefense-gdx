@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Getter;
+import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.bullet.Bullet;
 import org.noses.games.homedefense.bullet.NormalBullet;
@@ -33,6 +34,10 @@ public class Home extends Animation {
     Sound shotSound;
 
     @Getter
+    @Setter
+    int health;
+
+    @Getter
     int x;
 
     @Getter
@@ -49,6 +54,16 @@ public class Home extends Animation {
         timeSinceLastFired = timeBetweenShots;
 
         shotSound = parent.loadSound("normal_shot.mp3");
+
+        health = 100;
+    }
+
+    public void hit(int damage) {
+        health -= damage;
+    }
+
+    public boolean isDead() {
+        return health<=0;
     }
 
     public void clockTick(float delay) {
@@ -88,10 +103,10 @@ public class Home extends Animation {
                 }
 
                 if (aCalc < bCalc) {
-                    return 1;
+                    return -1;
                 }
 
-                return -1;
+                return 1;
             }
         });
 
@@ -119,7 +134,7 @@ public class Home extends Animation {
             return;
         }
 
-        if (parent.getEnemies().size()<=0) {
+        if (parent.getEnemies().size() <= 0) {
             return;
         }
 

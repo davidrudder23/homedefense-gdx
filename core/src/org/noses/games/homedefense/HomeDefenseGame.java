@@ -156,13 +156,11 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     }
 
-    public void killEnemy(Enemy enemy) {
-        enemy.kill();
-        for (EnemyGroup enemyGroup : enemyGroups) {
-
-            if (enemyGroup.isEmpty()) {
-                System.out.println("Empty group!");
-            }
+    public void hitHome(int damage) {
+        System.out.println("Home hit for "+damage+" health="+home.getHealth());
+        home.hit(damage);
+        if (home.isDead()) {
+            Gdx.app.exit();
         }
     }
 

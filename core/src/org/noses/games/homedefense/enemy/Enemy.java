@@ -1,5 +1,6 @@
 package org.noses.games.homedefense.enemy;
 
+import com.badlogic.gdx.audio.Sound;
 import lombok.Data;
 import org.noses.games.homedefense.HomeDefenseGame;
 
@@ -14,14 +15,29 @@ public abstract class Enemy extends Animation implements ClockTickHandler {
 
     private boolean killed = false;
 
-    protected Enemy(HomeDefenseGame parent, String spriteFilename, int tileWidth, int tileHeight) {
+    Sound hitSound;
+
+    protected Enemy(HomeDefenseGame parent, String spriteFilename, Sound hitSound, int tileWidth, int tileHeight, int startingHealth) {
         super(parent, spriteFilename, tileWidth, tileHeight);
+        this.health = startingHealth;
+        this.hitSound = hitSound;
+    }
+
+    public void hit(int damage) {
+        health -= damage;
+        if (health<0) {
+            kill();
+        }
+
+        hitSound.play();
     }
 
     public void kill() {
         timer.cancel();
         this.killed = true;
     }
+
+    public abstract int getDamage();
 
     public abstract void clockTick(float delta);
 

@@ -19,4 +19,9 @@ public class NormalBullet extends Bullet {
     public int getRadius() {
         return 5;
     }
+
+    @Override
+    public int getDamage() {
+        return 1;
+    }
 }

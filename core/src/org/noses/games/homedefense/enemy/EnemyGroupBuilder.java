@@ -75,15 +75,15 @@ public class EnemyGroupBuilder {
 
         EnemyGroup enemyGroup = new EnemyGroup(numEnemies, width, height, delay);
 
+        Djikstra djikstra = new Djikstra(intersections);
+        Intersection intersection = djikstra.getIntersectionForNode(intersections, way.firstNode());
+        System.out.println("Intersection=("+intersection.getLatitude()+"x"+intersection.getLongitude());
+        PathStep pathStep = djikstra.getBestPath(intersection, width/2, height/2);
+        System.out.println ("Enemy's path - "+pathStep.getPath());
+
         for (int i = 0; i < numEnemies; i++) {
 
             GroundEnemy enemy = new GroundEnemy(game, way);
-            Djikstra djikstra = new Djikstra(intersections);
-            Intersection intersection = djikstra.getIntersectionForNode(intersections, way.firstNode());
-            System.out.println("Intersection=("+intersection.getLatitude()+"x"+intersection.getLongitude());
-            PathStep pathStep = djikstra.getBestPath(intersection, width/2, height/2);
-            System.out.println ("Enemy's path - "+pathStep.getPath());
-
             enemy.setPath(pathStep);
             enemyGroup.addEnemy(enemy);
         }

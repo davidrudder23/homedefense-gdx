@@ -61,6 +61,8 @@ public abstract class Bullet extends Animation {
         return currentY;
     }
 
+    public abstract int getDamage();
+
     public void shoot() {
         shotSound.play();
     }
@@ -106,7 +108,7 @@ public abstract class Bullet extends Animation {
             //System.out.println ("Bullet "+boundingBox+" vs Enemy "+enemy.getBoundingBox()+"="+enemy.getBoundingBox().doBoundsOverlap(boundingBox));
             if (enemy.getBoundingBox().doBoundsOverlap(boundingBox)) {
                 System.out.println("Bullet hit " + enemy.getLocation());
-                enemy.kill();
+                enemy.hit(getDamage());
                 this.kill();
             }
         }

@@ -1,5 +1,6 @@
 package org.noses.games.homedefense.enemy;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +19,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class GroundEnemy extends Enemy {
+    private final int DAMAGE = 20;
+
     private final float baseSpeed = 1 / 5f;
     private Way way;
     private double progressAlong = 0;
@@ -28,7 +31,7 @@ public class GroundEnemy extends Enemy {
     private int height;
 
     public GroundEnemy(HomeDefenseGame parent, Way way) {
-        super(parent, "mage.png", 64, 64);
+        super(parent, "mage.png", parent.loadSound("normal_hit.mp3"), 64, 64, 10);
         this.way = way;
         progressAlong = 0;
         direction = 1;
@@ -140,6 +143,10 @@ public class GroundEnemy extends Enemy {
         }
     }
 
+    public int getDamage() {
+        return DAMAGE;
+    }
+
     private void crossesIntersection(float delta) {
         if (pathSteps.size() <= currentPathStep) {
             return;
@@ -188,7 +195,8 @@ public class GroundEnemy extends Enemy {
 
                 //animation = TextureRegion.split(avatarAnimationSheet, 64,64);
 
-                parent.killEnemy(this);
+                parent.hitHome(getDamage());
+                kill();
             } else {
                 putOnPathStep(pathSteps.get(currentPathStep));
             }
