@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Timer;
 import lombok.Getter;
 import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
@@ -43,6 +44,9 @@ public class Home extends Animation {
     @Getter
     int y;
 
+    Timer.Task timer;
+
+
     public Home(HomeDefenseGame parent, int x, int y) {
         super(parent, "home.png", 64, 64);
         this.x = x;
@@ -56,6 +60,14 @@ public class Home extends Animation {
         shotSound = parent.loadSound("normal_shot.mp3");
 
         health = 100;
+
+        timer = Timer.schedule(new Timer.Task() {
+                                   @Override
+                                   public void run() {
+                                       clockTick(0.1f);
+                                   }
+                               },
+                0f, 1 / 10.0f);
     }
 
     public void hit(int damage) {
@@ -67,7 +79,6 @@ public class Home extends Animation {
     }
 
     public void clockTick(float delay) {
-        super.clockTick(delay);
         angle = angle + 10;
 
         timeSinceLastFired += delay;

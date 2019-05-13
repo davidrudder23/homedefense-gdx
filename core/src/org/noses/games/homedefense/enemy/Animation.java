@@ -28,13 +28,13 @@ public abstract class Animation {
         timer = Timer.schedule(new Timer.Task() {
                                    @Override
                                    public void run() {
-                                       clockTick(0.1f);
+                                       advanceAnimation(0.1f);
                                    }
                                },
                 0f, 1 / 10.0f);
     }
 
-    protected void clockTick(float delay) {
+    protected void advanceAnimation(float delay) {
         frameNumber++;
         if (frameNumber >= animation[0].length) {
             frameNumber = 0;
