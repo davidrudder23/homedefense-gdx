@@ -2,13 +2,16 @@ package org.noses.games.homedefense.enemy;
 
 import lombok.Builder;
 import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.client.Way;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.pathfinding.PathStep;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class EnemyGroupBuilder {
     HashMap<String, Intersection> intersections;
@@ -52,7 +55,23 @@ public class EnemyGroupBuilder {
         SecureRandom random = new SecureRandom();
         random.setSeed(System.currentTimeMillis());
 
-        Way way = game.getMap().getWays().get(random.nextInt(game.getMap().getWays().size()));
+        // Ensure enemies always start off-screen
+        List<Way> startingWays = new ArrayList<>();
+
+        for (Way way: game.getMap().getWays()) {
+            Node node = way.firstNode();
+
+            if ((node.getX() < 0) ||
+                    (node.getY() < 0) ||
+                    (node.getX() > game.getScreenWidth()) ||
+                    (node.getY() > game.getScreenHeight())
+            ) {
+                startingWays.add(way);
+            }
+
+        }
+
+        Way way = startingWays.get(random.nextInt(startingWays.size()));
 
         EnemyGroup enemyGroup = new EnemyGroup(numEnemies, width, height, delay);
 

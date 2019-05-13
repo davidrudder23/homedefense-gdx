@@ -42,12 +42,12 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         Rectangle test1 = new Rectangle(10, 10, 100, 100);
         Rectangle test2 = new Rectangle(0, 0, 110, 110);
-        System.out.println("This shoudl be true="+test1.doBoundsOverlap(test2));
-        System.out.println("This shoudl be true="+test2.doBoundsOverlap(test1));
+        System.out.println("This shoudl be true=" + test1.doBoundsOverlap(test2));
+        System.out.println("This shoudl be true=" + test2.doBoundsOverlap(test1));
 
         enemyGroups = new ArrayList<>();
 
-        home = new Home(this, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        home = new Home(this, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
         batch = new SpriteBatch();
 
@@ -55,7 +55,21 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         intersections = Intersection.buildIntersectionsFromMap(map);
 
-        createEnemies(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        HashMap<String, Intersection> startingIntersections = new HashMap<>();
+
+        for (String intersectionName : intersections.keySet()) {
+            Node node = intersections.get(intersectionName).getNode();
+
+            if ((node.getX() < 0) ||
+                    (node.getY() < 0) ||
+                    (node.getX() > Gdx.graphics.getWidth()) ||
+                    (node.getY() > Gdx.graphics.getHeight())
+            ) {
+                startingIntersections.put(intersectionName, intersections.get(intersectionName));
+            }
+        }
+
+        createEnemies(intersections, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         setupSound();
 
@@ -109,10 +123,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
         }
     }
 
-    public void createEnemies(int width, int height) {
+    public void createEnemies(HashMap<String, Intersection> startingIntersections, int width, int height) {
 
         EnemyGroup enemyGroup = EnemyGroup.builder()
-                .intersections(intersections)
+                .intersections(startingIntersections)
                 .game(this)
                 .delay(10)
                 .height(height)
@@ -121,7 +135,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .build();
         enemyGroups.add(enemyGroup);
         EnemyGroup enemyGroup2 = EnemyGroup.builder()
-                .intersections(intersections)
+                .intersections(startingIntersections)
                 .game(this)
                 .delay(20)
                 .height(height)
@@ -155,7 +169,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
     public List<Enemy> getEnemies() {
         List<Enemy> enemies = new ArrayList<>();
 
-        for (EnemyGroup enemyGroup: enemyGroups) {
+        for (EnemyGroup enemyGroup : enemyGroups) {
             enemies.addAll(enemyGroup.getEnemies());
         }
 
@@ -164,7 +178,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     public void setupSound() {
         Sound backgroundLoop = loadSound("background.mp3");
-        backgroundLoop.loop();
+        backgroundLoop.loop(0.5f);
     }
 
     public Sound loadSound(String fileName) {
