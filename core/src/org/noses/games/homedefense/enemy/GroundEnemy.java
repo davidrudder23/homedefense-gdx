@@ -21,7 +21,7 @@ import java.util.List;
 public class GroundEnemy extends Enemy {
     private final int DAMAGE = 20;
 
-    private final float baseSpeed = 1 / 5f;
+    private final float baseSpeed = 1 / 2f;
     private Way way;
     private double progressAlong = 0;
     private double direction;

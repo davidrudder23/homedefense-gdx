@@ -34,6 +34,8 @@ public class Home extends Animation {
 
     Sound shotSound;
 
+    Sound hitSound;
+
     @Getter
     @Setter
     int health;
@@ -59,6 +61,8 @@ public class Home extends Animation {
 
         shotSound = parent.loadSound("normal_shot.mp3");
 
+        hitSound = parent.loadSound("home_hit.mp3");
+
         health = 100;
 
         timer = Timer.schedule(new Timer.Task() {
@@ -72,6 +76,7 @@ public class Home extends Animation {
 
     public void hit(int damage) {
         health -= damage;
+        hitSound.play();
     }
 
     public boolean isDead() {
