@@ -126,7 +126,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .intersections(startingIntersections)
                 .delay(10)
                 .numEnemies(10)
-                .enemyBuilder(new GroundEnemy.GroundEnemyBuilder(intersections, this))
+                .enemyBuilder(new GroundEnemy.GroundEnemyBuilder(this, intersections))
                 .build();
         enemyGroups.add(enemyGroup);
 

@@ -121,7 +121,7 @@ public class GroundEnemy extends Enemy {
     public void clockTick(float delta) {
         crossesIntersection(delta);
 
-        float speed = way.getMaxSpeed()/4;
+        float speed = way.getMaxSpeed() / 4;
 
         if (way.getDistance() != 0) {
             double newProgress = direction * baseSpeed * delta * speed * (1.0f / Math.sqrt(way.getDistance()));
@@ -207,20 +207,24 @@ public class GroundEnemy extends Enemy {
         }
     }
 
-    @AllArgsConstructor
     public static class GroundEnemyBuilder implements EnemyBuilder {
         HashMap<String, Intersection> intersections;
         HomeDefenseGame game;
 
-        @Override
-        public Enemy build() {
+        Way way;
+        PathStep pathStep;
+
+        public GroundEnemyBuilder(HomeDefenseGame game, HashMap<String, Intersection> intersections) {
+            this.game = game;
+            this.intersections = intersections;
+
             SecureRandom random = new SecureRandom();
             random.setSeed(System.currentTimeMillis());
 
             // Ensure enemies always start off-screen
             List<Way> startingWays = new ArrayList<>();
 
-            for (Way way: game.getMap().getWays()) {
+            for (Way way : game.getMap().getWays()) {
                 Node node = way.firstNode();
 
                 if ((node.getX() < 0) ||
@@ -233,13 +237,21 @@ public class GroundEnemy extends Enemy {
 
             }
 
-            Way way = startingWays.get(random.nextInt(startingWays.size()));
+            pathStep = null;
 
-            Djikstra djikstra = new Djikstra(intersections);
-            Intersection intersection = djikstra.getIntersectionForNode(intersections, way.firstNode());
-            System.out.println("Intersection=("+intersection.getLatitude()+"x"+intersection.getLongitude());
-            PathStep pathStep = djikstra.getBestPath(intersection, game.getScreenWidth()/2, game.getScreenHeight()/2);
-            System.out.println ("Enemy's path - "+pathStep);
+            while (pathStep == null) {
+                Way way = startingWays.get(random.nextInt(startingWays.size()));
+
+                Djikstra djikstra = new Djikstra(intersections);
+                Intersection intersection = djikstra.getIntersectionForNode(intersections, way.firstNode());
+                //System.out.println("Intersection=(" + intersection.getLatitude() + "x" + intersection.getLongitude());
+                pathStep = djikstra.getBestPath(intersection, game.getScreenWidth() / 2, game.getScreenHeight() / 2);
+                System.out.println("Enemy's path - " + pathStep);
+            }
+        }
+
+        @Override
+        public Enemy build() {
             GroundEnemy enemy = new GroundEnemy(game, way);
             enemy.setPath(pathStep);
 
