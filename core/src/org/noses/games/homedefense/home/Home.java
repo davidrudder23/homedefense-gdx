@@ -24,7 +24,7 @@ public class Home extends Animation {
 
     final double timeBetweenShots = 0.8;
 
-    final int maxOnScreen = 5;
+    final int maxOnScreen = 15;
 
     double angle;
 

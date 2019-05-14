@@ -14,6 +14,8 @@ import lombok.Getter;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
+import org.noses.games.homedefense.enemy.FlyingEnemy;
+import org.noses.games.homedefense.enemy.GroundEnemy;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.geometry.Rectangle;
 import org.noses.games.homedefense.pathfinding.Intersection;
@@ -122,22 +124,20 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         EnemyGroup enemyGroup = EnemyGroup.builder()
                 .intersections(startingIntersections)
-                .game(this)
                 .delay(10)
-                .height(height)
-                .width(width)
                 .numEnemies(10)
+                .enemyBuilder(new GroundEnemy.GroundEnemyBuilder(intersections, this))
                 .build();
         enemyGroups.add(enemyGroup);
+
         EnemyGroup enemyGroup2 = EnemyGroup.builder()
                 .intersections(startingIntersections)
-                .game(this)
-                .delay(20)
-                .height(height)
-                .width(width)
-                .numEnemies(5)
+                .delay(10)
+                .numEnemies(10)
+                .enemyBuilder(new FlyingEnemy.FlyingEnemyBuilder(this))
                 .build();
-        //enemyGroups.add(enemyGroup2);
+
+        enemyGroups.add(enemyGroup2);
     }
 
     public Intersection getIntersectionForNode(Node node) {
