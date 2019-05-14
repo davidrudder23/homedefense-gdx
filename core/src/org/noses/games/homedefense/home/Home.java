@@ -111,8 +111,10 @@ public class Home extends Animation {
                 Point locationB = b.getLocation();
 
                 double homeCalc = (getX() * getX()) + (getY() * getY());
-                double aCalc = (locationA.getX() * locationA.getX()) + (locationA.getY() * locationA.getY()) - homeCalc;
-                double bCalc = (locationB.getX() * locationB.getX()) + (locationB.getY() * locationB.getY()) - homeCalc;
+                double aCalc = (locationA.getX() - getX()) * (locationA.getX() - getX())
+                        + (locationA.getY() - getY()) * (locationA.getY() - getY());
+                double bCalc = (locationB.getX() - getX()) * (locationB.getX() - getX())
+                        + (locationB.getY() - getY()) * (locationB.getY() - getY());
 
                 if (aCalc == bCalc) {
                     return 0;
@@ -126,10 +128,10 @@ public class Home extends Animation {
             }
         });
 
-        Enemy enemy = sortedEnemies.get(0);
+        Enemy closestEnemy = sortedEnemies.get(0);
 
-        double angle = Math.atan2(getY() - enemy.getLocation().getY(),
-                getX() - enemy.getLocation().getX());
+        double angle = Math.atan2(getY() - closestEnemy.getLocation().getY(),
+                getX() - closestEnemy.getLocation().getX());
         angle = 360 - (180 - (angle * (180 / Math.PI)));
 
         return angle;
@@ -150,7 +152,7 @@ public class Home extends Animation {
             return;
         }
 
-        NormalBullet normalBullet = new NormalBullet(parent, shotSound, getX(), getY(), angle, 50);
+        NormalBullet normalBullet = new NormalBullet(parent, shotSound, getX(), getY(), angle, 100);
         normalBullet.shoot();
         bullets.add(normalBullet);
     }
