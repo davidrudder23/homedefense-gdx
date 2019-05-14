@@ -3,13 +3,11 @@ package org.noses.games.homedefense.pathfinding;
 import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.client.Way;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Djikstra {
     private List<Intersection> unvisitedIntersections;
-    private HashMap<String, Intersection> allIntersections;
+    private HashMap<String, Intersection>  allIntersections;
     private HashMap<String, Boolean> seen;
 
     private Intersection destination;
@@ -33,12 +31,31 @@ public class Djikstra {
             intersection.setPathStep(null);
         }
 
+        // Sort by distance to toX and toY, so we can find the closest intersections
+        List<Intersection> sortedIntersections = new ArrayList<>();
+        sortedIntersections.addAll(allIntersections.values());
+
+        Collections.sort(sortedIntersections, new Comparator<Intersection>() {
+            @Override
+            public int compare(Intersection a, Intersection b) {
+                int distanceA = (a.getNode().getX()-toX) * (a.getNode().getX()-toX)+
+                        (a.getNode().getY()-toY) * (a.getNode().getY()-toY);
+                int distanceB = (b.getNode().getX()-toX) * (b.getNode().getX()-toX)+
+                        (b.getNode().getY()-toY) * (b.getNode().getY()-toY);
+                return distanceA-distanceB;
+            }
+        });
+
+        Node finishNode = sortedIntersections.get(0).getNode();
+        System.out.println("Closest is at "+finishNode);
+
+
         long startTime = System.currentTimeMillis();
 
         PathStep pathStep = new PathStep();
         pathStep.setIntersection(from);
 
-        if (from.closeTo(toX, toY)) {
+        if (from.closeTo(finishNode.getX(), finishNode.getY())) {
             return pathStep; // TODO SUCCESS!
         }
         from.pathStep = pathStep;
@@ -47,7 +64,7 @@ public class Djikstra {
 
         while (unvisitedIntersections.size() > 0) {
             from = unvisitedIntersections.get(0);
-            if (from.closeTo(toX, toY)) {
+            if (from.closeTo(finishNode.getX(), finishNode.getY())) {
                 if (destination == null) {
                     destination = from;
                 }

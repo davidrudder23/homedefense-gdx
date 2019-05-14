@@ -31,7 +31,7 @@ public class GroundEnemy extends Enemy {
     private int height;
 
     public GroundEnemy(HomeDefenseGame parent, Way way) {
-        super(parent, "mage.png", parent.loadSound("normal_hit.mp3"), 64, 64, 10);
+        super(parent, "mage.png", parent.loadSound("normal_hit.mp3"), 64, 64, 2);
         this.way = way;
         progressAlong = 0;
         direction = 1;

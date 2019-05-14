@@ -40,11 +40,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
     @Override
     public void create() {
 
-        Rectangle test1 = new Rectangle(10, 10, 100, 100);
-        Rectangle test2 = new Rectangle(0, 0, 110, 110);
-        System.out.println("This shoudl be true=" + test1.doBoundsOverlap(test2));
-        System.out.println("This shoudl be true=" + test2.doBoundsOverlap(test1));
-
         enemyGroups = new ArrayList<>();
 
         home = new Home(this, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
@@ -96,10 +91,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
             Account account = mapClient.register("drig1",
                     "drig1@noses.org",
                     "test1",
-                    denverLatitude,
-                    denverLongitude);
-            //        austinLatitude,
-            //        austinLongitude);
+                    //denverLatitude,
+                    //denverLongitude);
+                    austinLatitude,
+                    austinLongitude);
 
             map = mapClient.getMap(account, width, height);
             //System.out.println(map);
@@ -256,8 +251,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
         double xRatio = width / originalWidth;
         double yRatio = height / originalHeight;
 
-        System.out.println("xRatio=" + xRatio);
-        System.out.println("yRatio=" + yRatio);
         for (Way way : map.getWays()) {
             for (Node node : way.getNodes()) {
                 node.setX((int) ((double) node.getX() * xRatio));

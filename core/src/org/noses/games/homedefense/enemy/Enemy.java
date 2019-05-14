@@ -2,17 +2,19 @@ package org.noses.games.homedefense.enemy;
 
 import com.badlogic.gdx.audio.Sound;
 import lombok.Data;
+import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
 
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.geometry.Rectangle;
 
-@Data
 public abstract class Enemy extends Animation implements ClockTickHandler {
 
+    @Getter
     private int health;
 
+    @Getter
     private boolean killed = false;
 
     Sound hitSound;
@@ -25,7 +27,7 @@ public abstract class Enemy extends Animation implements ClockTickHandler {
 
     public void hit(int damage) {
         health -= damage;
-        if (health<0) {
+        if (health<=0) {
             kill();
         }
 

@@ -107,7 +107,7 @@ public abstract class Bullet extends Animation {
         for (Enemy enemy : parent.getEnemies()) {
             //System.out.println ("Bullet "+boundingBox+" vs Enemy "+enemy.getBoundingBox()+"="+enemy.getBoundingBox().doBoundsOverlap(boundingBox));
             if (enemy.getBoundingBox().doBoundsOverlap(boundingBox)) {
-                System.out.println("Bullet hit " + enemy.getLocation());
+                System.out.println("Bullet hit " + enemy.getLocation()+" with "+enemy.getHealth()+" health.  Hitting with "+getDamage());
                 enemy.hit(getDamage());
                 this.kill();
             }

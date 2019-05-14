@@ -90,10 +90,10 @@ public class Intersection {
     public boolean closeTo(int x, int y) {
         Node node = getNode();
         //System.out.println ("Comparing closeTo "+x+" vs "+node.getX()+", "+y+" vs "+node.getY());
-        if (Math.abs(x - node.getX()) > 10) {
+        if (Math.abs(x - node.getX()) > 5) { // todo - this fails to get a good point for home.  we should choose the closest, not just find one within an arbitrary distance
             return false;
         }
-        if (Math.abs(y - node.getY()) > 10) {
+        if (Math.abs(y - node.getY()) > 5) {
             return false;
         }
         return true;
@@ -109,4 +109,8 @@ public class Intersection {
                 (otherIntersection.getLongitude() == getLongitude()));
     }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

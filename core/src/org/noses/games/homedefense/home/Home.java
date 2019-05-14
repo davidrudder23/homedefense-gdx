@@ -132,14 +132,10 @@ public class Home extends Animation {
                 getX() - enemy.getLocation().getX());
         angle = 360 - (180 - (angle * (180 / Math.PI)));
 
-        //System.out.println("Aiming at " + enemy.getLocation()+" angle="+angle);
-
         return angle;
     }
 
     private void shoot() {
-        //System.out.println ("Shooting");
-
         int numBulletsOnScreen = 0;
         for (Bullet bullet : bullets) {
             if (!bullet.isDead()) {
@@ -167,7 +163,6 @@ public class Home extends Animation {
 
         homeSprite.draw(batch);
 
-        //System.out.println ("Rendering "+bullets.size()+" bullets");
         for (Bullet bullet : bullets) {
             if (bullet.isDead()) {
                 continue;
@@ -186,7 +181,6 @@ public class Home extends Animation {
 
         Sprite sprite = new Sprite(frame);
 
-        //System.out.println("Rotating " + angle);
         sprite.setRotation((float) angle);
 
         return sprite;
