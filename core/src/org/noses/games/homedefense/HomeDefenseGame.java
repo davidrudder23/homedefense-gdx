@@ -106,7 +106,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
         for (Way way : map.getWays()) {
             for (Node node : way.getNodes()) {
 
-                int length = way.firstNode().distanceFrom(way.lastNode());
+                float length = way.firstNode().distanceFrom(way.lastNode());
 
                 if (length == 0) {
                     node.setProgress(0);
@@ -219,7 +219,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         batch.begin();
 
-        /*for (EnemyGroup enemyGroup : enemyGroups) {
+        for (EnemyGroup enemyGroup : enemyGroups) {
             List<Enemy> enemies = enemyGroup.getEnemies();
             for (Enemy enemy : enemies) {
                 Point location = enemy.getLocation();
@@ -237,7 +237,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 sprite.draw(batch);
 
             }
-        }*/
+        }
 
         home.render(batch);
 
@@ -246,14 +246,14 @@ public class HomeDefenseGame extends ApplicationAdapter {
     }
 
     int convertLongToY(float longitude) {
-        float longPerPixel = (map.getEast() - map.getWest())/(float)Gdx.graphics.getWidth();
-        return (int)((longitude - map.getWest())/longPerPixel);
+        float longPerPixel = (map.getWest() - map.getEast())/(float)Gdx.graphics.getWidth();
+        return (int)((longitude - map.getEast())/longPerPixel);
     }
 
     int convertLatToX(float latitude) {
-        float latPerPixel = (map.getNorth() - map.getSouth())/Gdx.graphics.getHeight();
+        float latPerPixel = (map.getSouth() - map.getNorth())/Gdx.graphics.getHeight();
 
-        return (int)((latitude - map.getSouth())/latPerPixel);
+        return (int)((latitude - map.getNorth())/latPerPixel);
     }
 
     @Override

@@ -23,7 +23,7 @@ import java.util.List;
 public class GroundEnemy extends Enemy {
     private final int DAMAGE = 20;
 
-    private final float baseSpeed = 1 / 2f;
+    private final float baseSpeed = 1 / 1000f;
     private Way way;
     private double progressAlong = 0;
     private double direction;
@@ -110,9 +110,13 @@ public class GroundEnemy extends Enemy {
         Point firstPoint = way.firstPoint();
         System.out.println("First Point=" + firstPoint);
         Point lastPoint = way.lastPoint();
+        System.out.println("Last Point=" + lastPoint);
+        System.out.println("Progress along=" + progressAlong);
 
         double currentLatitude = ((lastPoint.getLatitude() - firstPoint.getLatitude()) * progressAlong) + firstPoint.getLatitude();
         double currentLongitude = ((lastPoint.getLongitude() - firstPoint.getLongitude()) * progressAlong) + firstPoint.getLongitude();
+
+        System.out.println("Current=" + currentLatitude + "x" + currentLongitude);
 
         return new Point((float) currentLatitude, (float) (parent.getMap().getNorth() - currentLongitude));
     }
@@ -120,21 +124,23 @@ public class GroundEnemy extends Enemy {
     public void clockTick(float delta) {
         crossesIntersection(delta);
 
-        float speed = way.getMaxSpeed() / 4;
+        float speed = (float)way.getMaxSpeed() / 4000.0f;
+
+        double newProgress = direction * baseSpeed * delta * speed * (1.0f / Math.sqrt(way.getDistance()));
+        System.out.println("  "
+                + " way distance=" + way.getDistance()
+                + " first=" + way.firstPoint()
+                + " last=" + way.lastPoint()
+                + " baseSpeed=" + baseSpeed
+                + " delta=" + delta
+                + " speed=" + speed
+                + " inv distance=" + (1f / (double) way.getDistance())
+                + " newProgress="+newProgress
+                + " progressAlong=" + (progressAlong + newProgress));
 
         if (way.getDistance() != 0) {
-            double newProgress = direction * baseSpeed * delta * speed * (1.0f / Math.sqrt(way.getDistance()));
-            /*System.out.printf ("total=%f ", newProgress);
-            System.out.println("  "
-                    +" way distance="+way.getDistance()
-                    +" first="+way.firstPoint()
-                    +" last="+way.lastPoint()
-                    +" baseSpeed="+baseSpeed
-                    +" delta="+delta
-                    +" speed="+speed
-                    +" inv distance="+(1f/(double)way.getDistance())
-                    +" progressAlong="+(progressAlong+newProgress));
-                    */
+            //double newProgress = direction * baseSpeed * delta * speed * (1.0f / Math.sqrt(way.getDistance()));
+            System.out.printf("total=%f ", newProgress);
             progressAlong += newProgress;
         }
         if (progressAlong < 0) {
