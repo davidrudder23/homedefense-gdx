@@ -93,10 +93,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
             Account account = mapClient.register("drig1",
                     "drig1@noses.org",
                     "test1",
-                    //denverLatitude,
-                    //denverLongitude);
-                    austinLatitude,
-                    austinLongitude);
+                    denverLatitude,
+                    denverLongitude);
+                    //austinLatitude,
+                    //austinLongitude);
 
             map = mapClient.getMap(account, width, height);
             //System.out.println(map);
