@@ -206,9 +206,9 @@ public class HomeDefenseGame extends ApplicationAdapter {
             for (Node node : way.getNodes()) {
                 if (prevNode != null) {
                     //System.out.println("Writing line starting at "+prevNode.getLat()+"x"+prevNode.getLon()+" - "+
-                    //              convertLatToX(prevNode.getLat())+"x"+convertLongToY(prevNode.getLon()));
-                    sr.line(convertLatToX(prevNode.getLat()), convertLongToY(prevNode.getLon()),
-                            convertLatToX(node.getLat()), convertLongToY(node.getLon()));
+                    //              convertLatToY(prevNode.getLat())+"x"+convertLongToX(prevNode.getLon()));
+                    sr.line(convertLongToX(prevNode.getLon()), convertLatToY(prevNode.getLat()),
+                            convertLongToX(node.getLon()), convertLatToY(node.getLat()));
                 }
                 prevNode = node;
             }
@@ -231,9 +231,9 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
                 Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
 
-                System.out.println ("Rendering enemy at "+enemy.getLocation()+" to "+convertLatToX(latitude)+"x"+convertLongToY(longitude));
-                sprite.setCenterX(convertLatToX(latitude));
-                sprite.setCenterY(convertLongToY(longitude));
+                System.out.println ("Rendering enemy at "+enemy.getLocation()+" to "+ convertLatToY(latitude)+"x"+ convertLongToX(longitude));
+                sprite.setCenterX(convertLatToY(latitude));
+                sprite.setCenterY(convertLongToX(longitude));
                 sprite.draw(batch);
 
             }
@@ -245,15 +245,15 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     }
 
-    int convertLongToY(float longitude) {
-        float longPerPixel = (map.getWest() - map.getEast())/(float)Gdx.graphics.getWidth();
-        return (int)((longitude - map.getEast())/longPerPixel);
+    int convertLongToX(float longitude) {
+        float longPerPixel = (map.getEast() - map.getWest())/(float)Gdx.graphics.getWidth();
+        return (int)((longitude - map.getWest())/longPerPixel);
     }
 
-    int convertLatToX(float latitude) {
-        float latPerPixel = (map.getSouth() - map.getNorth())/Gdx.graphics.getHeight();
+    int convertLatToY(float latitude) {
+        float latPerPixel = (map.getNorth() - map.getSouth())/Gdx.graphics.getHeight();
 
-        return (int)((latitude - map.getNorth())/latPerPixel);
+        return (int)((latitude - map.getSouth())/latPerPixel);
     }
 
     @Override
