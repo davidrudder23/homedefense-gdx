@@ -13,11 +13,9 @@ import lombok.Getter;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
-import org.noses.games.homedefense.enemy.flying.FlyingEnemy;
 import org.noses.games.homedefense.enemy.GroundEnemy;
 import org.noses.games.homedefense.enemy.flying.LeftToRightFlyingEnemyBuilder;
 import org.noses.games.homedefense.geometry.Point;
-import org.noses.games.homedefense.geometry.Rectangle;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.home.Home;
 
@@ -57,10 +55,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
         for (String intersectionName : intersections.keySet()) {
             Node node = intersections.get(intersectionName).getNode();
 
-            if ((node.getX() < 0) ||
-                    (node.getY() < 0) ||
-                    (node.getX() > Gdx.graphics.getWidth()) ||
-                    (node.getY() > Gdx.graphics.getHeight())
+            if ((node.getLat() < getMap().getSouth()) ||
+                    (node.getLon() < getMap().getWest()) ||
+                    (node.getLat() > getMap().getNorth()) ||
+                    (node.getLon() > getMap().getWest())
             ) {
                 startingIntersections.put(intersectionName, intersections.get(intersectionName));
             }
@@ -93,13 +91,13 @@ public class HomeDefenseGame extends ApplicationAdapter {
             Account account = mapClient.register("drig1",
                     "drig1@noses.org",
                     "test1",
-                    //denverLatitude,
-                    //denverLongitude);
-                    austinLatitude,
-                    austinLongitude);
+                    denverLatitude,
+                    denverLongitude);
+                    //austinLatitude,
+                    //austinLongitude);
 
             map = mapClient.getMap(account, width, height);
-            //System.out.println(map);
+            System.out.println(map);
         } catch (IOException ioExc) {
             ioExc.printStackTrace();
             ;
@@ -122,8 +120,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     public void createEnemies(HashMap<String, Intersection> startingIntersections, int width, int height) {
 
-        Rectangle screenCoordinates = new Rectangle(0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
         EnemyGroup enemyGroup = EnemyGroup.builder()
                 .intersections(startingIntersections)
                 .delay(10)
@@ -136,7 +132,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .intersections(startingIntersections)
                 .delay(10)
                 .numEnemies(10)
-                .enemyBuilder(new LeftToRightFlyingEnemyBuilder(this, screenCoordinates))
+                .enemyBuilder(new LeftToRightFlyingEnemyBuilder(this))
                 .build();
 
         enemyGroups.add(enemyGroup2);
@@ -209,8 +205,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
             Node prevNode = null;
             for (Node node : way.getNodes()) {
                 if (prevNode != null) {
-                    sr.line(prevNode.getX(), Gdx.graphics.getHeight() - prevNode.getY(),
-                            node.getX(), Gdx.graphics.getHeight() - node.getY());
+                    //System.out.println("Writing line starting at "+prevNode.getLat()+"x"+prevNode.getLon()+" - "+
+                    //              convertLatToX(prevNode.getLat())+"x"+convertLongToY(prevNode.getLon()));
+                    sr.line(convertLatToX(prevNode.getLat()), convertLongToY(prevNode.getLon()),
+                            convertLatToX(node.getLat()), convertLongToY(node.getLon()));
                 }
                 prevNode = node;
             }
@@ -221,23 +219,25 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         batch.begin();
 
-        for (EnemyGroup enemyGroup : enemyGroups) {
+        /*for (EnemyGroup enemyGroup : enemyGroups) {
             List<Enemy> enemies = enemyGroup.getEnemies();
             for (Enemy enemy : enemies) {
                 Point location = enemy.getLocation();
 
-                int x = location.getX();
-                int y = location.getY();
+                float latitude = location.getLatitude();
+                float longitude = location.getLongitude();
 
                 //batch.draw(enemy.getFrameTextureRegion(), x, y);
 
                 Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
-                sprite.setCenterX(x);
-                sprite.setCenterY(y);
+
+                System.out.println ("Rendering enemy at "+enemy.getLocation()+" to "+convertLatToX(latitude)+"x"+convertLongToY(longitude));
+                sprite.setCenterX(convertLatToX(latitude));
+                sprite.setCenterY(convertLongToY(longitude));
                 sprite.draw(batch);
 
             }
-        }
+        }*/
 
         home.render(batch);
 
@@ -245,9 +245,20 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     }
 
+    int convertLongToY(float longitude) {
+        float longPerPixel = (map.getEast() - map.getWest())/(float)Gdx.graphics.getWidth();
+        return (int)((longitude - map.getWest())/longPerPixel);
+    }
+
+    int convertLatToX(float latitude) {
+        float latPerPixel = (map.getNorth() - map.getSouth())/Gdx.graphics.getHeight();
+
+        return (int)((latitude - map.getSouth())/latPerPixel);
+    }
+
     @Override
     public void resize(int width, int height) {
-        int originalWidth = Gdx.graphics.getWidth();
+        /*int originalWidth = Gdx.graphics.getWidth();
         int originalHeight = Gdx.graphics.getHeight();
 
         double xRatio = width / originalWidth;
@@ -258,7 +269,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 node.setX((int) ((double) node.getX() * xRatio));
                 node.setY((int) ((double) node.getY() * yRatio));
             }
-        }
+        }*/
     }
 
     @Override

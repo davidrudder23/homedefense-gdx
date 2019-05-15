@@ -111,10 +111,10 @@ public class Home extends Animation {
                 Point locationB = b.getLocation();
 
                 double homeCalc = (getX() * getX()) + (getY() * getY());
-                double aCalc = (locationA.getX() - getX()) * (locationA.getX() - getX())
-                        + (locationA.getY() - getY()) * (locationA.getY() - getY());
-                double bCalc = (locationB.getX() - getX()) * (locationB.getX() - getX())
-                        + (locationB.getY() - getY()) * (locationB.getY() - getY());
+                double aCalc = (locationA.getLatitude() - getX()) * (locationA.getLatitude() - getX())
+                        + (locationA.getLongitude() - getY()) * (locationA.getLongitude() - getY());
+                double bCalc = (locationB.getLatitude() - getX()) * (locationB.getLatitude() - getX())
+                        + (locationB.getLongitude() - getY()) * (locationB.getLongitude() - getY());
 
                 if (aCalc == bCalc) {
                     return 0;
@@ -130,8 +130,8 @@ public class Home extends Animation {
 
         Enemy closestEnemy = sortedEnemies.get(0);
 
-        double angle = Math.atan2(getY() - closestEnemy.getLocation().getY(),
-                getX() - closestEnemy.getLocation().getX());
+        double angle = Math.atan2(getY() - closestEnemy.getLocation().getLongitude(),
+                getX() - closestEnemy.getLocation().getLatitude());
         angle = 360 - (180 - (angle * (180 / Math.PI)));
 
         return angle;

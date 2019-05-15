@@ -6,11 +6,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class Point {
-    int x;
-    int y;
+    float latitude;
+    float longitude;
 
     @Override
     public String toString() {
-        return "Point ("+x+"x"+y+")";
+        return "Point ("+ latitude +"x"+ longitude +")";
     }
 }

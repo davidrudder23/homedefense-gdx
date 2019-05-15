@@ -26,7 +26,7 @@ public class Djikstra {
         getBestPath(fromIntersection, toX, toY);
     }
 
-    public PathStep getBestPath(Intersection from, int toX, int toY) {
+    public PathStep getBestPath(Intersection from, float toX, float toY) {
         for (Intersection intersection: allIntersections.values()) {
             intersection.setPathStep(null);
         }
@@ -38,11 +38,18 @@ public class Djikstra {
         Collections.sort(sortedIntersections, new Comparator<Intersection>() {
             @Override
             public int compare(Intersection a, Intersection b) {
-                int distanceA = (a.getNode().getX()-toX) * (a.getNode().getX()-toX)+
-                        (a.getNode().getY()-toY) * (a.getNode().getY()-toY);
-                int distanceB = (b.getNode().getX()-toX) * (b.getNode().getX()-toX)+
-                        (b.getNode().getY()-toY) * (b.getNode().getY()-toY);
-                return distanceA-distanceB;
+                float distanceA = (a.getNode().getLat()-toX) * (a.getNode().getLat()-toX)+
+                        (a.getNode().getLon()-toY) * (a.getNode().getLon()-toY);
+                float distanceB = (b.getNode().getLat()-toX) * (b.getNode().getLat()-toX)+
+                        (b.getNode().getLon()-toY) * (b.getNode().getLon()-toY);
+
+                if (distanceA>distanceB) {
+                    return 1;
+                } else if (distanceB > distanceA) {
+                    return -1;
+                } else {
+                    return 0;
+                }
             }
         });
 
@@ -55,7 +62,7 @@ public class Djikstra {
         PathStep pathStep = new PathStep();
         pathStep.setIntersection(from);
 
-        if (from.closeTo(finishNode.getX(), finishNode.getY())) {
+        if (from.closeTo(finishNode.getLat(), finishNode.getLon())) {
             return pathStep; // TODO SUCCESS!
         }
         from.pathStep = pathStep;
@@ -64,7 +71,7 @@ public class Djikstra {
 
         while (unvisitedIntersections.size() > 0) {
             from = unvisitedIntersections.get(0);
-            if (from.closeTo(finishNode.getX(), finishNode.getY())) {
+            if (from.closeTo(finishNode.getLat(), finishNode.getLon())) {
                 if (destination == null) {
                     destination = from;
                 }

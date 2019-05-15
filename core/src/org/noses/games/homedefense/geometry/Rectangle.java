@@ -9,7 +9,7 @@ public class Rectangle {
     Point upperLeft;
     Point lowerRight;
 
-    public Rectangle(int left, int top, int right, int bottom) {
+    public Rectangle(float left, float top, float right, float bottom) {
         upperLeft = new Point(left, top);
         lowerRight = new Point(right, bottom);
     }
@@ -20,10 +20,10 @@ public class Rectangle {
     }
 
     public boolean isInBoundingBox(Point point) {
-        if ((point.getX() >= upperLeft.getX()) &&
-                (point.getY() >= upperLeft.getY()) &&
-                (point.getX() <= lowerRight.getX()) &&
-                (point.getY() <= lowerRight.getY())) {
+        if ((point.getLatitude() >= upperLeft.getLatitude()) &&
+                (point.getLongitude() >= upperLeft.getLongitude()) &&
+                (point.getLatitude() <= lowerRight.getLatitude()) &&
+                (point.getLongitude() <= lowerRight.getLongitude())) {
             return true;
         }
         return false;

@@ -1,20 +1,17 @@
 package org.noses.games.homedefense.enemy.flying;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.enemy.Enemy;
-import org.noses.games.homedefense.enemy.EnemyBuilder;
 import org.noses.games.homedefense.geometry.Point;
-import org.noses.games.homedefense.geometry.Rectangle;
 
 public class FlyingEnemy extends Enemy {
     private final int DAMAGE = 20;
 
     private final float baseSpeed = 1 / 21f;
 
-    int x;
-    int y;
+    float x;
+    float y;
 
     @Getter
     private int width;
@@ -31,8 +28,8 @@ public class FlyingEnemy extends Enemy {
         this.startingPoint = startingPoint;
         this.endingPoint = endingPoint;
 
-        x = startingPoint.getX();
-        y = startingPoint.getY();
+        x = startingPoint.getLatitude();
+        y = startingPoint.getLongitude();
     }
 
     @Override
@@ -45,7 +42,7 @@ public class FlyingEnemy extends Enemy {
         x++;
         y++;
 
-        if ((x > 640) || (y > 480)) {
+        if ((x > parent.getMap().getEast()) || (y > parent.getMap().getNorth())) {
             kill();
         }
     }

@@ -12,11 +12,10 @@ import org.noses.games.homedefense.geometry.Rectangle;
 public class LeftToRightFlyingEnemyBuilder implements EnemyBuilder {
     HomeDefenseGame game;
 
-    Rectangle screenCoordinates;
-
     @Override
     public Enemy build() {
-        return new FlyingEnemy(game, new Point(0,0), new Point(640,40));
+        return new FlyingEnemy(game, new Point(game.getMap().getWest(),game.getMap().getNorth()),
+                new Point(game.getMap().getEast(),game.getMap().getSouth()));
     }
 
 }

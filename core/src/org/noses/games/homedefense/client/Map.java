@@ -12,6 +12,11 @@ public class Map {
     int height;
     List<Nest> nests;
 
+    float north;
+    float south;
+    float east;
+    float west;
+
     public Map() {
         ways = new ArrayList<>();
     }

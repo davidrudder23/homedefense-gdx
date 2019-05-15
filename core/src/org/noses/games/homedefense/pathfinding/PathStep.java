@@ -25,7 +25,7 @@ public class PathStep {
         }
 
         if (intersection != null) {
-            string.append("intersection=" + intersection.getNode().getX() + "x" + intersection.getNode().getY() + ", ");
+            string.append("intersection=" + intersection.getNode().getLat() + "x" + intersection.getNode().getLon() + ", ");
         }
         string.append("from " + getStartingNode() + " to " + getEndingNode() + ", ");
         string.append("weight=" + weight);

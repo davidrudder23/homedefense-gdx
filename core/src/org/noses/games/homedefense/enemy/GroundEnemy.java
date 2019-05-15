@@ -1,8 +1,6 @@
 package org.noses.games.homedefense.enemy;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -87,20 +85,20 @@ public class GroundEnemy extends Enemy {
         direction = ((newPathStep.getEndingNode().getProgress() - newPathStep.getStartingNode().getProgress()) > 0) ? 1 : -1;
         if (currentPathStep >= 2) {
             /*System.out.println("Moving from " + pathSteps.get(currentPathStep - 1).getConnectingWay().getName() +
-                    pathSteps.get(currentPathStep - 1).getEndingNode().getX()+"x"+
-                    pathSteps.get(currentPathStep - 1).getEndingNode().getY()+" "+
+                    pathSteps.get(currentPathStep - 1).getEndingNode().getLatitude()+"x"+
+                    pathSteps.get(currentPathStep - 1).getEndingNode().getLongitude()+" "+
                     " to " + pathSteps.get(currentPathStep).getConnectingWay().getName() +
-                    pathSteps.get(currentPathStep).getStartingNode().getX()+"x"+
-                    pathSteps.get(currentPathStep).getStartingNode().getY());
+                    pathSteps.get(currentPathStep).getStartingNode().getLatitude()+"x"+
+                    pathSteps.get(currentPathStep).getStartingNode().getLongitude());
                     */
             /*System.out.println("Moving from " + getWay().getName() + " " +
-                    getLocation().getX() + "x" +
-                    getLocation().getY() + " " +
+                    getLocation().getLatitude() + "x" +
+                    getLocation().getLongitude() + " " +
                     " to " + newPathStep.getConnectingWay().getName() + " " +
-                    newPathStep.getStartingNode().getX() + "x" +
-                    newPathStep.getStartingNode().getY() + " but actually " +
-                    getLocation().getX() + "x" +
-                    getLocation().getY() +  " direction="+direction+" progress along="+progressAlong);*/
+                    newPathStep.getStartingNode().getLatitude() + "x" +
+                    newPathStep.getStartingNode().getLongitude() + " but actually " +
+                    getLocation().getLatitude() + "x" +
+                    getLocation().getLongitude() +  " direction="+direction+" progress along="+progressAlong);*/
         }
     }
 
@@ -110,12 +108,13 @@ public class GroundEnemy extends Enemy {
         }
 
         Point firstPoint = way.firstPoint();
+        System.out.println("First Point=" + firstPoint);
         Point lastPoint = way.lastPoint();
 
-        double currentX = ((lastPoint.getX() - firstPoint.getX()) * progressAlong) + firstPoint.getX();
-        double currentY = ((lastPoint.getY() - firstPoint.getY()) * progressAlong) + firstPoint.getY();
+        double currentLatitude = ((lastPoint.getLatitude() - firstPoint.getLatitude()) * progressAlong) + firstPoint.getLatitude();
+        double currentLongitude = ((lastPoint.getLongitude() - firstPoint.getLongitude()) * progressAlong) + firstPoint.getLongitude();
 
-        return new Point((int) currentX, 480 - (int) currentY);
+        return new Point((float) currentLatitude, (float) (parent.getMap().getNorth() - currentLongitude));
     }
 
     public void clockTick(float delta) {
@@ -227,10 +226,10 @@ public class GroundEnemy extends Enemy {
             for (Way way : game.getMap().getWays()) {
                 Node node = way.firstNode();
 
-                if ((node.getX() < 0) ||
-                        (node.getY() < 0) ||
-                        (node.getX() > game.getScreenWidth()) ||
-                        (node.getY() > game.getScreenHeight())
+                if ((node.getLat() < game.getMap().getSouth()) ||
+                        (node.getLon() < game.getMap().getWest()) ||
+                        (node.getLat() > game.getMap().getNorth()) ||
+                        (node.getLon() > game.getMap().getEast())
                 ) {
                     startingWays.add(way);
                 }
@@ -245,7 +244,9 @@ public class GroundEnemy extends Enemy {
                 Djikstra djikstra = new Djikstra(intersections);
                 Intersection intersection = djikstra.getIntersectionForNode(intersections, way.firstNode());
                 //System.out.println("Intersection=(" + intersection.getLatitude() + "x" + intersection.getLongitude());
-                pathStep = djikstra.getBestPath(intersection, game.getScreenWidth() / 2, game.getScreenHeight() / 2);
+                pathStep = djikstra.getBestPath(intersection,
+                        (game.getMap().getEast() - game.getMap().getWest()) / 2,
+                        (game.getMap().getNorth() - game.getMap().getSouth()) / 2);
                 System.out.println("Enemy's path - " + pathStep);
             }
         }

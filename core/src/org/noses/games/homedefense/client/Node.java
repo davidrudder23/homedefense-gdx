@@ -1,8 +1,6 @@
 package org.noses.games.homedefense.client;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
@@ -11,13 +9,18 @@ public class Node {
     int x;
     int y;
 
+    @Getter
     float lat;
+
+    @Getter
     float lon;
 
     long id;
 
     int order;
 
+    @Getter
+    @Setter
     double progress;
 
     @Override
@@ -26,7 +29,7 @@ public class Node {
             return false;
         }
 
-        Node otherNode = (Node)other;
+        Node otherNode = (Node) other;
 
         if (otherNode.getLon() != getLon()) {
             return false;
@@ -40,16 +43,16 @@ public class Node {
     }
 
     public int distanceFrom(Node other) {
-        int lengthX = other.getX() - getX();
-        int lengthY = other.getY() - getY();
-        int totalLength = (int)(Math.sqrt((lengthX*lengthX)+(lengthY*lengthY)));
+        float lengthLat = other.getLat() - getLat();
+        float lengthLon = other.getLon() - getLon();
+        int totalLength = (int) (Math.sqrt((lengthLat * lengthLat) + (lengthLon * lengthLon)));
 
         return Math.abs(totalLength);
     }
 
     @Override
     public String toString() {
-        return "coords=("+getX()+","+getY()+") latlong=("+getLat()+","+getLon()+")";
+        return "latlong=(" + getLat() + "," + getLon() + ")";
     }
 
     @Override
