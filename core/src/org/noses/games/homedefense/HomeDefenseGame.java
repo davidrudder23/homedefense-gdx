@@ -1,7 +1,6 @@
 package org.noses.games.homedefense;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -14,13 +13,13 @@ import lombok.Getter;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
-import org.noses.games.homedefense.enemy.FlyingEnemy;
+import org.noses.games.homedefense.enemy.flying.FlyingEnemy;
 import org.noses.games.homedefense.enemy.GroundEnemy;
+import org.noses.games.homedefense.enemy.flying.LeftToRightFlyingEnemyBuilder;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.geometry.Rectangle;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.home.Home;
-import org.noses.games.homedefense.player.Shot;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +36,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     HashMap<String, Intersection> intersections;
 
+    @Getter
     Home home;
 
     @Override
@@ -122,6 +122,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     public void createEnemies(HashMap<String, Intersection> startingIntersections, int width, int height) {
 
+        Rectangle screenCoordinates = new Rectangle(0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
         EnemyGroup enemyGroup = EnemyGroup.builder()
                 .intersections(startingIntersections)
                 .delay(10)
@@ -134,7 +136,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .intersections(startingIntersections)
                 .delay(10)
                 .numEnemies(10)
-                .enemyBuilder(new FlyingEnemy.FlyingEnemyBuilder(this))
+                .enemyBuilder(new LeftToRightFlyingEnemyBuilder(this, screenCoordinates))
                 .build();
 
         enemyGroups.add(enemyGroup2);
