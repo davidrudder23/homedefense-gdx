@@ -9,7 +9,7 @@ public class Rectangle {
     Point upperLeft;
     Point lowerRight;
 
-    public Rectangle(float left, float top, float right, float bottom) {
+    public Rectangle(double left, double top, double right, double bottom) {
         upperLeft = new Point(left, top);
         lowerRight = new Point(right, bottom);
     }

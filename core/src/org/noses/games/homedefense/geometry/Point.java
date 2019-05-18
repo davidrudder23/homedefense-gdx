@@ -6,8 +6,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class Point {
-    float latitude;
-    float longitude;
+    double latitude;
+    double longitude;
 
     @Override
     public String toString() {

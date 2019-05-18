@@ -10,8 +10,8 @@ public class FlyingEnemy extends Enemy {
 
     private final float baseSpeed = 1 / 21f;
 
-    float x;
-    float y;
+    double x;
+    double y;
 
     @Getter
     private int width;

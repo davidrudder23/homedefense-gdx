@@ -42,11 +42,13 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         enemyGroups = new ArrayList<>();
 
-        home = new Home(this, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-
         batch = new SpriteBatch();
 
         initializeMap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        home = new Home(this,
+                ((map.getNorth()-map.getSouth()) / 2)+map.getSouth(),
+                ((map.getEast()-map.getWest())/2)+map.getWest());
 
         intersections = Intersection.buildIntersectionsFromMap(map);
 
@@ -224,8 +226,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
             for (Enemy enemy : enemies) {
                 Point location = enemy.getLocation();
 
-                float latitude = location.getLatitude();
-                float longitude = location.getLongitude();
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
 
                 //batch.draw(enemy.getFrameTextureRegion(), x, y);
 
@@ -244,12 +246,12 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     }
 
-    int convertLongToX(float longitude) {
+    public int convertLongToX(double longitude) {
         float longPerPixel = (map.getEast() - map.getWest())/(float)Gdx.graphics.getWidth();
         return (int)((longitude - map.getWest())/longPerPixel);
     }
 
-    int convertLatToY(float latitude) {
+    public int convertLatToY(double latitude) {
         float latPerPixel = (map.getNorth() - map.getSouth())/Gdx.graphics.getHeight();
 
         return (int)((latitude - map.getSouth())/latPerPixel);
@@ -269,8 +271,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         for (Way way : map.getWays()) {
             for (Node node : way.getNodes()) {
-                node.setX((int) ((double) node.getX() * xRatio));
-                node.setY((int) ((double) node.getY() * yRatio));
+                node.setX((int) ((double) node.getLatitude() * xRatio));
+                node.setY((int) ((double) node.getLongitude() * yRatio));
             }
         }*/
     }
