@@ -112,7 +112,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                     node.setProgress(0);
                 } else {
                     float delta = way.firstNode().distanceFrom(node);
-                    node.setProgress(delta / length);
+                    node.setProgress(delta);
                 }
             }
         }
@@ -123,7 +123,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
         EnemyGroup enemyGroup = EnemyGroup.builder()
                 .intersections(startingIntersections)
                 .delay(10)
-                .numEnemies(10)
+                .numEnemies(1)
                 .enemyBuilder(new GroundEnemy.GroundEnemyBuilder(this, intersections))
                 .build();
         enemyGroups.add(enemyGroup);
@@ -135,7 +135,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .enemyBuilder(new LeftToRightFlyingEnemyBuilder(this))
                 .build();
 
-        enemyGroups.add(enemyGroup2);
+        //enemyGroups.add(enemyGroup2);
     }
 
     public Intersection getIntersectionForNode(Node node) {
@@ -232,8 +232,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
 
                 System.out.println ("Rendering enemy at "+enemy.getLocation()+" to "+ convertLatToY(latitude)+"x"+ convertLongToX(longitude));
-                sprite.setCenterX(convertLatToY(latitude));
-                sprite.setCenterY(convertLongToX(longitude));
+                sprite.setCenterY(convertLatToY(latitude));
+                sprite.setCenterX(convertLongToX(longitude));
                 sprite.draw(batch);
 
             }
@@ -254,6 +254,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
         float latPerPixel = (map.getNorth() - map.getSouth())/Gdx.graphics.getHeight();
 
         return (int)((latitude - map.getSouth())/latPerPixel);
+    }
+
+    public String printPointInXY(Point point) {
+        return (convertLongToX(point.getLongitude())+"x"+convertLatToY(point.getLatitude()));
     }
 
     @Override

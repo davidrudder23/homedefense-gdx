@@ -1,5 +1,6 @@
 package org.noses.games.homedefense.enemy;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,9 +14,12 @@ import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.pathfinding.PathStep;
 
 import java.security.SecureRandom;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -23,7 +27,7 @@ import java.util.List;
 public class GroundEnemy extends Enemy {
     private final int DAMAGE = 20;
 
-    private final float baseSpeed = 1 / 1000f;
+    private final float baseSpeed = 0.000004901f;
     private Way way;
     private double progressAlong = 0;
     private double direction;
@@ -33,7 +37,7 @@ public class GroundEnemy extends Enemy {
     private int height;
 
     public GroundEnemy(HomeDefenseGame parent, Way way) {
-        super(parent, "line0.png", parent.loadSound("normal_hit.mp3"), 32, 32, 2);
+        super(parent, "line0.png", parent.loadSound("normal_hit.mp3"), 32, 32, 200);
         this.way = way;
         progressAlong = 0;
         direction = 1;
@@ -102,32 +106,62 @@ public class GroundEnemy extends Enemy {
         }
     }
 
-    public Point getLocation() {
+ /*   public Point getLocation() {
         if (way == null) {
             return null;
         }
 
         Point firstPoint = way.firstPoint();
-        System.out.println("First Point=" + firstPoint);
         Point lastPoint = way.lastPoint();
+
+        System.out.println("First Point=" + firstPoint);
         System.out.println("Last Point=" + lastPoint);
         System.out.println("Progress along=" + progressAlong);
 
         double currentLatitude = ((lastPoint.getLatitude() - firstPoint.getLatitude()) * progressAlong) + firstPoint.getLatitude();
         double currentLongitude = ((lastPoint.getLongitude() - firstPoint.getLongitude()) * progressAlong) + firstPoint.getLongitude();
 
-        System.out.println("Current=" + currentLatitude + "x" + currentLongitude);
+        System.out.println (currentLatitude+"x"+currentLongitude+" is between "+way.firstNode()+" and "+way.lastNode());
 
-        return new Point((float) currentLatitude, (float) (parent.getMap().getNorth() - currentLongitude));
+        return new Point((float) currentLatitude, (float) currentLongitude);
+    }*/
+
+    public Point getLocation() {
+        if (way == null) {
+            return null;
+        }
+
+        way.setColor(Color.RED);
+
+        Point firstPoint = way.firstPoint();
+        Point lastPoint = way.lastPoint();
+
+        //System.out.println("First Point=" + firstPoint);
+        //System.out.println("Last Point=" + lastPoint);
+
+        DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        df.setMaximumFractionDigits(340); // 340 = DecimalFormat.DOUBLE_FRACTION_DIGITS
+
+        System.out.println("Progress Along="+df.format(progressAlong)); // Output: 0.00000021
+        System.out.println("Way distance="+df.format(way.getDistance())); // Output: 0.00000021
+        System.out.println("Inner calc="+(progressAlong*(lastPoint.getLongitude() - firstPoint.getLongitude()))/way.getDistance());
+
+        double currentLatitude = firstPoint.getLatitude() + (progressAlong*(lastPoint.getLatitude() - firstPoint.getLatitude()))/way.getDistance();
+        double currentLongitude = firstPoint.getLongitude() + (progressAlong*(lastPoint.getLongitude() - firstPoint.getLongitude()))/way.getDistance();
+
+        System.out.println (new Point((float) currentLatitude, (float) currentLongitude)+" is between "+firstPoint+" and "+lastPoint);
+
+        return new Point((float) currentLatitude, (float) currentLongitude);
     }
 
     public void clockTick(float delta) {
         crossesIntersection(delta);
 
-        float speed = (float)way.getMaxSpeed() / 4000.0f;
+        float speed = way.getMaxSpeed()*10;
 
-        double newProgress = direction * baseSpeed * delta * speed * (1.0f / Math.sqrt(way.getDistance()));
+        double newProgress = direction * baseSpeed * delta * speed;// * (1.0f / Math.sqrt(way.getDistance()));
         System.out.println("  "
+                + " direction=" + direction
                 + " way distance=" + way.getDistance()
                 + " first=" + way.firstPoint()
                 + " last=" + way.lastPoint()
@@ -140,14 +174,14 @@ public class GroundEnemy extends Enemy {
 
         if (way.getDistance() != 0) {
             //double newProgress = direction * baseSpeed * delta * speed * (1.0f / Math.sqrt(way.getDistance()));
-            System.out.printf("total=%f ", newProgress);
             progressAlong += newProgress;
+            System.out.println("total= "+newProgress);
         }
         if (progressAlong < 0) {
             progressAlong = 0;
             direction = 1;
-        } else if (progressAlong > 1) {
-            progressAlong = 1;
+        } else if (progressAlong > way.getDistance()) {
+            progressAlong = way.getDistance();
             direction = -1;
         }
     }
@@ -197,7 +231,7 @@ public class GroundEnemy extends Enemy {
             if (currentPathStep >= pathSteps.size()) {
                 // TODO
                 System.out.println("\n\n\n");
-                System.out.println("BOOM!!!");
+                System.out.println("BOOM!!! at "+parent.printPointInXY(getLocation()));
                 System.out.println("\n\n\n");
                 Texture avatarAnimationSheet = new Texture("explosion.png");
                 frameNumber = 0;
@@ -249,10 +283,20 @@ public class GroundEnemy extends Enemy {
 
                 Djikstra djikstra = new Djikstra(intersections);
                 Intersection intersection = djikstra.getIntersectionForNode(intersections, way.firstNode());
-                //System.out.println("Intersection=(" + intersection.getLatitude() + "x" + intersection.getLongitude());
+                float north = game.getMap().getNorth();
+                float south = game.getMap().getSouth();
+                float east = game.getMap().getEast();
+                float west = game.getMap().getWest();
+
+                float centerX = north + ((south-north)/2);
+                float centerY = west + ((east-west)/2);
+
+                System.out.println("Getting best path to "
+                        + new Point(centerX, centerY)
+                        +game.printPointInXY(new Point(centerX, centerY)));
                 pathStep = djikstra.getBestPath(intersection,
-                        (game.getMap().getEast() - game.getMap().getWest()) / 2,
-                        (game.getMap().getNorth() - game.getMap().getSouth()) / 2);
+                        centerX,
+                        centerY);
                 System.out.println("Enemy's path - " + pathStep);
             }
         }

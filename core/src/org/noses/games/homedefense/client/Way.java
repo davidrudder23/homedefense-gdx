@@ -28,7 +28,8 @@ public class Way {
 
     public Color getColor() {
         if (color == null) {
-            setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), 1.0f));
+            //setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), 1.0f));
+            setColor(Color.WHITE);
         }
 
         return color;
