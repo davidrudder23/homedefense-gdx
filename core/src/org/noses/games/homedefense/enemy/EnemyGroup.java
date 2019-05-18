@@ -36,7 +36,7 @@ public class EnemyGroup implements ClockTickHandler {
         return upcomingEnemies.isEmpty() && enemies.isEmpty();
     }
 
-    public void clockTick(float delta) {
+    public void clockTick(double delta) {
         count++;
         if (count > delay) {
             count = 0;

@@ -97,7 +97,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                     //austinLongitude);
 
             map = mapClient.getMap(account, width, height);
-            System.out.println(map);
+            //System.out.println(map);
         } catch (IOException ioExc) {
             ioExc.printStackTrace();
             ;
@@ -231,7 +231,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
                 Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
 
-                System.out.println ("Rendering enemy at "+enemy.getLocation()+" to "+ convertLatToY(latitude)+"x"+ convertLongToX(longitude));
                 sprite.setCenterY(convertLatToY(latitude));
                 sprite.setCenterX(convertLongToX(longitude));
                 sprite.draw(batch);

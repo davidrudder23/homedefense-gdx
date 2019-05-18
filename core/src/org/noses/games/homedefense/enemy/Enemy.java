@@ -40,7 +40,7 @@ public abstract class Enemy extends Animation implements ClockTickHandler {
 
     public abstract int getDamage();
 
-    public abstract void clockTick(float delta);
+    public abstract void clockTick(double delta);
 
     public abstract Point getLocation();
 

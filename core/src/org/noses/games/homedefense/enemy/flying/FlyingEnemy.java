@@ -38,7 +38,7 @@ public class FlyingEnemy extends Enemy {
     }
 
     @Override
-    public void clockTick(float delta) {
+    public void clockTick(double delta) {
         x++;
         y++;
 

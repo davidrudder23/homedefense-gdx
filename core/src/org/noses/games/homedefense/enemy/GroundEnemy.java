@@ -25,9 +25,12 @@ import java.util.Locale;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class GroundEnemy extends Enemy {
+    // This is how far you move in 1 second, going 1 mph, in terms of latitude and longitude, in Denver
+    // TODO: calculate this based on current lat/long, not just hardcoded to Denver
+    private static final double baseSpeed = 0.000004901f;
+
     private final int DAMAGE = 20;
 
-    private final float baseSpeed = 0.000004901f;
     private Way way;
     private double progressAlong = 0;
     private double direction;
@@ -36,11 +39,14 @@ public class GroundEnemy extends Enemy {
     private int width;
     private int height;
 
-    public GroundEnemy(HomeDefenseGame parent, Way way) {
+    private double speedMultiplier;
+
+    public GroundEnemy(HomeDefenseGame parent, Way way, double speedMultiplier) {
         super(parent, "line0.png", parent.loadSound("normal_hit.mp3"), 32, 32, 200);
         this.way = way;
         progressAlong = 0;
         direction = 1;
+        this.speedMultiplier = speedMultiplier;
     }
 
     public void setPath(PathStep finalPathStep) {
@@ -106,26 +112,6 @@ public class GroundEnemy extends Enemy {
         }
     }
 
- /*   public Point getLocation() {
-        if (way == null) {
-            return null;
-        }
-
-        Point firstPoint = way.firstPoint();
-        Point lastPoint = way.lastPoint();
-
-        System.out.println("First Point=" + firstPoint);
-        System.out.println("Last Point=" + lastPoint);
-        System.out.println("Progress along=" + progressAlong);
-
-        double currentLatitude = ((lastPoint.getLatitude() - firstPoint.getLatitude()) * progressAlong) + firstPoint.getLatitude();
-        double currentLongitude = ((lastPoint.getLongitude() - firstPoint.getLongitude()) * progressAlong) + firstPoint.getLongitude();
-
-        System.out.println (currentLatitude+"x"+currentLongitude+" is between "+way.firstNode()+" and "+way.lastNode());
-
-        return new Point((float) currentLatitude, (float) currentLongitude);
-    }*/
-
     public Point getLocation() {
         if (way == null) {
             return null;
@@ -136,31 +122,19 @@ public class GroundEnemy extends Enemy {
         Point firstPoint = way.firstPoint();
         Point lastPoint = way.lastPoint();
 
-        //System.out.println("First Point=" + firstPoint);
-        //System.out.println("Last Point=" + lastPoint);
-
-        DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-        df.setMaximumFractionDigits(340); // 340 = DecimalFormat.DOUBLE_FRACTION_DIGITS
-
-        System.out.println("Progress Along="+df.format(progressAlong)); // Output: 0.00000021
-        System.out.println("Way distance="+df.format(way.getDistance())); // Output: 0.00000021
-        System.out.println("Inner calc="+(progressAlong*(lastPoint.getLongitude() - firstPoint.getLongitude()))/way.getDistance());
-
         double currentLatitude = firstPoint.getLatitude() + (progressAlong*(lastPoint.getLatitude() - firstPoint.getLatitude()))/way.getDistance();
         double currentLongitude = firstPoint.getLongitude() + (progressAlong*(lastPoint.getLongitude() - firstPoint.getLongitude()))/way.getDistance();
-
-        System.out.println (new Point((float) currentLatitude, (float) currentLongitude)+" is between "+firstPoint+" and "+lastPoint);
 
         return new Point((float) currentLatitude, (float) currentLongitude);
     }
 
-    public void clockTick(float delta) {
+    public void clockTick(double delta) {
         crossesIntersection(delta);
 
-        float speed = way.getMaxSpeed()*10;
+        double speed = way.getMaxSpeed() * speedMultiplier;
 
         double newProgress = direction * baseSpeed * delta * speed;// * (1.0f / Math.sqrt(way.getDistance()));
-        System.out.println("  "
+        /*System.out.println("  "
                 + " direction=" + direction
                 + " way distance=" + way.getDistance()
                 + " first=" + way.firstPoint()
@@ -171,11 +145,10 @@ public class GroundEnemy extends Enemy {
                 + " inv distance=" + (1f / (double) way.getDistance())
                 + " newProgress="+newProgress
                 + " progressAlong=" + (progressAlong + newProgress));
-
+        */
         if (way.getDistance() != 0) {
             //double newProgress = direction * baseSpeed * delta * speed * (1.0f / Math.sqrt(way.getDistance()));
             progressAlong += newProgress;
-            System.out.println("total= "+newProgress);
         }
         if (progressAlong < 0) {
             progressAlong = 0;
@@ -190,7 +163,7 @@ public class GroundEnemy extends Enemy {
         return DAMAGE;
     }
 
-    private void crossesIntersection(float delta) {
+    private void crossesIntersection(double delta) {
         if (pathSteps.size() <= currentPathStep) {
             return;
         }
@@ -303,7 +276,7 @@ public class GroundEnemy extends Enemy {
 
         @Override
         public Enemy build() {
-            GroundEnemy enemy = new GroundEnemy(game, way);
+            GroundEnemy enemy = new GroundEnemy(game, way, 10);
             enemy.setPath(pathStep);
 
             return enemy;
