@@ -57,16 +57,16 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         initializeMap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        HomeDefenseGame.ONE_PIXEL_IN_LATLON = (map.getEast()-map.getWest())/Gdx.graphics.getWidth();
-        //HomeDefenseGame.LATLON_MOVED_IN_1s_1mph = (map.getEast()-map.getWest())/2000;
+        HomeDefenseGame.ONE_PIXEL_IN_LATLON = (map.getEast() - map.getWest()) / Gdx.graphics.getWidth();
 
-        System.out.println("1 pixel = "+HomeDefenseGame.ONE_PIXEL_IN_LATLON);
+        /*System.out.println("1 pixel = "+HomeDefenseGame.ONE_PIXEL_IN_LATLON);
         System.out.println("1 second= "+HomeDefenseGame.LATLON_MOVED_IN_1s_1mph);
         System.out.println ("Travel ="+HomeDefenseGame.LATLON_MOVED_IN_1s_1mph/HomeDefenseGame.ONE_PIXEL_IN_LATLON);
+        */
 
         home = new Home(this,
-                ((map.getNorth()-map.getSouth()) / 2)+map.getSouth(),
-                ((map.getEast()-map.getWest())/2)+map.getWest());
+                ((map.getNorth() - map.getSouth()) / 2) + map.getSouth(),
+                ((map.getEast() - map.getWest()) / 2) + map.getWest());
 
         intersections = Intersection.buildIntersectionsFromMap(map);
 
@@ -129,8 +129,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
                     "test1",
                     denverLatitude,
                     denverLongitude);
-                    //austinLatitude,
-                    //austinLongitude);
+            //austinLatitude,
+            //austinLongitude);
 
             map = mapClient.getMap(account, width, height);
             //System.out.println(map);
@@ -159,7 +159,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
         EnemyGroup enemyGroup = EnemyGroup.builder()
                 .intersections(startingIntersections)
                 .delay(10)
-                .numEnemies(1)
+                .numEnemies(10)
                 .enemyBuilder(new GroundEnemy.GroundEnemyBuilder(this, intersections))
                 .build();
         enemyGroups.add(enemyGroup);
@@ -171,7 +171,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .enemyBuilder(new LeftToRightFlyingEnemyBuilder(this))
                 .build();
 
-        //enemyGroups.add(enemyGroup2);
+        enemyGroups.add(enemyGroup2);
     }
 
     public Intersection getIntersectionForNode(Node node) {
@@ -186,7 +186,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
     }
 
     public void hitHome(int damage) {
-        System.out.println("Home hit for "+damage+" health="+home.getHealth());
+        System.out.println("Home hit for " + damage + " health=" + home.getHealth());
         home.hit(damage);
         if (home.isDead()) {
             Gdx.app.exit();
@@ -281,18 +281,18 @@ public class HomeDefenseGame extends ApplicationAdapter {
     }
 
     public int convertLongToX(double longitude) {
-        float longPerPixel = (map.getEast() - map.getWest())/(float)Gdx.graphics.getWidth();
-        return (int)((longitude - map.getWest())/longPerPixel);
+        float longPerPixel = (map.getEast() - map.getWest()) / (float) Gdx.graphics.getWidth();
+        return (int) ((longitude - map.getWest()) / longPerPixel);
     }
 
     public int convertLatToY(double latitude) {
-        float latPerPixel = (map.getNorth() - map.getSouth())/Gdx.graphics.getHeight();
+        float latPerPixel = (map.getNorth() - map.getSouth()) / Gdx.graphics.getHeight();
 
-        return (int)((latitude - map.getSouth())/latPerPixel);
+        return (int) ((latitude - map.getSouth()) / latPerPixel);
     }
 
     public String printPointInXY(Point point) {
-        return (convertLongToX(point.getLongitude())+"x"+convertLatToY(point.getLatitude()));
+        return (convertLongToX(point.getLongitude()) + "x" + convertLatToY(point.getLatitude()));
     }
 
     @Override

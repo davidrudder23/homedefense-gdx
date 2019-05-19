@@ -10,8 +10,8 @@ public class FlyingEnemy extends Enemy {
 
     private final float baseSpeed = 1 / 21f;
 
-    double x;
-    double y;
+    double latitude;
+    double longitude;
 
     @Getter
     private int width;
@@ -28,8 +28,8 @@ public class FlyingEnemy extends Enemy {
         this.startingPoint = startingPoint;
         this.endingPoint = endingPoint;
 
-        x = startingPoint.getLatitude();
-        y = startingPoint.getLongitude();
+        latitude = startingPoint.getLatitude();
+        longitude = startingPoint.getLongitude();
     }
 
     @Override
@@ -39,17 +39,18 @@ public class FlyingEnemy extends Enemy {
 
     @Override
     public void clockTick(double delta) {
-        x++;
-        y++;
+        latitude+=HomeDefenseGame.ONE_PIXEL_IN_LATLON;
+        longitude+=HomeDefenseGame.ONE_PIXEL_IN_LATLON;
 
-        if ((x > parent.getMap().getEast()) || (y > parent.getMap().getNorth())) {
+        if ((latitude > parent.getMap().getEast()) || (longitude > parent.getMap().getNorth())) {
+            System.out.println("Flying enemy outside bounds");
             kill();
         }
     }
 
     @Override
     public Point getLocation() {
-        return new Point(x, y);
+        return new Point(latitude, longitude);
     }
 
     @Override

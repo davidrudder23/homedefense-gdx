@@ -15,7 +15,7 @@ public class LeftToRightFlyingEnemyBuilder implements EnemyBuilder {
     @Override
     public Enemy build() {
         return new FlyingEnemy(game, new Point(game.getMap().getWest(),game.getMap().getNorth()),
-                new Point(game.getMap().getEast(),game.getMap().getSouth()));
+                new Point(game.getMap().getWest(),game.getMap().getSouth()));
     }
 
 }
