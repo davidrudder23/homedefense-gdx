@@ -2,6 +2,7 @@ package org.noses.games.homedefense;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -25,6 +26,14 @@ import java.util.HashMap;
 import java.util.List;
 
 public class HomeDefenseGame extends ApplicationAdapter {
+    // TODO: calculate this based on current lat/long, not just hardcoded to Denver
+
+    //
+    public static double ONE_PIXEL_IN_LATLON = 0;
+
+    // This is how far you move in 1 second, going 1 mph, in terms of latitude and longitude, in Denver
+    public static double LATLON_MOVED_IN_1s_1mph = 0.000004901f;
+
     SpriteBatch batch;
 
     @Getter
@@ -33,6 +42,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
     List<EnemyGroup> enemyGroups;
 
     HashMap<String, Intersection> intersections;
+
+    private Timer.Task keyPressTimer;
 
     @Getter
     Home home;
@@ -45,6 +56,13 @@ public class HomeDefenseGame extends ApplicationAdapter {
         batch = new SpriteBatch();
 
         initializeMap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        HomeDefenseGame.ONE_PIXEL_IN_LATLON = (map.getEast()-map.getWest())/Gdx.graphics.getWidth();
+        //HomeDefenseGame.LATLON_MOVED_IN_1s_1mph = (map.getEast()-map.getWest())/2000;
+
+        System.out.println("1 pixel = "+HomeDefenseGame.ONE_PIXEL_IN_LATLON);
+        System.out.println("1 second= "+HomeDefenseGame.LATLON_MOVED_IN_1s_1mph);
+        System.out.println ("Travel ="+HomeDefenseGame.LATLON_MOVED_IN_1s_1mph/HomeDefenseGame.ONE_PIXEL_IN_LATLON);
 
         home = new Home(this,
                 ((map.getNorth()-map.getSouth()) / 2)+map.getSouth(),
@@ -66,9 +84,11 @@ public class HomeDefenseGame extends ApplicationAdapter {
             }
         }
 
-        createEnemies(intersections, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        createEnemies(intersections);
 
         setupSound();
+
+        keyPressLoop();
 
         Timer.schedule(new Timer.Task() {
                            @Override
@@ -77,6 +97,20 @@ public class HomeDefenseGame extends ApplicationAdapter {
                            }
                        }
                 , 0f, 1 / 10.0f);
+
+    }
+
+    private void keyPressLoop() {
+        keyPressTimer = Timer.schedule(new Timer.Task() {
+
+            @Override
+            public void run() {
+
+                if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+                    System.exit(0);
+                }
+            }
+        }, 1, 0.1f);
 
     }
 
@@ -120,7 +154,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
         }
     }
 
-    public void createEnemies(HashMap<String, Intersection> startingIntersections, int width, int height) {
+    public void createEnemies(HashMap<String, Intersection> startingIntersections) {
 
         EnemyGroup enemyGroup = EnemyGroup.builder()
                 .intersections(startingIntersections)

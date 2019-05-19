@@ -66,7 +66,7 @@ public abstract class Bullet extends Animation {
         shotSound.play();
     }
 
-    public abstract int getRadius();
+    public abstract double getRadius();
 
     public void move(double delta) {
 
@@ -74,7 +74,7 @@ public abstract class Bullet extends Animation {
             return;
         }
 
-        distanceTraveled += delta * speed;
+        distanceTraveled += delta * speed * HomeDefenseGame.LATLON_MOVED_IN_1s_1mph ;
 
         double rad = angle * Math.PI / 180;
         currentLatitude = originalLatitude + (Math.cos(rad) * distanceTraveled);
@@ -99,15 +99,14 @@ public abstract class Bullet extends Animation {
     public List<Enemy> whichEnemiesHit() {
         List<Enemy> enemiesHit = new ArrayList<>();
 
-        double halfRadius = getRadius()/2;
+        double halfRadius = getRadius()/2 * HomeDefenseGame.ONE_PIXEL_IN_LATLON;
 
         Rectangle boundingBox = new Rectangle(currentLatitude -halfRadius, currentLongitude -halfRadius, currentLatitude + halfRadius, currentLongitude + halfRadius);
-        //System.out.println ("Bullet's bounding box is "+boundingBox);
 
         for (Enemy enemy : parent.getEnemies()) {
             //System.out.println ("Bullet "+boundingBox+" vs Enemy "+enemy.getBoundingBox()+"="+enemy.getBoundingBox().doBoundsOverlap(boundingBox));
             if (enemy.getBoundingBox().doBoundsOverlap(boundingBox)) {
-                System.out.println("Bullet hit " + enemy.getLocation()+" with "+enemy.getHealth()+" health.  Hitting with "+getDamage());
+                System.out.println("Bullet hit " + enemy.getBoundingBox()+" with "+enemy.getHealth()+" health.  Hitting with "+getDamage());
                 enemy.hit(getDamage());
                 this.kill();
             }

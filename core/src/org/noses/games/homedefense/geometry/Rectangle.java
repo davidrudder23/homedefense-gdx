@@ -29,6 +29,13 @@ public class Rectangle {
         return false;
     }
 
+    public double getDiagonalSize() {
+        double size = (getUpperLeft().getLatitude() - getLowerRight().getLatitude())*(getUpperLeft().getLatitude() - getLowerRight().getLatitude());
+        size += (getUpperLeft().getLongitude() - getLowerRight().getLongitude()) * (getUpperLeft().getLongitude() - getLowerRight().getLongitude());
+        size = Math.sqrt(size);
+        return size;
+    }
+
     @Override
     public String toString() {
         String string = upperLeft.toString()+" through "+lowerRight.toString();

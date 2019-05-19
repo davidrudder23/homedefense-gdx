@@ -1,10 +1,12 @@
 package org.noses.games.homedefense.home;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
 import lombok.Getter;
 import lombok.Setter;
@@ -68,10 +70,10 @@ public class Home extends Animation {
         timer = Timer.schedule(new Timer.Task() {
                                    @Override
                                    public void run() {
-                                       clockTick(0.1f);
+                                       clockTick(0.1);
                                    }
                                },
-                0f, 1 / 10.0f);
+                0f, 0.1f);
     }
 
     public void hit(int damage) {
@@ -83,7 +85,7 @@ public class Home extends Animation {
         return health<=0;
     }
 
-    public void clockTick(float delay) {
+    public void clockTick(double delay) {
         angle = angle + 10;
 
         timeSinceLastFired += delay;
@@ -152,7 +154,7 @@ public class Home extends Animation {
             return;
         }
 
-        NormalBullet normalBullet = new NormalBullet(parent, shotSound, getLatitude(), getLongitude(), angle, 100);
+        NormalBullet normalBullet = new NormalBullet(parent, shotSound, getLatitude(), getLongitude(), angle);
         normalBullet.shoot();
         bullets.add(normalBullet);
     }
@@ -163,9 +165,6 @@ public class Home extends Animation {
         homeSprite.setCenterX(parent.convertLongToX(longitude));
         homeSprite.setCenterY(parent.convertLatToY(latitude));
 
-        System.out.println ("Rendering home at "+longitude+"x"+latitude);
-        System.out.println ("Rendering home at "+parent.convertLongToX(longitude)+"x"+parent.convertLatToY(latitude));
-
         homeSprite.draw(batch);
 
         for (Bullet bullet : bullets) {
@@ -174,6 +173,7 @@ public class Home extends Animation {
             }
             TextureRegion textureRegion = bullet.getFrameTextureRegion();
             Sprite bulletSprite = new Sprite(textureRegion);
+
             bulletSprite.setX(parent.convertLongToX(bullet.getLongitude()));
             bulletSprite.setY(parent.convertLatToY(bullet.getLatitude()));
             bulletSprite.draw(batch);

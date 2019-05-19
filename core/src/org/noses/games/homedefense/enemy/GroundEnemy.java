@@ -25,9 +25,6 @@ import java.util.Locale;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class GroundEnemy extends Enemy {
-    // This is how far you move in 1 second, going 1 mph, in terms of latitude and longitude, in Denver
-    // TODO: calculate this based on current lat/long, not just hardcoded to Denver
-    private static final double baseSpeed = 0.000004901f;
 
     private final int DAMAGE = 20;
 
@@ -42,7 +39,7 @@ public class GroundEnemy extends Enemy {
     private double speedMultiplier;
 
     public GroundEnemy(HomeDefenseGame parent, Way way, double speedMultiplier) {
-        super(parent, "line0.png", parent.loadSound("normal_hit.mp3"), 32, 32, 200);
+        super(parent, "line0.png", parent.loadSound("normal_hit.mp3"), 32, 32, 10);
         this.way = way;
         progressAlong = 0;
         direction = 1;
@@ -133,7 +130,7 @@ public class GroundEnemy extends Enemy {
 
         double speed = way.getMaxSpeed() * speedMultiplier;
 
-        double newProgress = direction * baseSpeed * delta * speed;// * (1.0f / Math.sqrt(way.getDistance()));
+        double newProgress = direction * HomeDefenseGame.LATLON_MOVED_IN_1s_1mph * delta * speed;// * (1.0f / Math.sqrt(way.getDistance()));
         /*System.out.println("  "
                 + " direction=" + direction
                 + " way distance=" + way.getDistance()
@@ -175,7 +172,7 @@ public class GroundEnemy extends Enemy {
 
         float speed = way.getMaxSpeed();
         //double newProgress = progressAlong + (direction * baseSpeed * delta * speed);
-        double newProgress = progressAlong + (direction * baseSpeed * delta * speed * (1.0f / Math.sqrt(way.getDistance())));
+        double newProgress = progressAlong + (direction * HomeDefenseGame.LATLON_MOVED_IN_1s_1mph * delta * speed * (1.0f / Math.sqrt(way.getDistance())));
 
         Node node = pathSteps.get(currentPathStep).getEndingNode();
         while ((node == null) && (currentPathStep < (pathSteps.size() - 1))) {
@@ -276,7 +273,7 @@ public class GroundEnemy extends Enemy {
 
         @Override
         public Enemy build() {
-            GroundEnemy enemy = new GroundEnemy(game, way, 10);
+            GroundEnemy enemy = new GroundEnemy(game, way, 5);
             enemy.setPath(pathStep);
 
             return enemy;
