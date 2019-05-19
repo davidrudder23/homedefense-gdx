@@ -14,12 +14,9 @@ import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.pathfinding.PathStep;
 
 import java.security.SecureRandom;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 @Data
 @EqualsAndHashCode(callSuper = false)

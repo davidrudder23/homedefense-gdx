@@ -3,7 +3,6 @@ package org.noses.games.homedefense.enemy;
 import com.badlogic.gdx.audio.Sound;
 import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
-
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.geometry.Rectangle;

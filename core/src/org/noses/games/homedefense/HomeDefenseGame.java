@@ -17,8 +17,8 @@ import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.GroundEnemy;
 import org.noses.games.homedefense.enemy.flying.LeftToRightFlyingEnemyBuilder;
 import org.noses.games.homedefense.geometry.Point;
-import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.home.Home;
+import org.noses.games.homedefense.pathfinding.Intersection;
 
 import java.io.IOException;
 import java.util.ArrayList;
