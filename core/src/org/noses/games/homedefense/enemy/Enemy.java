@@ -35,9 +35,12 @@ public abstract class Enemy extends Animation implements ClockTickHandler {
     public void kill() {
         timer.cancel();
         this.killed = true;
+        parent.addMoney(getValue());
     }
 
     public abstract int getDamage();
+
+    public abstract int getValue();
 
     public abstract void clockTick(double delta);
 

@@ -32,6 +32,11 @@ public class FlyingEnemy extends Enemy {
     }
 
     @Override
+    public int getValue() {
+        return 15;
+    }
+
+    @Override
     public void clockTick(double delta) {
         latitude+=HomeDefenseGame.ONE_PIXEL_IN_LATLON;
         longitude+=HomeDefenseGame.ONE_PIXEL_IN_LATLON;

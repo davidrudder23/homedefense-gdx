@@ -33,12 +33,12 @@ public class GroundEnemy extends Enemy {
 
     private double speedMultiplier;
 
-    public GroundEnemy(HomeDefenseGame parent, Way way, double speedMultiplier) {
+    public GroundEnemy(HomeDefenseGame parent, Way way) {
         super(parent, "line0.png", parent.loadSound("normal_hit.mp3"), 32, 32, 10);
         this.way = way;
         progressAlong = 0;
         direction = 1;
-        this.speedMultiplier = speedMultiplier;
+        this.speedMultiplier = 10;
     }
 
     public void setPath(PathStep finalPathStep) {
@@ -112,6 +112,11 @@ public class GroundEnemy extends Enemy {
     @Override
     public double getHeight() {
         return HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileHeight;
+    }
+
+    @Override
+    public int getValue() {
+        return 10;
     }
 
     public Point getLocation() {
@@ -278,7 +283,7 @@ public class GroundEnemy extends Enemy {
 
         @Override
         public Enemy build() {
-            GroundEnemy enemy = new GroundEnemy(game, way, 5);
+            GroundEnemy enemy = new GroundEnemy(game, way);
             enemy.setPath(pathStep);
 
             return enemy;

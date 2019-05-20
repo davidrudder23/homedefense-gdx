@@ -6,11 +6,13 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
 import lombok.Getter;
+import lombok.Setter;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
@@ -48,10 +50,16 @@ public class HomeDefenseGame extends ApplicationAdapter {
     @Getter
     Home home;
 
+    @Getter
+    @Setter
+    private int money;
+
     @Override
     public void create() {
 
         enemyGroups = new ArrayList<>();
+
+        money = 0;
 
         batch = new SpriteBatch();
 
@@ -164,6 +172,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .build();
         enemyGroups.add(enemyGroup);
 
+        /*
         EnemyGroup enemyGroup2 = EnemyGroup.builder()
                 .intersections(startingIntersections)
                 .delay(10)
@@ -172,6 +181,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .build();
 
         enemyGroups.add(enemyGroup2);
+         */
     }
 
     public Intersection getIntersectionForNode(Node node) {
@@ -191,6 +201,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
         if (home.isDead()) {
             Gdx.app.exit();
         }
+    }
+
+    public void addMoney(int money) {
+        this.money += money;
     }
 
     public List<Enemy> getEnemies() {
@@ -251,9 +265,9 @@ public class HomeDefenseGame extends ApplicationAdapter {
             sr.end();
         }
 
-        // render the enemies
-
         batch.begin();
+
+        // render the enemies
 
         for (EnemyGroup enemyGroup : enemyGroups) {
             List<Enemy> enemies = enemyGroup.getEnemies();
@@ -275,6 +289,13 @@ public class HomeDefenseGame extends ApplicationAdapter {
         }
 
         home.render(batch);
+
+        // render the score and other text
+        BitmapFont font = new BitmapFont();
+        font.setColor(Color.WHITE);
+        font.draw(batch, "Health: "+home.getHealth(), 10,Gdx.graphics.getHeight()- 30);
+
+        font.draw(batch, "Money: "+money, 10, Gdx.graphics.getHeight()- (30 + font.getCapHeight()));
 
         batch.end();
 
