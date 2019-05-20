@@ -28,7 +28,8 @@ public class Way {
 
     public Color getColor() {
         if (color == null) {
-            setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), 1.0f));
+            //setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), 1.0f));
+            setColor(Color.WHITE);
         }
 
         return color;
@@ -39,7 +40,7 @@ public class Way {
             return null;
         }
         Node startNode = nodes.get(0);
-        return new Point(startNode.getX(), startNode.getY());
+        return new Point(startNode.getLat(), startNode.getLon());
     }
 
     public Point lastPoint() {
@@ -47,7 +48,7 @@ public class Way {
             return null;
         }
         Node endNode = nodes.get(nodes.size() - 1);
-        return new Point(endNode.getX(), endNode.getY());
+        return new Point(endNode.getLat(), endNode.getLon());
     }
 
     @Override
@@ -75,19 +76,19 @@ public class Way {
             return false;
         }
 
-        if (otherWay.firstPoint().getX() != firstPoint().getX()) {
+        if (otherWay.firstPoint().getLatitude() != firstPoint().getLatitude()) {
             return false;
         }
 
-        if (otherWay.firstPoint().getY() != firstPoint().getY()) {
+        if (otherWay.firstPoint().getLongitude() != firstPoint().getLongitude()) {
             return false;
         }
 
-        if (otherWay.lastPoint().getX() != lastPoint().getX()) {
+        if (otherWay.lastPoint().getLatitude() != lastPoint().getLatitude()) {
             return false;
         }
 
-        if (otherWay.lastPoint().getY() != lastPoint().getY()) {
+        if (otherWay.lastPoint().getLongitude() != lastPoint().getLongitude()) {
             return false;
         }
 
@@ -111,7 +112,7 @@ public class Way {
         return endNode;
     }
 
-    public int getDistance() {
+    public float getDistance() {
         return firstNode().distanceFrom(lastNode());
     }
 

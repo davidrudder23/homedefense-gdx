@@ -13,6 +13,11 @@ public class Map {
     List<Nest> nests;
     float north, south, east, west;
 
+    float north;
+    float south;
+    float east;
+    float west;
+
     public Map() {
         ways = new ArrayList<>();
     }

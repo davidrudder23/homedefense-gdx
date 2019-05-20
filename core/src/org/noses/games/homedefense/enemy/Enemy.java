@@ -1,10 +1,8 @@
 package org.noses.games.homedefense.enemy;
 
 import com.badlogic.gdx.audio.Sound;
-import lombok.Data;
 import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
-
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.geometry.Rectangle;
@@ -41,22 +39,22 @@ public abstract class Enemy extends Animation implements ClockTickHandler {
 
     public abstract int getDamage();
 
-    public abstract void clockTick(float delta);
+    public abstract void clockTick(double delta);
 
     public abstract Point getLocation();
 
-    public abstract int getWidth();
+    public abstract double getWidth();
 
-    public abstract int getHeight();
+    public abstract double getHeight();
 
     public Rectangle getBoundingBox() {
-        int halfWidth = tileWidth/2;
-        int halfHeight = tileHeight/2;
+        double halfWidth = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileWidth / 2;
+        double halfHeight = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileHeight / 2;
 
-        Rectangle boundingBox = new Rectangle(getLocation().getX()-halfWidth,
-                getLocation().getY()-halfHeight,
-                getLocation().getX()+halfWidth,
-                getLocation().getY()+halfHeight);
+        Rectangle boundingBox = new Rectangle(getLocation().getLatitude()-halfWidth,
+                getLocation().getLongitude()-halfHeight,
+                getLocation().getLatitude()+halfWidth,
+                getLocation().getLongitude()+halfHeight);
         //System.out.println ("boundingBox="+boundingBox+" height="+tileHeight);
         return boundingBox;
     }

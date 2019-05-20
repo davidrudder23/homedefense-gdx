@@ -9,7 +9,7 @@ public class Explosion extends Animation implements ClockTickHandler {
         super(parent, "explosion.png", tileWidth, tileHeight);
     }
 
-    public void clockTick(float delta) {
+    public void clockTick(double delta) {
 
     }
 

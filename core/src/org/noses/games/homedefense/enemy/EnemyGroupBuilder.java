@@ -1,18 +1,8 @@
 package org.noses.games.homedefense.enemy;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.noses.games.homedefense.HomeDefenseGame;
-import org.noses.games.homedefense.client.Node;
-import org.noses.games.homedefense.client.Way;
-import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
-import org.noses.games.homedefense.pathfinding.PathStep;
 
-import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class EnemyGroupBuilder {
     HashMap<String, Intersection> intersections;

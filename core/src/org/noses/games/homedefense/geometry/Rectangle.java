@@ -9,7 +9,7 @@ public class Rectangle {
     Point upperLeft;
     Point lowerRight;
 
-    public Rectangle(int left, int top, int right, int bottom) {
+    public Rectangle(double left, double top, double right, double bottom) {
         upperLeft = new Point(left, top);
         lowerRight = new Point(right, bottom);
     }
@@ -20,13 +20,20 @@ public class Rectangle {
     }
 
     public boolean isInBoundingBox(Point point) {
-        if ((point.getX() >= upperLeft.getX()) &&
-                (point.getY() >= upperLeft.getY()) &&
-                (point.getX() <= lowerRight.getX()) &&
-                (point.getY() <= lowerRight.getY())) {
+        if ((point.getLatitude() >= upperLeft.getLatitude()) &&
+                (point.getLongitude() >= upperLeft.getLongitude()) &&
+                (point.getLatitude() <= lowerRight.getLatitude()) &&
+                (point.getLongitude() <= lowerRight.getLongitude())) {
             return true;
         }
         return false;
+    }
+
+    public double getDiagonalSize() {
+        double size = (getUpperLeft().getLatitude() - getLowerRight().getLatitude())*(getUpperLeft().getLatitude() - getLowerRight().getLatitude());
+        size += (getUpperLeft().getLongitude() - getLowerRight().getLongitude()) * (getUpperLeft().getLongitude() - getLowerRight().getLongitude());
+        size = Math.sqrt(size);
+        return size;
     }
 
     @Override

@@ -2,10 +2,9 @@ package org.noses.games.homedefense.bullet;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Timer;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.client.Map;
 import org.noses.games.homedefense.enemy.Animation;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.geometry.Rectangle;
@@ -15,11 +14,11 @@ import java.util.List;
 
 public abstract class Bullet extends Animation {
 
-    protected int originalX;
-    protected int originalY;
+    protected double originalLatitude;
+    protected double originalLongitude;
 
-    protected int currentX;
-    protected int currentY;
+    protected double currentLatitude;
+    protected double currentLongitude;
 
     protected double angle;
     protected double speed;
@@ -53,12 +52,12 @@ public abstract class Bullet extends Animation {
         move(delta);
     }
 
-    public int getX() {
-        return currentX;
+    public double getLatitude() {
+        return currentLatitude;
     }
 
-    public int getY() {
-        return currentY;
+    public double getLongitude() {
+        return currentLongitude;
     }
 
     public abstract int getDamage();
@@ -67,24 +66,25 @@ public abstract class Bullet extends Animation {
         shotSound.play();
     }
 
-    public abstract int getRadius();
+    public abstract double getRadius();
 
-    public void move(float delta) {
+    public void move(double delta) {
 
         if (dead) {
             return;
         }
 
-        distanceTraveled += delta * speed;
+        distanceTraveled += delta * speed * HomeDefenseGame.LATLON_MOVED_IN_1s_1mph ;
 
         double rad = angle * Math.PI / 180;
-        currentX = (int) (originalX + (Math.cos(rad) * distanceTraveled));
-        currentY = (int) (originalY + (Math.sin(rad) * distanceTraveled));
+        currentLatitude = originalLatitude + (Math.cos(rad) * distanceTraveled);
+        currentLongitude = originalLongitude + (Math.sin(rad) * distanceTraveled);
 
-        if ((currentX < 0) ||
-                (currentY < 0) ||
-                (currentX > parent.getScreenWidth()) ||
-                (currentY > parent.getScreenHeight())) {
+        Map map = parent.getMap();
+        if ((currentLatitude < map.getSouth()) ||
+                (currentLongitude < map.getWest()) ||
+                (currentLatitude > map.getNorth()) ||
+                (currentLongitude > map.getEast())) {
             kill();
         }
 
@@ -99,15 +99,14 @@ public abstract class Bullet extends Animation {
     public List<Enemy> whichEnemiesHit() {
         List<Enemy> enemiesHit = new ArrayList<>();
 
-        int halfRadius = getRadius()/2;
+        double halfRadius = getRadius()/2 * HomeDefenseGame.ONE_PIXEL_IN_LATLON;
 
-        Rectangle boundingBox = new Rectangle(currentX-halfRadius, currentY-halfRadius, currentX + halfRadius, currentY + halfRadius);
-        //System.out.println ("Bullet's bounding box is "+boundingBox);
+        Rectangle boundingBox = new Rectangle(currentLatitude -halfRadius, currentLongitude -halfRadius, currentLatitude + halfRadius, currentLongitude + halfRadius);
 
         for (Enemy enemy : parent.getEnemies()) {
             //System.out.println ("Bullet "+boundingBox+" vs Enemy "+enemy.getBoundingBox()+"="+enemy.getBoundingBox().doBoundsOverlap(boundingBox));
             if (enemy.getBoundingBox().doBoundsOverlap(boundingBox)) {
-                System.out.println("Bullet hit " + enemy.getLocation()+" with "+enemy.getHealth()+" health.  Hitting with "+getDamage());
+                System.out.println("Bullet hit " + enemy.getBoundingBox()+" with "+enemy.getHealth()+" health.  Hitting with "+getDamage());
                 enemy.hit(getDamage());
                 this.kill();
             }

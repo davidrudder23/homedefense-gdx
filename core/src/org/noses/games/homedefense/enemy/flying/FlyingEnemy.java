@@ -1,26 +1,17 @@
 package org.noses.games.homedefense.enemy.flying;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.enemy.Enemy;
-import org.noses.games.homedefense.enemy.EnemyBuilder;
 import org.noses.games.homedefense.geometry.Point;
-import org.noses.games.homedefense.geometry.Rectangle;
 
 public class FlyingEnemy extends Enemy {
     private final int DAMAGE = 20;
 
     private final float baseSpeed = 1 / 21f;
 
-    int x;
-    int y;
-
-    @Getter
-    private int width;
-
-    @Getter
-    private int height;
+    double latitude;
+    double longitude;
 
     Point startingPoint;
     Point endingPoint;
@@ -31,8 +22,8 @@ public class FlyingEnemy extends Enemy {
         this.startingPoint = startingPoint;
         this.endingPoint = endingPoint;
 
-        x = startingPoint.getX();
-        y = startingPoint.getY();
+        latitude = startingPoint.getLatitude();
+        longitude = startingPoint.getLongitude();
     }
 
     @Override
@@ -41,27 +32,28 @@ public class FlyingEnemy extends Enemy {
     }
 
     @Override
-    public void clockTick(float delta) {
-        x++;
-        y++;
+    public void clockTick(double delta) {
+        latitude+=HomeDefenseGame.ONE_PIXEL_IN_LATLON;
+        longitude+=HomeDefenseGame.ONE_PIXEL_IN_LATLON;
 
-        if ((x > 640) || (y > 480)) {
+        if ((latitude > parent.getMap().getEast()) || (longitude > parent.getMap().getNorth())) {
+            System.out.println("Flying enemy outside bounds");
             kill();
         }
     }
 
     @Override
     public Point getLocation() {
-        return new Point(x, y);
+        return new Point(latitude, longitude);
     }
 
     @Override
-    public int getWidth() {
+    public double getWidth() {
         return 32;
     }
 
     @Override
-    public int getHeight() {
+    public double getHeight() {
         return 32;
     }
 }

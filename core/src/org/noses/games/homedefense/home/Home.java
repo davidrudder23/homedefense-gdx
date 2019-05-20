@@ -41,18 +41,18 @@ public class Home extends Animation {
     int health;
 
     @Getter
-    int x;
+    double latitude;
 
     @Getter
-    int y;
+    double longitude;
 
     Timer.Task timer;
 
 
-    public Home(HomeDefenseGame parent, int x, int y) {
+    public Home(HomeDefenseGame parent, double latitude, double longitude) {
         super(parent, "home.png", 64, 64);
-        this.x = x;
-        this.y = y;
+        this.latitude = latitude;
+        this.longitude = longitude;
         angle = 0;
 
         bullets = new ArrayList<>();
@@ -68,10 +68,10 @@ public class Home extends Animation {
         timer = Timer.schedule(new Timer.Task() {
                                    @Override
                                    public void run() {
-                                       clockTick(0.1f);
+                                       clockTick(0.1);
                                    }
                                },
-                0f, 1 / 10.0f);
+                0f, 0.1f);
     }
 
     public void hit(int damage) {
@@ -83,7 +83,7 @@ public class Home extends Animation {
         return health<=0;
     }
 
-    public void clockTick(float delay) {
+    public void clockTick(double delay) {
         angle = angle + 10;
 
         timeSinceLastFired += delay;
@@ -110,11 +110,11 @@ public class Home extends Animation {
                 Point locationA = a.getLocation();
                 Point locationB = b.getLocation();
 
-                double homeCalc = (getX() * getX()) + (getY() * getY());
-                double aCalc = (locationA.getX() - getX()) * (locationA.getX() - getX())
-                        + (locationA.getY() - getY()) * (locationA.getY() - getY());
-                double bCalc = (locationB.getX() - getX()) * (locationB.getX() - getX())
-                        + (locationB.getY() - getY()) * (locationB.getY() - getY());
+                double homeCalc = (getLatitude() * getLatitude()) + (getLongitude() * getLongitude());
+                double aCalc = (locationA.getLatitude() - getLatitude()) * (locationA.getLatitude() - getLatitude())
+                        + (locationA.getLongitude() - getLongitude()) * (locationA.getLongitude() - getLongitude());
+                double bCalc = (locationB.getLatitude() - getLatitude()) * (locationB.getLatitude() - getLatitude())
+                        + (locationB.getLongitude() - getLongitude()) * (locationB.getLongitude() - getLongitude());
 
                 if (aCalc == bCalc) {
                     return 0;
@@ -130,10 +130,14 @@ public class Home extends Animation {
 
         Enemy closestEnemy = sortedEnemies.get(0);
 
-        double angle = Math.atan2(getY() - closestEnemy.getLocation().getY(),
-                getX() - closestEnemy.getLocation().getX());
+        double enemyLong = closestEnemy.getLocation().getLongitude();
+        double enemyLat = closestEnemy.getLocation().getLatitude();
+
+        double angle = Math.atan2(getLongitude() - enemyLong,
+                getLatitude() - enemyLat);
         angle = 360 - (180 - (angle * (180 / Math.PI)));
 
+        System.out.println ("Aiming "+angle+" deg at "+new Point(enemyLat, enemyLong)+" for enemy at "+closestEnemy.getBoundingBox());
         return angle;
     }
 
@@ -152,7 +156,7 @@ public class Home extends Animation {
             return;
         }
 
-        NormalBullet normalBullet = new NormalBullet(parent, shotSound, getX(), getY(), angle, 100);
+        NormalBullet normalBullet = new NormalBullet(parent, shotSound, getLatitude(), getLongitude(), angle);
         normalBullet.shoot();
         bullets.add(normalBullet);
     }
@@ -160,8 +164,8 @@ public class Home extends Animation {
     public void render(Batch batch) {
 
         Sprite homeSprite = getSprite();
-        homeSprite.setCenterX(getX());
-        homeSprite.setCenterY(getY());
+        homeSprite.setCenterX(parent.convertLongToX(longitude));
+        homeSprite.setCenterY(parent.convertLatToY(latitude));
 
         homeSprite.draw(batch);
 
@@ -171,8 +175,9 @@ public class Home extends Animation {
             }
             TextureRegion textureRegion = bullet.getFrameTextureRegion();
             Sprite bulletSprite = new Sprite(textureRegion);
-            bulletSprite.setX(bullet.getX());
-            bulletSprite.setY(bullet.getY());
+
+            bulletSprite.setX(parent.convertLongToX(bullet.getLongitude()));
+            bulletSprite.setY(parent.convertLatToY(bullet.getLatitude()));
             bulletSprite.draw(batch);
         }
 

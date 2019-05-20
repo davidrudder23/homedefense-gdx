@@ -87,15 +87,17 @@ public class Intersection {
         return  weight;
     }
 
-    public boolean closeTo(int x, int y) {
+    public boolean closeTo(float x, float y) {
         Node node = getNode();
-        //System.out.println ("Comparing closeTo "+x+" vs "+node.getX()+", "+y+" vs "+node.getY());
-        if (Math.abs(x - node.getX()) > 5) { // todo - this fails to get a good point for home.  we should choose the closest, not just find one within an arbitrary distance
+        //System.out.println ("Comparing closeTo "+x+" vs "+node.getLatitude()+", "+y+" vs "+node.getLongitude());
+        if (Math.abs(x - node.getLat()) > 0.0001) { // todo - this fails to get a good point for home.  we should choose the closest, not just find one within an arbitrary distance
+            //System.out.println (node.getLat()+"x"+node.getLon()+" is not close to "+x+"x"+y);
             return false;
         }
-        if (Math.abs(y - node.getY()) > 5) {
+        if (Math.abs(y - node.getLon()) > 0.0001) {
             return false;
         }
+        //System.out.println (node.getLat()+"x"+node.getLon()+" is not close to "+x+"x"+y);
         return true;
     }
 
