@@ -13,12 +13,6 @@ public class FlyingEnemy extends Enemy {
     double latitude;
     double longitude;
 
-    @Getter
-    private int width;
-
-    @Getter
-    private int height;
-
     Point startingPoint;
     Point endingPoint;
 
@@ -54,12 +48,12 @@ public class FlyingEnemy extends Enemy {
     }
 
     @Override
-    public int getWidth() {
+    public double getWidth() {
         return 32;
     }
 
     @Override
-    public int getHeight() {
+    public double getHeight() {
         return 32;
     }
 }

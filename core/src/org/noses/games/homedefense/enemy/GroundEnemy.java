@@ -30,8 +30,6 @@ public class GroundEnemy extends Enemy {
     private double direction;
     private List<PathStep> pathSteps;
     private int currentPathStep;
-    private int width;
-    private int height;
 
     private double speedMultiplier;
 
@@ -104,6 +102,16 @@ public class GroundEnemy extends Enemy {
                     getLocation().getLatitude() + "x" +
                     getLocation().getLongitude() +  " direction="+direction+" progress along="+progressAlong);*/
         }
+    }
+
+    @Override
+    public double getWidth() {
+        return HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileWidth;
+    }
+
+    @Override
+    public double getHeight() {
+        return HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileHeight;
     }
 
     public Point getLocation() {

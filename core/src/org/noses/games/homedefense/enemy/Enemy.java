@@ -43,9 +43,9 @@ public abstract class Enemy extends Animation implements ClockTickHandler {
 
     public abstract Point getLocation();
 
-    public abstract int getWidth();
+    public abstract double getWidth();
 
-    public abstract int getHeight();
+    public abstract double getHeight();
 
     public Rectangle getBoundingBox() {
         double halfWidth = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileWidth / 2;

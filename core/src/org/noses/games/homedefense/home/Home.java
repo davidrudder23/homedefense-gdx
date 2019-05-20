@@ -130,10 +130,14 @@ public class Home extends Animation {
 
         Enemy closestEnemy = sortedEnemies.get(0);
 
-        double angle = Math.atan2(getLongitude() - closestEnemy.getLocation().getLongitude(),
-                getLatitude() - closestEnemy.getLocation().getLatitude());
+        double enemyLong = closestEnemy.getLocation().getLongitude();
+        double enemyLat = closestEnemy.getLocation().getLatitude();
+
+        double angle = Math.atan2(getLongitude() - enemyLong,
+                getLatitude() - enemyLat);
         angle = 360 - (180 - (angle * (180 / Math.PI)));
 
+        System.out.println ("Aiming "+angle+" deg at "+new Point(enemyLat, enemyLong)+" for enemy at "+closestEnemy.getBoundingBox());
         return angle;
     }
 
