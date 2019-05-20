@@ -129,8 +129,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
                     "test1",
                     denverLatitude,
                     denverLongitude);
-            //austinLatitude,
-            //austinLongitude);
+                    //austinLatitude,
+                    //austinLongitude);
 
             map = mapClient.getMap(account, width, height);
             //System.out.println(map);

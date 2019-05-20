@@ -11,6 +11,7 @@ public class Map {
     int width;
     int height;
     List<Nest> nests;
+    float north, south, east, west;
 
     float north;
     float south;
