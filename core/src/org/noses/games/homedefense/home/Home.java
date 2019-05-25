@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +14,7 @@ import org.noses.games.homedefense.bullet.NormalBullet;
 import org.noses.games.homedefense.enemy.Animation;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.game.PhysicalObject;
-import org.noses.games.homedefense.game.Shooter;
+import org.noses.games.homedefense.game.Aimer;
 import org.noses.games.homedefense.geometry.Point;
 
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class Home extends Animation implements PhysicalObject {
 
     Timer.Task timer;
 
-    Shooter shooter;
+    Aimer aimer;
 
 
     public Home(HomeDefenseGame parent, double latitude, double longitude) {
@@ -69,7 +68,7 @@ public class Home extends Animation implements PhysicalObject {
         hitSound = parent.loadSound("home_hit.mp3");
 
         health = 100;
-        shooter = new Shooter(parent, latitude, longitude);
+        aimer = new Aimer(parent, latitude, longitude);
 
         timer = Timer.schedule(new Timer.Task() {
                                    @Override
@@ -137,7 +136,7 @@ public class Home extends Animation implements PhysicalObject {
 
         Enemy closestEnemy = sortedEnemies.get(0);
 
-        return shooter.aim(closestEnemy);
+        return aimer.aim(closestEnemy);
     }
 
     private void shoot() {
