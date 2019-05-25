@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Timer;
 import lombok.Getter;
 import lombok.Setter;
 import org.noses.games.homedefense.client.*;
+import org.noses.games.homedefense.enemy.ArmoredGroundEnemy;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.GroundEnemy;
@@ -169,6 +170,14 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .delay(10)
                 .numEnemies(10)
                 .enemyBuilder(new GroundEnemy.GroundEnemyBuilder(this, intersections))
+                .build();
+        enemyGroups.add(enemyGroup);
+
+        enemyGroup = EnemyGroup.builder()
+                .intersections(startingIntersections)
+                .delay(20)
+                .numEnemies(10)
+                .enemyBuilder(new ArmoredGroundEnemy.ArmoredGroundEnemyBuilder(this, intersections))
                 .build();
         enemyGroups.add(enemyGroup);
 

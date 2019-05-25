@@ -34,11 +34,15 @@ public class GroundEnemy extends Enemy {
     private double speedMultiplier;
 
     public GroundEnemy(HomeDefenseGame parent, Way way) {
-        super(parent, "line0.png", parent.loadSound("normal_hit.mp3"), 32, 32, 10);
+        this(parent, way, "line0.png", 10, 32, 32, 10);
+    }
+
+    protected GroundEnemy(HomeDefenseGame parent, Way way, String spriteFilename, double speedMultiplier, int tileWidth, int tileHeight, int startingHealth) {
+        super(parent, spriteFilename, parent.loadSound("normal_hit.mp3"), tileWidth, tileHeight, startingHealth);
         this.way = way;
         progressAlong = 0;
         direction = 1;
-        this.speedMultiplier = 10;
+        this.speedMultiplier = speedMultiplier;
     }
 
     public void setPath(PathStep finalPathStep) {
