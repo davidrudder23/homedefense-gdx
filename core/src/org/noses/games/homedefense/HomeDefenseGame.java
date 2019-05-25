@@ -223,6 +223,9 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        for (MouseHandler mouseHandler : mouseHandlers) {
+            mouseHandler.onMouseDragged(screenX, screenY);
+        }
         return false;
     }
 
@@ -409,7 +412,6 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
         }
 
         batch.begin();
-
         // render the enemies
 
         for (EnemyGroup enemyGroup : enemyGroups) {
@@ -441,6 +443,14 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
         font.draw(batch, "Money: " + money, 10, Gdx.graphics.getHeight() - (35 + font.getCapHeight()));
 
         font.draw(batch, "Speed: " + speedMultiplier + "x", 10, Gdx.graphics.getHeight() - (40 + (font.getCapHeight() * 2)));
+
+
+        // render the pie menu
+
+        if (!towerChoiceMenu.isHidden()) {
+            towerChoiceMenu.renderMenu(batch);
+        }
+
 
         batch.end();
 
