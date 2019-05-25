@@ -137,7 +137,7 @@ public class Home extends Animation {
                 getLatitude() - enemyLat);
         angle = 360 - (180 - (angle * (180 / Math.PI)));
 
-        System.out.println ("Aiming "+angle+" deg at "+new Point(enemyLat, enemyLong)+" for enemy at "+closestEnemy.getBoundingBox());
+        //System.out.println ("Aiming "+angle+" deg at "+new Point(enemyLat, enemyLong)+" for enemy at "+closestEnemy.getBoundingBox());
         return angle;
     }
 

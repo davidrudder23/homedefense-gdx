@@ -18,10 +18,10 @@ import org.noses.games.homedefense.enemy.ArmoredGroundEnemy;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.GroundEnemy;
-import org.noses.games.homedefense.enemy.flying.LeftToRightFlyingEnemyBuilder;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Intersection;
+import org.noses.games.homedefense.ui.ClickHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,10 +55,14 @@ public class HomeDefenseGame extends ApplicationAdapter {
     @Setter
     private int money;
 
+    private List<ClickHandler> clickHandlers;
+
     @Override
     public void create() {
 
         enemyGroups = new ArrayList<>();
+
+        clickHandlers = new ArrayList<>();
 
         money = 0;
 
@@ -67,11 +71,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
         initializeMap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         HomeDefenseGame.ONE_PIXEL_IN_LATLON = (map.getEast() - map.getWest()) / Gdx.graphics.getWidth();
-
-        /*System.out.println("1 pixel = "+HomeDefenseGame.ONE_PIXEL_IN_LATLON);
-        System.out.println("1 second= "+HomeDefenseGame.LATLON_MOVED_IN_1s_1mph);
-        System.out.println ("Travel ="+HomeDefenseGame.LATLON_MOVED_IN_1s_1mph/HomeDefenseGame.ONE_PIXEL_IN_LATLON);
-        */
 
         home = new Home(this,
                 ((map.getNorth() - map.getSouth()) / 2) + map.getSouth(),
@@ -99,6 +98,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         keyPressLoop();
 
+        mouseClickLoop();
+
         Timer.schedule(new Timer.Task() {
                            @Override
                            public void run() {
@@ -123,6 +124,37 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     }
 
+    private void mouseClickLoop() {
+        keyPressTimer = Timer.schedule(new Timer.Task() {
+
+            @Override
+            public void run() {
+
+                if (Gdx.input.isButtonPressed(0)) {
+                    int x = Gdx.input.getX();
+                    int y = Gdx.input.getY();
+
+                    System.out.println("Mouse clicked");
+
+                    for (ClickHandler clickHandler : clickHandlers) {
+                        clickHandler.onClick(x, y);
+                    }
+                }
+                if (Gdx.input.isButtonPressed(1)) {
+                    int x = Gdx.input.getX();
+                    int y = Gdx.input.getY();
+
+                    System.out.println("Right Mouse clicked");
+
+                    for (ClickHandler clickHandler : clickHandlers) {
+                        clickHandler.onRightClick(x, y);
+                    }
+                }
+            }
+        }, 1, 0.1f);
+
+    }
+
     public void initializeMap(int width, int height) {
         try {
 
@@ -138,8 +170,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
                     "test1",
                     denverLatitude,
                     denverLongitude);
-                    //austinLatitude,
-                    //austinLongitude);
+            //austinLatitude,
+            //austinLongitude);
 
             map = mapClient.getMap(account, width, height);
             //System.out.println(map);
@@ -302,9 +334,9 @@ public class HomeDefenseGame extends ApplicationAdapter {
         // render the score and other text
         BitmapFont font = new BitmapFont();
         font.setColor(Color.WHITE);
-        font.draw(batch, "Health: "+home.getHealth(), 10,Gdx.graphics.getHeight()- 30);
+        font.draw(batch, "Health: " + home.getHealth(), 10, Gdx.graphics.getHeight() - 30);
 
-        font.draw(batch, "Money: "+money, 10, Gdx.graphics.getHeight()- (30 + font.getCapHeight()));
+        font.draw(batch, "Money: " + money, 10, Gdx.graphics.getHeight() - (30 + font.getCapHeight()));
 
         batch.end();
 
