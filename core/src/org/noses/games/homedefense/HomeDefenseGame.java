@@ -402,7 +402,9 @@ public class HomeDefenseGame extends ApplicationAdapter {
         font.setColor(Color.WHITE);
         font.draw(batch, "Health: " + home.getHealth(), 10, Gdx.graphics.getHeight() - 30);
 
-        font.draw(batch, "Money: " + money, 10, Gdx.graphics.getHeight() - (30 + font.getCapHeight()));
+        font.draw(batch, "Money: " + money, 10, Gdx.graphics.getHeight() - (35 + font.getCapHeight()));
+
+        font.draw(batch, "Speed: " + speedMultiplier+"x", 10, Gdx.graphics.getHeight() - (40 + (font.getCapHeight()*2)));
 
         batch.end();
 
