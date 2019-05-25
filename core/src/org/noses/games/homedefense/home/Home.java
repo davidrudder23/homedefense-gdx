@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Timer;
 import lombok.Getter;
 import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
@@ -48,8 +47,6 @@ public class Home extends Animation implements PhysicalObject {
     @Getter
     double longitude;
 
-    Timer.Task timer;
-
     Aimer aimer;
 
 
@@ -70,13 +67,8 @@ public class Home extends Animation implements PhysicalObject {
         health = 100;
         aimer = new Aimer(parent, latitude, longitude);
 
-        timer = Timer.schedule(new Timer.Task() {
-                                   @Override
-                                   public void run() {
-                                       clockTick(0.1);
-                                   }
-                               },
-                0f, 0.1f);
+
+        parent.addClockTickHandler(this);
     }
 
     public void hit(int damage) {
@@ -158,6 +150,9 @@ public class Home extends Animation implements PhysicalObject {
         NormalBullet normalBullet = new NormalBullet(parent, shotSound, getLatitude(), getLongitude(), angle);
         normalBullet.shoot();
         bullets.add(normalBullet);
+
+        System.out.println("Adding bullet to clock tick handlers");
+        parent.addClockTickHandler(normalBullet);
     }
 
     public void render(Batch batch) {

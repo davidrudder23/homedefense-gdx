@@ -57,7 +57,14 @@ public class HomeDefenseGame extends ApplicationAdapter {
     private int money;
 
     private List<ClickHandler> clickHandlers;
+    private List<ClickHandler> clickHandlersToBeAdded;
+
     private List<ClockTickHandler> clockTickHandlers;
+    private List<ClockTickHandler> clockTickHandlersToBeAdded;
+
+    int speedMultiplier;
+
+    Timer.Task timer;
 
     @Override
     public void create() {
@@ -65,8 +72,12 @@ public class HomeDefenseGame extends ApplicationAdapter {
         enemyGroups = new ArrayList<>();
 
         clickHandlers = new ArrayList<>();
+        clickHandlersToBeAdded = new ArrayList<>();
 
         clockTickHandlers = new ArrayList<>();
+        clockTickHandlersToBeAdded = new ArrayList<>();
+
+        speedMultiplier = 1;
 
         money = 0;
 
@@ -104,22 +115,25 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         mouseClickLoop();
 
-        Timer.schedule(new Timer.Task() {
+        timer = Timer.schedule(new Timer.Task() {
                            @Override
                            public void run() {
                                clockTick(1 / 10.0f);
                            }
                        }
-                , 0f, 1 / 10.0f);
+                , 0f, 1 / (10.0f*speedMultiplier));
 
     }
 
     public void addClockTickHandler(ClockTickHandler clockTickHandler) {
-        clockTickHandlers.add(clockTickHandler);
+        synchronized (clockTickHandlersToBeAdded) {
+            clockTickHandlersToBeAdded.add(clockTickHandler);
+            System.out.println("Clock tick handlers size=" + clockTickHandlers.size());
+        }
     }
 
-    public void addClickHandler (ClickHandler clickHandler) {
-        clickHandlers.add(clickHandler);
+    public void addClickHandler(ClickHandler clickHandler) {
+        clickHandlersToBeAdded.add(clickHandler);
     }
 
     private void keyPressLoop() {
@@ -130,7 +144,26 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
                 if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
                     System.exit(0);
+
                 }
+
+                if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                    speedMultiplier += 1;
+
+                    if ((speedMultiplier>5) || (speedMultiplier<1)) {
+                        speedMultiplier = 1;
+                    }
+
+                    timer.cancel();
+                    timer = Timer.schedule(new Timer.Task() {
+                                       @Override
+                                       public void run() {
+                                           clockTick(1 / 10.0f);
+                                       }
+                                   }
+                            , 0f, 1 / (10.0f*speedMultiplier));
+                }
+
             }
         }, 1, 0.1f);
 
@@ -244,7 +277,24 @@ public class HomeDefenseGame extends ApplicationAdapter {
     }
 
     public void clockTick(float delta) {
-        for (ClockTickHandler clockTickHandler: clockTickHandlers) {
+        synchronized (clockTickHandlersToBeAdded) {
+            for (ClockTickHandler clockTickHandler : clockTickHandlersToBeAdded) {
+                clockTickHandlers.add(clockTickHandler);
+            }
+            clockTickHandlersToBeAdded.clear();
+        }
+
+        if (clockTickHandlers.size() > 0) {
+            for (int i = clockTickHandlers.size() - 1; i >= 0; i--) {
+                ClockTickHandler clockTickHandler = clockTickHandlers.get(i);
+                if (clockTickHandler.isKilled()) {
+                    clockTickHandlers.remove(i);
+                }
+            }
+        }
+
+        for (ClockTickHandler clockTickHandler : clockTickHandlers) {
+            //System.out.println ("Clock ticking "+clockTickHandler+" iskilled="+clockTickHandler.isKilled());
             if (!clockTickHandler.isKilled()) {
                 clockTickHandler.clockTick(delta);
             }

@@ -1,12 +1,11 @@
 package org.noses.games.homedefense.bullet;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.utils.Timer;
-import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.Map;
 import org.noses.games.homedefense.game.Animation;
 import org.noses.games.homedefense.enemy.Enemy;
+import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.geometry.Rectangle;
 
 import java.util.ArrayList;
@@ -25,8 +24,6 @@ public abstract class Bullet extends Animation {
 
     protected double distanceTraveled;
 
-    Timer.Task timer;
-
     Sound shotSound;
 
     boolean dead;
@@ -37,17 +34,9 @@ public abstract class Bullet extends Animation {
         this.shotSound = shotSound;
 
         dead = false;
-
-        timer = Timer.schedule(new Timer.Task() {
-                                   @Override
-                                   public void run() {
-                                       clockTick(0.1f);
-                                   }
-                               },
-                0f, 1 / 10.0f);
     }
 
-    public void clockTick(float delta) {
+    public void clockTick(double delta) {
         move(delta);
     }
 
@@ -68,7 +57,6 @@ public abstract class Bullet extends Animation {
     public abstract double getRadius();
 
     public void move(double delta) {
-
         if (dead) {
             return;
         }
@@ -93,7 +81,6 @@ public abstract class Bullet extends Animation {
     @Override
     public void kill() {
         dead = true;
-        timer.cancel();
     }
 
     @Override
@@ -118,5 +105,10 @@ public abstract class Bullet extends Animation {
         }
 
         return enemiesHit;
+    }
+
+    @Override
+    public String toString() {
+        return "Bullet at "+new Point(getLatitude(), getLongitude());
     }
 }
