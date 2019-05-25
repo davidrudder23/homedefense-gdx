@@ -58,6 +58,16 @@ public class EnemyGroup implements ClockTickHandler {
         }
     }
 
+    @Override
+    public void kill() {
+        // do nothing
+    }
+
+    @Override
+    public boolean isKilled() {
+        return isEmpty();
+    }
+
     public static EnemyGroupBuilder builder() {
         return new EnemyGroupBuilder();
     }

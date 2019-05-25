@@ -18,6 +18,7 @@ import org.noses.games.homedefense.enemy.ArmoredGroundEnemy;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.GroundEnemy;
+import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Intersection;
@@ -56,6 +57,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
     private int money;
 
     private List<ClickHandler> clickHandlers;
+    private List<ClockTickHandler> clockTickHandlers;
 
     @Override
     public void create() {
@@ -63,6 +65,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
         enemyGroups = new ArrayList<>();
 
         clickHandlers = new ArrayList<>();
+
+        clockTickHandlers = new ArrayList<>();
 
         money = 0;
 
@@ -108,6 +112,14 @@ public class HomeDefenseGame extends ApplicationAdapter {
                        }
                 , 0f, 1 / 10.0f);
 
+    }
+
+    public void addClockTickHandler(ClockTickHandler clockTickHandler) {
+        clockTickHandlers.add(clockTickHandler);
+    }
+
+    public void addClickHandler (ClickHandler clickHandler) {
+        clickHandlers.add(clickHandler);
     }
 
     private void keyPressLoop() {
@@ -204,6 +216,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .enemyBuilder(new GroundEnemy.GroundEnemyBuilder(this, intersections))
                 .build();
         enemyGroups.add(enemyGroup);
+        addClockTickHandler(enemyGroup);
 
         enemyGroup = EnemyGroup.builder()
                 .intersections(startingIntersections)
@@ -212,6 +225,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .enemyBuilder(new ArmoredGroundEnemy.ArmoredGroundEnemyBuilder(this, intersections))
                 .build();
         enemyGroups.add(enemyGroup);
+        addClockTickHandler(enemyGroup);
 
         /*
         EnemyGroup enemyGroup2 = EnemyGroup.builder()
@@ -230,8 +244,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
     }
 
     public void clockTick(float delta) {
-        for (EnemyGroup enemyGroup : enemyGroups) {
-            enemyGroup.clockTick(delta);
+        for (ClockTickHandler clockTickHandler: clockTickHandlers) {
+            if (!clockTickHandler.isKilled()) {
+                clockTickHandler.clockTick(delta);
+            }
         }
 
     }
@@ -239,7 +255,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
     public void hitHome(int damage) {
         System.out.println("Home hit for " + damage + " health=" + home.getHealth());
         home.hit(damage);
-        if (home.isDead()) {
+        if (home.isKilled()) {
             Gdx.app.exit();
         }
     }

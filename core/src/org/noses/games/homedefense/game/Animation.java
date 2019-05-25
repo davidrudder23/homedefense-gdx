@@ -1,13 +1,14 @@
-package org.noses.games.homedefense.enemy;
+package org.noses.games.homedefense.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Timer;
 import lombok.Data;
 import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.game.ClockTickHandler;
 
 @Data
-public abstract class Animation {
+public abstract class Animation implements ClockTickHandler {
     protected HomeDefenseGame parent;
     protected int frameNumber = 0;
     protected TextureRegion[][] animation;
@@ -25,13 +26,16 @@ public abstract class Animation {
         Texture avatarAnimationSheet = new Texture(spriteFilename);
         animation = TextureRegion.split(avatarAnimationSheet, tileWidth, tileHeight);
 
-        timer = Timer.schedule(new Timer.Task() {
-                                   @Override
-                                   public void run() {
-                                       advanceAnimation(0.1f);
-                                   }
-                               },
-                0f, 1 / 10.0f);
+        parent.addClockTickHandler(this);
+    }
+
+    public void kill() {
+
+    }
+
+    @Override
+    public void clockTick(double delta) {
+
     }
 
     protected void advanceAnimation(float delay) {

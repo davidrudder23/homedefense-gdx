@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Timer;
 import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.Map;
-import org.noses.games.homedefense.enemy.Animation;
+import org.noses.games.homedefense.game.Animation;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.geometry.Rectangle;
 
@@ -29,7 +29,6 @@ public abstract class Bullet extends Animation {
 
     Sound shotSound;
 
-    @Getter
     boolean dead;
 
     public Bullet(HomeDefenseGame parent, String spriteFilename, Sound shotSound, int tileWidth, int tileHeight) {
@@ -91,9 +90,15 @@ public abstract class Bullet extends Animation {
         List<Enemy> hitEnemies = whichEnemiesHit();
     }
 
-    private void kill() {
+    @Override
+    public void kill() {
         dead = true;
         timer.cancel();
+    }
+
+    @Override
+    public boolean isKilled() {
+        return dead;
     }
 
     public List<Enemy> whichEnemiesHit() {

@@ -20,4 +20,18 @@ public abstract class AbstractTower implements Tower {
         return location.getLongitude();
     }
 
+    @Override
+    public void clockTick(double delta) {
+
+    }
+
+    @Override
+    public void kill() {
+
+    }
+
+    @Override
+    public boolean isKilled() {
+        return false;
+    }
 }

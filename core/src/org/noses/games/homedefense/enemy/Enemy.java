@@ -3,6 +3,7 @@ package org.noses.games.homedefense.enemy;
 import com.badlogic.gdx.audio.Sound;
 import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.game.Animation;
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.PhysicalObject;
 import org.noses.games.homedefense.geometry.Point;
@@ -34,9 +35,12 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
     }
 
     public void kill() {
-        timer.cancel();
         this.killed = true;
         parent.addMoney(getValue());
+    }
+
+    public boolean isKilled() {
+        return killed;
     }
 
     public abstract int getDamage();

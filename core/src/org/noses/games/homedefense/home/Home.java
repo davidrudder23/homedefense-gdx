@@ -11,7 +11,7 @@ import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.bullet.Bullet;
 import org.noses.games.homedefense.bullet.NormalBullet;
-import org.noses.games.homedefense.enemy.Animation;
+import org.noses.games.homedefense.game.Animation;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.game.PhysicalObject;
 import org.noses.games.homedefense.game.Aimer;
@@ -84,7 +84,8 @@ public class Home extends Animation implements PhysicalObject {
         hitSound.play();
     }
 
-    public boolean isDead() {
+    @Override
+    public boolean isKilled() {
         return health<=0;
     }
 
@@ -142,7 +143,7 @@ public class Home extends Animation implements PhysicalObject {
     private void shoot() {
         int numBulletsOnScreen = 0;
         for (Bullet bullet : bullets) {
-            if (!bullet.isDead()) {
+            if (!bullet.isKilled()) {
                 numBulletsOnScreen++;
             }
         }
@@ -168,7 +169,7 @@ public class Home extends Animation implements PhysicalObject {
         homeSprite.draw(batch);
 
         for (Bullet bullet : bullets) {
-            if (bullet.isDead()) {
+            if (bullet.isKilled()) {
                 continue;
             }
             TextureRegion textureRegion = bullet.getFrameTextureRegion();
