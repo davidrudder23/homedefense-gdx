@@ -23,7 +23,8 @@ import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Intersection;
-import org.noses.games.homedefense.ui.ClickHandler;
+import org.noses.games.homedefense.ui.MouseHandler;
+import org.noses.games.homedefense.ui.PieMenu;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,8 +58,8 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
     @Setter
     private int money;
 
-    private List<ClickHandler> clickHandlers;
-    private List<ClickHandler> clickHandlersToBeAdded;
+    private List<MouseHandler> mouseHandlers;
+    private List<MouseHandler> mouseHandlersToBeAdded;
 
     private List<ClockTickHandler> clockTickHandlers;
     private List<ClockTickHandler> clockTickHandlersToBeAdded;
@@ -67,13 +68,15 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
 
     Timer.Task timer;
 
+    PieMenu towerChoiceMenu;
+
     @Override
     public void create() {
 
         enemyGroups = new ArrayList<>();
 
-        clickHandlers = new ArrayList<>();
-        clickHandlersToBeAdded = new ArrayList<>();
+        mouseHandlers = new ArrayList<>();
+        mouseHandlersToBeAdded = new ArrayList<>();
 
         clockTickHandlers = new ArrayList<>();
         clockTickHandlersToBeAdded = new ArrayList<>();
@@ -114,25 +117,29 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
 
         Gdx.input.setInputProcessor(this);
 
+        towerChoiceMenu = new PieMenu();
+        addClickHandler(towerChoiceMenu);
+
         timer = Timer.schedule(new Timer.Task() {
-                           @Override
-                           public void run() {
-                               clockTick(1 / 10.0f);
-                           }
-                       }
-                , 0f, 1 / (10.0f*speedMultiplier));
+                                   @Override
+                                   public void run() {
+                                       clockTick(1 / 10.0f);
+                                   }
+                               }
+                , 0f, 1 / (10.0f * speedMultiplier));
 
     }
 
     public void addClockTickHandler(ClockTickHandler clockTickHandler) {
         synchronized (clockTickHandlersToBeAdded) {
             clockTickHandlersToBeAdded.add(clockTickHandler);
-            System.out.println("Clock tick handlers size=" + clockTickHandlers.size());
         }
     }
 
-    public void addClickHandler(ClickHandler clickHandler) {
-        clickHandlersToBeAdded.add(clickHandler);
+    public void addClickHandler(MouseHandler mouseHandler) {
+        synchronized (mouseHandlers) {
+            mouseHandlersToBeAdded.add(mouseHandler);
+        }
     }
 
     @Override
@@ -145,7 +152,7 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             speedMultiplier += 1;
 
-            if ((speedMultiplier>5) || (speedMultiplier<1)) {
+            if ((speedMultiplier > 5) || (speedMultiplier < 1)) {
                 speedMultiplier = 1;
             }
 
@@ -156,7 +163,7 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
                                            clockTick(1 / 10.0f);
                                        }
                                    }
-                    , 0f, 1 / (10.0f*speedMultiplier));
+                    , 0f, 1 / (10.0f * speedMultiplier));
         }
 
         return false;
@@ -174,24 +181,24 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (Gdx.input.isButtonPressed(0)) {
-            int x = Gdx.input.getX();
-            int y = Gdx.input.getY();
-
-            System.out.println("Mouse clicked");
-
-            for (ClickHandler clickHandler : clickHandlers) {
-                clickHandler.onClick(x, y);
+        synchronized (mouseHandlers) {
+            for (MouseHandler mouseHandler : mouseHandlersToBeAdded) {
+                mouseHandlers.add(mouseHandler);
             }
+            mouseHandlersToBeAdded.clear();
         }
-        if (Gdx.input.isButtonPressed(1)) {
-            int x = Gdx.input.getX();
-            int y = Gdx.input.getY();
 
-            System.out.println("Right Mouse clicked");
+        int x = Gdx.input.getX();
+        int y = Gdx.input.getY();
 
-            for (ClickHandler clickHandler : clickHandlers) {
-                clickHandler.onRightClick(x, y);
+        if (Gdx.input.isButtonPressed(0)) {
+
+            for (MouseHandler mouseHandler : mouseHandlers) {
+                mouseHandler.onClick(x, y);
+            }
+        } else if (Gdx.input.isButtonPressed(1)) {
+            for (MouseHandler mouseHandler : mouseHandlers) {
+                mouseHandler.onRightClick(x, y);
             }
         }
 
@@ -200,6 +207,17 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        synchronized (mouseHandlers) {
+            for (MouseHandler mouseHandler : mouseHandlersToBeAdded) {
+                mouseHandlers.add(mouseHandler);
+            }
+            mouseHandlersToBeAdded.clear();
+        }
+
+        for (MouseHandler mouseHandler : mouseHandlers) {
+            mouseHandler.onClickUp();
+        }
+
         return false;
     }
 
@@ -422,7 +440,7 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
 
         font.draw(batch, "Money: " + money, 10, Gdx.graphics.getHeight() - (35 + font.getCapHeight()));
 
-        font.draw(batch, "Speed: " + speedMultiplier+"x", 10, Gdx.graphics.getHeight() - (40 + (font.getCapHeight()*2)));
+        font.draw(batch, "Speed: " + speedMultiplier + "x", 10, Gdx.graphics.getHeight() - (40 + (font.getCapHeight() * 2)));
 
         batch.end();
 
