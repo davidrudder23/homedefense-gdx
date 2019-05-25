@@ -14,6 +14,8 @@ import org.noses.games.homedefense.bullet.Bullet;
 import org.noses.games.homedefense.bullet.NormalBullet;
 import org.noses.games.homedefense.enemy.Animation;
 import org.noses.games.homedefense.enemy.Enemy;
+import org.noses.games.homedefense.game.PhysicalObject;
+import org.noses.games.homedefense.game.Shooter;
 import org.noses.games.homedefense.geometry.Point;
 
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class Home extends Animation {
+public class Home extends Animation implements PhysicalObject {
 
     final double timeBetweenShots = 0.8;
 
@@ -49,6 +51,8 @@ public class Home extends Animation {
 
     Timer.Task timer;
 
+    Shooter shooter;
+
 
     public Home(HomeDefenseGame parent, double latitude, double longitude) {
         super(parent, "home.png", 64, 64);
@@ -65,6 +69,7 @@ public class Home extends Animation {
         hitSound = parent.loadSound("home_hit.mp3");
 
         health = 100;
+        shooter = new Shooter(parent, latitude, longitude);
 
         timer = Timer.schedule(new Timer.Task() {
                                    @Override
@@ -132,15 +137,7 @@ public class Home extends Animation {
 
         Enemy closestEnemy = sortedEnemies.get(0);
 
-        double enemyLong = closestEnemy.getLocation().getLongitude();
-        double enemyLat = closestEnemy.getLocation().getLatitude();
-
-        double angle = Math.atan2(getLongitude() - enemyLong,
-                getLatitude() - enemyLat);
-        angle = 360 - (180 - (angle * (180 / Math.PI)));
-
-        //System.out.println ("Aiming "+angle+" deg at "+new Point(enemyLat, enemyLong)+" for enemy at "+closestEnemy.getBoundingBox());
-        return angle;
+        return shooter.aim(closestEnemy);
     }
 
     private void shoot() {

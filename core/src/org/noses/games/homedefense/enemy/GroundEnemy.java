@@ -109,18 +109,18 @@ public class GroundEnemy extends Enemy {
     }
 
     @Override
-    public double getWidth() {
-        return HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileWidth;
-    }
-
-    @Override
-    public double getHeight() {
-        return HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileHeight;
-    }
-
-    @Override
     public int getValue() {
         return 10;
+    }
+
+    @Override
+    public double getLatitude() {
+        return getLocation().getLatitude();
+    }
+
+    @Override
+    public double getLongitude() {
+        return getLocation().getLongitude();
     }
 
     public Point getLocation() {

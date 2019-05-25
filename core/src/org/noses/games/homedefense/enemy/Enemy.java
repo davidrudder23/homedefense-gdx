@@ -4,10 +4,11 @@ import com.badlogic.gdx.audio.Sound;
 import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.game.ClockTickHandler;
+import org.noses.games.homedefense.game.PhysicalObject;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.geometry.Rectangle;
 
-public abstract class Enemy extends Animation implements ClockTickHandler {
+public abstract class Enemy extends Animation implements ClockTickHandler, PhysicalObject {
 
     @Getter
     private int health;
@@ -45,10 +46,6 @@ public abstract class Enemy extends Animation implements ClockTickHandler {
     public abstract void clockTick(double delta);
 
     public abstract Point getLocation();
-
-    public abstract double getWidth();
-
-    public abstract double getHeight();
 
     public Rectangle getBoundingBox() {
         double halfWidth = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileWidth / 2;
