@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class PieMenu implements MouseHandler {
@@ -20,7 +21,7 @@ public class PieMenu implements MouseHandler {
     private int dragX;
     private int dragY;
 
-    List<Sprite[]> towerSprites; // normal, glow, grey, greyglow
+    HashMap<String, Sprite[]> towerSprites; // normal, glow, grey, greyglow
 
     String[] towerNames = {
             "bomber",
@@ -33,7 +34,7 @@ public class PieMenu implements MouseHandler {
     public PieMenu() {
         hidden = true;
 
-        towerSprites = new ArrayList<>();
+        towerSprites = new HashMap<>();
 
         for (int i = 0; i < towerNames.length; i++) {
             Texture textureNormal = new Texture("tower/"+towerNames[i]+".png");
@@ -45,7 +46,7 @@ public class PieMenu implements MouseHandler {
             towerSpriteArray[1] = new Sprite(textureGlow);
             towerSpriteArray[2] = new Sprite(textureGrey);
             towerSpriteArray[3] = new Sprite(textureGreyGlow);
-            towerSprites.add(towerSpriteArray);
+            towerSprites.put(towerNames[i], towerSpriteArray);
         }
     }
 
@@ -74,13 +75,70 @@ public class PieMenu implements MouseHandler {
     }
 
     public void renderMenu(Batch batch) {
-        for (Sprite[] spriteArray: towerSprites) {
-            int type = 0;
-            spriteArray[type].setScale(0.5f);
-            spriteArray[type].setCenterX(dragX);
-            spriteArray[type].setCenterY(Gdx.graphics.getHeight() - dragY);
-            spriteArray[type].draw(batch);
+        int height = Gdx.graphics.getHeight();
+
+        // first pass - do this very manually
+        // TODO - make this more flexible, once you figure out what's needed
+        Sprite sprite = null;
+
+        if (mouseWithin(clickX-66, clickY - 16, clickX - 32, clickY + 16)) {
+            sprite = towerSprites.get("bomber")[1];
+        } else {
+            sprite = towerSprites.get("bomber")[0];
         }
+        sprite.setScale(32.0f/sprite.getRegionWidth());
+        sprite.setCenterX(clickX - 50);
+        sprite.setCenterY(height - clickY);
+        sprite.draw(batch);
+
+        if (mouseWithin(clickX-45, clickY - 45, clickX - 13, clickY - 13)) {
+            sprite = towerSprites.get("broadcast")[1];
+        } else {
+            sprite = towerSprites.get("broadcast")[0];
+        }
+        sprite.setScale(32.0f/sprite.getRegionWidth());
+        sprite.setCenterX(clickX - 29);
+        sprite.setCenterY(height - (clickY-29));
+        sprite.draw(batch);
+
+        if (mouseWithin(clickX-16, clickY - 66, clickX + 16, clickY - 34)) {
+            sprite = towerSprites.get("rifle")[1];
+        } else {
+            sprite = towerSprites.get("rifle")[0];
+        }
+        sprite.setScale(32.0f/sprite.getRegionWidth());
+        sprite.setCenterX(clickX);
+        sprite.setCenterY(height - (clickY-50));
+        sprite.draw(batch);
+
+        if (mouseWithin(clickX + 13, clickY - 45, clickX + 45, clickY - 13)) {
+            sprite = towerSprites.get("factory")[1];
+        } else {
+            sprite = towerSprites.get("factory")[0];
+        }
+        sprite.setScale(32.0f/sprite.getRegionWidth());
+        sprite.setCenterX(clickX + 29);
+        sprite.setCenterY(height - (clickY-29));
+        sprite.draw(batch);
+
+        if (mouseWithin(clickX + 34, clickY - 16, clickX + 66, clickY + 16)) {
+            sprite = towerSprites.get("laser")[1];
+        } else {
+            sprite = towerSprites.get("laser")[0];
+        }
+        sprite.setScale(32.0f/sprite.getRegionWidth());
+        sprite.setCenterX(clickX + 50);
+        sprite.setCenterY(height - clickY);
+        sprite.draw(batch);
+
+    }
+
+    private boolean mouseWithin(int x, int y, int xp, int yp) {
+        if ((dragX >= x) && (dragX <= xp) &&
+                (dragY >=y) && (dragY <=yp)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
