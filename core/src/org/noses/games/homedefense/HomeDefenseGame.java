@@ -3,6 +3,7 @@ package org.noses.games.homedefense;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class HomeDefenseGame extends ApplicationAdapter {
+public class HomeDefenseGame extends ApplicationAdapter implements InputProcessor {
     // TODO: calculate this based on current lat/long, not just hardcoded to Denver
 
     //
@@ -111,9 +112,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         setupSound();
 
-        keyPressLoop();
-
-        mouseClickLoop();
+        Gdx.input.setInputProcessor(this);
 
         timer = Timer.schedule(new Timer.Task() {
                            @Override
@@ -136,68 +135,87 @@ public class HomeDefenseGame extends ApplicationAdapter {
         clickHandlersToBeAdded.add(clickHandler);
     }
 
-    private void keyPressLoop() {
-        keyPressTimer = Timer.schedule(new Timer.Task() {
+    @Override
+    public boolean keyDown(int keycode) {
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            System.exit(0);
 
-            @Override
-            public void run() {
+        }
 
-                if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-                    System.exit(0);
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            speedMultiplier += 1;
 
-                }
+            if ((speedMultiplier>5) || (speedMultiplier<1)) {
+                speedMultiplier = 1;
+            }
 
-                if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-                    speedMultiplier += 1;
-
-                    if ((speedMultiplier>5) || (speedMultiplier<1)) {
-                        speedMultiplier = 1;
-                    }
-
-                    timer.cancel();
-                    timer = Timer.schedule(new Timer.Task() {
+            timer.cancel();
+            timer = Timer.schedule(new Timer.Task() {
                                        @Override
                                        public void run() {
                                            clockTick(1 / 10.0f);
                                        }
                                    }
-                            , 0f, 1 / (10.0f*speedMultiplier));
-                }
+                    , 0f, 1 / (10.0f*speedMultiplier));
+        }
 
-            }
-        }, 1, 0.1f);
-
+        return false;
     }
 
-    private void mouseClickLoop() {
-        keyPressTimer = Timer.schedule(new Timer.Task() {
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
 
-            @Override
-            public void run() {
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
 
-                if (Gdx.input.isButtonPressed(0)) {
-                    int x = Gdx.input.getX();
-                    int y = Gdx.input.getY();
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (Gdx.input.isButtonPressed(0)) {
+            int x = Gdx.input.getX();
+            int y = Gdx.input.getY();
 
-                    System.out.println("Mouse clicked");
+            System.out.println("Mouse clicked");
 
-                    for (ClickHandler clickHandler : clickHandlers) {
-                        clickHandler.onClick(x, y);
-                    }
-                }
-                if (Gdx.input.isButtonPressed(1)) {
-                    int x = Gdx.input.getX();
-                    int y = Gdx.input.getY();
-
-                    System.out.println("Right Mouse clicked");
-
-                    for (ClickHandler clickHandler : clickHandlers) {
-                        clickHandler.onRightClick(x, y);
-                    }
-                }
+            for (ClickHandler clickHandler : clickHandlers) {
+                clickHandler.onClick(x, y);
             }
-        }, 1, 0.1f);
+        }
+        if (Gdx.input.isButtonPressed(1)) {
+            int x = Gdx.input.getX();
+            int y = Gdx.input.getY();
 
+            System.out.println("Right Mouse clicked");
+
+            for (ClickHandler clickHandler : clickHandlers) {
+                clickHandler.onRightClick(x, y);
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
     }
 
     public void initializeMap(int width, int height) {
