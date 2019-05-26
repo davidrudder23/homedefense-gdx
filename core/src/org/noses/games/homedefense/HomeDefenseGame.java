@@ -27,10 +27,12 @@ import org.noses.games.homedefense.tower.Tower;
 import org.noses.games.homedefense.ui.MouseHandler;
 import org.noses.games.homedefense.ui.PieMenu;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 public class HomeDefenseGame extends ApplicationAdapter implements InputProcessor {
     // TODO: calculate this based on current lat/long, not just hardcoded to Denver
@@ -267,7 +269,7 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
             //austinLatitude,
             //austinLongitude);
 
-            map = mapClient.getMap(account, width, height);
+            map = mapClient.getMap(account, denverLatitude+0.0075, denverLatitude-0.0075, denverLongitude+0.015, denverLongitude-0.015);
             //System.out.println(map);
         } catch (IOException ioExc) {
             ioExc.printStackTrace();
