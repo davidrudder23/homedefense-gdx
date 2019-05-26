@@ -6,7 +6,7 @@ import lombok.Data;
 import org.noses.games.homedefense.HomeDefenseGame;
 
 @Data
-public abstract class Animation implements ClockTickHandler {
+public class Animation implements ClockTickHandler {
     protected HomeDefenseGame parent;
     protected int frameNumber = 0;
     protected TextureRegion[][] animation;
@@ -14,29 +14,47 @@ public abstract class Animation implements ClockTickHandler {
     protected int tileWidth;
     protected int tileHeight;
 
-    protected Animation(HomeDefenseGame parent, String spriteFilename, int tileWidth, int tileHeight) {
+    boolean killed;
+    boolean loop;
+
+    public Animation(HomeDefenseGame parent, String spriteFilename, int tileWidth, int tileHeight, boolean loop) {
         this.parent = parent;
 
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
+
+        killed = false;
+        this.loop = loop;
 
         Texture avatarAnimationSheet = new Texture(spriteFilename);
         animation = TextureRegion.split(avatarAnimationSheet, tileWidth, tileHeight);
     }
 
     public void kill() {
-
+        killed = true;
     }
 
     @Override
     public void clockTick(double delta) {
+        if (killed) {
+            return;
+        }
 
+        advanceAnimation();
     }
 
-    protected void advanceAnimation(float delay) {
+    protected void advanceAnimation() {
+        if (killed) {
+            return;
+        }
+
         frameNumber++;
         if (frameNumber >= animation[0].length) {
-            frameNumber = 0;
+            if (loop) {
+                frameNumber = 0;
+            } else {
+                killed = true;
+            }
         }
 
     }

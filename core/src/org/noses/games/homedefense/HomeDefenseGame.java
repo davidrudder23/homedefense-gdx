@@ -23,6 +23,7 @@ import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Intersection;
+import org.noses.games.homedefense.tower.Tower;
 import org.noses.games.homedefense.ui.MouseHandler;
 import org.noses.games.homedefense.ui.PieMenu;
 
@@ -64,6 +65,8 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
     private List<ClockTickHandler> clockTickHandlers;
     private List<ClockTickHandler> clockTickHandlersToBeAdded;
 
+    private List<Tower> towers;
+
     int speedMultiplier;
 
     Timer.Task timer;
@@ -80,6 +83,8 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
 
         clockTickHandlers = new ArrayList<>();
         clockTickHandlersToBeAdded = new ArrayList<>();
+
+        towers = new ArrayList<>();
 
         speedMultiplier = 1;
 
@@ -117,7 +122,7 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
 
         Gdx.input.setInputProcessor(this);
 
-        towerChoiceMenu = new PieMenu();
+        towerChoiceMenu = new PieMenu(this);
         addClickHandler(towerChoiceMenu);
 
         timer = Timer.schedule(new Timer.Task() {
@@ -177,6 +182,10 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
     @Override
     public boolean keyTyped(char character) {
         return false;
+    }
+
+    public void addTower(Tower tower) {
+        towers.add(tower);
     }
 
     @Override
@@ -444,6 +453,15 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
 
         font.draw(batch, "Speed: " + speedMultiplier + "x", 10, Gdx.graphics.getHeight() - (40 + (font.getCapHeight() * 2)));
 
+        // render the towers
+        for (Tower tower: towers) {
+            Sprite sprite = new Sprite(tower.getFrameTextureRegion());
+            sprite.setScale(32/sprite.getWidth());
+            sprite.setCenterX(convertLongToX(tower.getLongitude()));
+            sprite.setCenterY(convertLatToY(tower.getLatitude()));
+            sprite.draw(batch);
+        }
+
 
         // render the pie menu
 
@@ -455,6 +473,17 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
         batch.end();
 
     }
+
+    public double convertXToLong(int x) {
+        float longPerPixel = (map.getEast() - map.getWest()) / (float) Gdx.graphics.getWidth();
+        return map.getWest() + (x * longPerPixel);
+    }
+
+    public double convertYToLat(int y) {
+        float latPerPixel = (map.getNorth() - map.getSouth()) / Gdx.graphics.getHeight();
+        return map.getSouth() + (y * latPerPixel);
+    }
+
 
     public int convertLongToX(double longitude) {
         float longPerPixel = (map.getEast() - map.getWest()) / (float) Gdx.graphics.getWidth();

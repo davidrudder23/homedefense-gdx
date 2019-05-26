@@ -51,7 +51,7 @@ public class Home extends Animation implements PhysicalObject {
 
 
     public Home(HomeDefenseGame parent, double latitude, double longitude) {
-        super(parent, "home.png", 64, 64);
+        super(parent, "home.png", 64, 64, true);
         this.latitude = latitude;
         this.longitude = longitude;
         angle = 0;

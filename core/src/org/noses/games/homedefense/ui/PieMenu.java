@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
+import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.tower.RifleTower;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +33,10 @@ public class PieMenu implements MouseHandler {
             "rifle"
     };
 
-    public PieMenu() {
+    HomeDefenseGame parent;
+
+    public PieMenu(HomeDefenseGame parent) {
+        this.parent = parent;
         hidden = true;
 
         towerSprites = new HashMap<>();
@@ -71,7 +76,8 @@ public class PieMenu implements MouseHandler {
     @Override
     public void onClickUp() {
         hidden = true;
-        System.out.println("Pie Menu un-clicked");
+        System.out.println("Pie Menu un-clicked at "+dragX+"x"+dragY);
+        parent.addTower(new RifleTower(parent, parent.convertXToLong(dragX), parent.convertYToLat(parent.getScreenHeight()-dragY)));
     }
 
     public void renderMenu(Batch batch) {

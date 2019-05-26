@@ -29,7 +29,7 @@ public abstract class Bullet extends Animation {
     boolean dead;
 
     public Bullet(HomeDefenseGame parent, String spriteFilename, Sound shotSound, int tileWidth, int tileHeight) {
-        super(parent, spriteFilename, tileWidth, tileHeight);
+        super(parent, spriteFilename, tileWidth, tileHeight, true);
 
         this.shotSound = shotSound;
 
