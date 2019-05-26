@@ -4,17 +4,17 @@ import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.game.NormalBulletShooter;
 import org.noses.games.homedefense.geometry.Point;
 
-public class RifleTower extends Tower {
+public class FactoryTower extends Tower {
 
-    public RifleTower(HomeDefenseGame parent, double longitude, double latitude) {
-        super(parent, "rifle", longitude, latitude,
+    public FactoryTower(HomeDefenseGame parent, double longitude, double latitude) {
+        super(parent, "factory", longitude, latitude,
                 new NormalBulletShooter(parent, 0.8, new Point(latitude, longitude)));
     }
 
-    public static class RifleTowerFactor extends TowerFactory {
+    public static class FactoryTowerFactory extends TowerFactory {
         @Override
         public Tower createTower(HomeDefenseGame parent, double longitude, double latitude) {
-            return new RifleTower(parent, longitude, latitude);
+            return new FactoryTower(parent, longitude, latitude);
         }
     }
 

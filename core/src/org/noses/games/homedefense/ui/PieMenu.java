@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
-import org.noses.games.homedefense.tower.RifleTower;
+import org.noses.games.homedefense.tower.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,13 +25,6 @@ public class PieMenu implements MouseHandler {
 
     HashMap<String, PieMenuItem> pieMenuItems; // normal, glow, grey, greyglow
 
-    String[] towerNamesDELETE = {
-            "bomber",
-            "broadcast",
-            "factory",
-            "laser",
-            "rifle"
-    };
 
     HomeDefenseGame parent;
 
@@ -44,19 +37,19 @@ public class PieMenu implements MouseHandler {
         int spiteWidth = 64;
         int spiteHeight = 64;
 
-        PieMenuItem pieMenuItem = new PieMenuItem(-100, 0, spiteWidth, spiteHeight, "rifle");
+        PieMenuItem pieMenuItem = new PieMenuItem(-60, 0, spiteWidth, spiteHeight, "rifle", new RifleTower.RifleTowerFactor());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
 
-        pieMenuItem = new PieMenuItem(-70, 70, spiteWidth, spiteHeight, "laser");
+        pieMenuItem = new PieMenuItem(-40, 40, spiteWidth, spiteHeight, "laser", new LaserTower.LaserTowerFactory());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
 
-        pieMenuItem = new PieMenuItem(0, 100, spiteWidth, spiteHeight, "bomber");
+        pieMenuItem = new PieMenuItem(0, 60, spiteWidth, spiteHeight, "bomber", new BomberTower.BomberTowerFactory());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
 
-        pieMenuItem = new PieMenuItem(70, 70, spiteWidth, spiteHeight, "factory");
+        pieMenuItem = new PieMenuItem(40, 40, spiteWidth, spiteHeight, "factory", new FactoryTower.FactoryTowerFactory());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
 
-        pieMenuItem = new PieMenuItem(100, 0, spiteWidth, spiteHeight, "broadcast");
+        pieMenuItem = new PieMenuItem(60, 0, spiteWidth, spiteHeight, "broadcast", new BroadcastTower.BroadcastTowerFactory());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
     }
 
@@ -86,7 +79,7 @@ public class PieMenu implements MouseHandler {
         for (PieMenuItem pieMenuItem: pieMenuItems.values()) {
             if (pieMenuItem.mouseWithin(clickX, clickY, dragX, dragY)) {
                 System.out.println("Creating a "+pieMenuItem.getTowerName());
-                parent.addTower(new RifleTower(parent, parent.convertXToLong(dragX), parent.convertYToLat(parent.getScreenHeight() - dragY)));
+                parent.addTower(pieMenuItem.getTower(parent, parent.convertXToLong(clickX), parent.convertYToLat(parent.getScreenHeight() - clickY)));
             }
         }
     }

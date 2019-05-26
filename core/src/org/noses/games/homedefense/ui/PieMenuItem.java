@@ -5,6 +5,9 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Data;
+import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.tower.Tower;
+import org.noses.games.homedefense.tower.TowerFactory;
 
 @Data
 public class PieMenuItem {
@@ -17,12 +20,15 @@ public class PieMenuItem {
     String towerName;
     Sprite[] towerSprites;
 
-    public PieMenuItem(int x, int y, int width, int height, String towerName) {
+    TowerFactory towerFactory;
+
+    public PieMenuItem(int x, int y, int width, int height, String towerName, TowerFactory towerFactory) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.towerName = towerName;
+        this.towerFactory = towerFactory;
 
         Texture textureNormal = new Texture("tower/" + towerName + ".png");
         Texture textureGlow = new Texture("tower/" + towerName + "_glow.png");
@@ -34,6 +40,10 @@ public class PieMenuItem {
         towerSprites[1] = new Sprite(textureGlow);
         towerSprites[2] = new Sprite(textureGrey);
         towerSprites[3] = new Sprite(textureGreyGlow);
+    }
+
+    public Tower getTower(HomeDefenseGame parent, double longitude,double latitude) {
+        return towerFactory.createTower(parent, longitude, latitude);
     }
 
     public Sprite getSprite(int clickX, int clickY, int dragX, int dragY) {

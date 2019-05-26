@@ -57,7 +57,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
 
     public void render(Batch batch) {
         Sprite sprite = new Sprite(getFrameTextureRegion());
-        sprite.setScale(32/sprite.getWidth());
+        sprite.setScale(50/sprite.getWidth());
         sprite.setCenterX(parent.convertLongToX(getLongitude()));
         sprite.setCenterY(parent.convertLatToY(getLatitude()));
         sprite.draw(batch);
