@@ -1,11 +1,85 @@
 package org.noses.games.homedefense.tower;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import org.noses.games.homedefense.game.ClockTickHandler;
-import org.noses.games.homedefense.game.PhysicalObject;
+import lombok.Data;
+import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.bullet.Bullet;
+import org.noses.games.homedefense.bullet.NormalBullet;
+import org.noses.games.homedefense.game.*;
+import org.noses.games.homedefense.geometry.Point;
 
-public interface Tower extends ClockTickHandler, PhysicalObject {
+@Data
+public abstract class Tower implements ClockTickHandler, PhysicalObject {
+    double bulletSpeed;
+    double delayBetweenShots;
 
-    public TextureRegion getFrameTextureRegion();
+    private Point location;
+
+    HomeDefenseGame parent;
+    String towerName;
+    Animation animation;
+
+    final double timeBetweenShots = 0.8;
+
+    double timeSinceLastFired = 0;
+
+    final int maxOnScreen = 15;
+
+    Aimer aimer;
+    Shooter shooter;
+
+    public Tower(HomeDefenseGame parent, String towerName, double longitude, double latitude) {
+        this.towerName = towerName;
+        this.parent = parent;
+
+        animation = new Animation(parent, "tower/" + towerName + ".png", 199, 199, true);
+        parent.addClockTickHandler(animation);
+
+        location = new Point(latitude, longitude);
+
+        aimer = new Aimer(parent, latitude, longitude);
+        shooter = new Shooter(parent, timeBetweenShots, "normal_shot.mp3", new Point(latitude, longitude));
+    }
+
+    public double getLatitude() {
+        return location.getLatitude();
+    }
+
+    public double getLongitude() {
+        return location.getLongitude();
+    }
+
+    public void clockTick(double delta) {
+        System.out.println("Tower clockTick");
+        shooter.setAngle(aimer.aim(aimer.findClosestEnemy(parent.getEnemies())));
+
+        shooter.clockTick(delta);
+    }
+
+    public void render(Batch batch) {
+        Sprite sprite = new Sprite(getFrameTextureRegion());
+        sprite.setScale(32/sprite.getWidth());
+        sprite.setCenterX(parent.convertLongToX(getLongitude()));
+        sprite.setCenterY(parent.convertLatToY(getLatitude()));
+        sprite.draw(batch);
+
+        shooter.render(batch);
+    }
+
+    @Override
+    public void kill() {
+
+    }
+
+    @Override
+    public boolean isKilled() {
+        return false;
+    }
+
+    public TextureRegion getFrameTextureRegion() {
+        return animation.getFrameTextureRegion();
+    }
+
 }
-

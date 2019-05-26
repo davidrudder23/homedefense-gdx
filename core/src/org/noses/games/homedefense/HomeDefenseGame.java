@@ -186,6 +186,7 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
 
     public void addTower(Tower tower) {
         towers.add(tower);
+        addClockTickHandler(tower);
     }
 
     @Override
@@ -455,11 +456,7 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
 
         // render the towers
         for (Tower tower: towers) {
-            Sprite sprite = new Sprite(tower.getFrameTextureRegion());
-            sprite.setScale(32/sprite.getWidth());
-            sprite.setCenterX(convertLongToX(tower.getLongitude()));
-            sprite.setCenterY(convertLatToY(tower.getLatitude()));
-            sprite.draw(batch);
+            tower.render(batch);
         }
 
 
