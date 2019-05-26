@@ -7,18 +7,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Getter;
 import lombok.Setter;
-import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.bullet.Bullet;
 import org.noses.games.homedefense.bullet.NormalBullet;
-import org.noses.games.homedefense.game.Animation;
 import org.noses.games.homedefense.enemy.Enemy;
-import org.noses.games.homedefense.game.PhysicalObject;
 import org.noses.games.homedefense.game.Aimer;
-import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.game.Animation;
+import org.noses.games.homedefense.game.MapScreen;
+import org.noses.games.homedefense.game.PhysicalObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class Home extends Animation implements PhysicalObject {
@@ -49,7 +46,7 @@ public class Home extends Animation implements PhysicalObject {
 
     Aimer aimer;
 
-    public Home(HomeDefenseGame parent, double latitude, double longitude) {
+    public Home(MapScreen parent, double latitude, double longitude) {
         super(parent, "home.png", 64, 64, true);
         this.latitude = latitude;
         this.longitude = longitude;

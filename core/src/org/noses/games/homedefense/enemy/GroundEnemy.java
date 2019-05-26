@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.client.Way;
+import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
@@ -33,11 +34,11 @@ public class GroundEnemy extends Enemy {
 
     private double speedMultiplier;
 
-    public GroundEnemy(HomeDefenseGame parent, Way way) {
+    public GroundEnemy(MapScreen parent, Way way) {
         this(parent, way, "line0.png", 10, 32, 32, 10);
     }
 
-    protected GroundEnemy(HomeDefenseGame parent, Way way, String spriteFilename, double speedMultiplier, int tileWidth, int tileHeight, int startingHealth) {
+    protected GroundEnemy(MapScreen parent, Way way, String spriteFilename, double speedMultiplier, int tileWidth, int tileHeight, int startingHealth) {
         super(parent, spriteFilename, parent.loadSound("normal_hit.mp3"), tileWidth, tileHeight, startingHealth);
         this.way = way;
         progressAlong = 0;
@@ -232,12 +233,12 @@ public class GroundEnemy extends Enemy {
 
     public static class GroundEnemyBuilder implements EnemyBuilder {
         HashMap<String, Intersection> intersections;
-        HomeDefenseGame game;
+        MapScreen game;
 
         Way way;
         PathStep pathStep;
 
-        public GroundEnemyBuilder(HomeDefenseGame game, HashMap<String, Intersection> intersections) {
+        public GroundEnemyBuilder(MapScreen game, HashMap<String, Intersection> intersections) {
             this.game = game;
             this.intersections = intersections;
 

@@ -1,11 +1,11 @@
 package org.noses.games.homedefense.bullet;
 
 import com.badlogic.gdx.audio.Sound;
-import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.game.MapScreen;
 
 public class BombBullet extends Bullet {
 
-    public BombBullet(HomeDefenseGame parent, Sound shotSound, double latitude, double longitude, double angle) {
+    public BombBullet(MapScreen parent, Sound shotSound, double latitude, double longitude, double angle) {
         super(parent, "bullet_small.png", shotSound, 16, 16);
         currentLatitude = latitude;
         currentLongitude = longitude;

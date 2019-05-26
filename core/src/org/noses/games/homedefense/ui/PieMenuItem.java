@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Data;
-import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.tower.Tower;
 import org.noses.games.homedefense.tower.TowerFactory;
 
@@ -22,9 +22,9 @@ public class PieMenuItem {
     Sprite[] towerSprites;
 
     TowerFactory towerFactory;
-    HomeDefenseGame parent;
+    MapScreen parent;
 
-    public PieMenuItem(HomeDefenseGame parent, int x, int y, int width, int height, String towerName, TowerFactory towerFactory) {
+    public PieMenuItem(MapScreen parent, int x, int y, int width, int height, String towerName, TowerFactory towerFactory) {
         this.parent = parent;
         this.x = x;
         this.y = y;

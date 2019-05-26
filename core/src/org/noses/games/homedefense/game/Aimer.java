@@ -1,7 +1,6 @@
 package org.noses.games.homedefense.game;
 
 import lombok.Getter;
-import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.geometry.Point;
 
@@ -13,11 +12,11 @@ import java.util.List;
 public class Aimer {
     double latitude;
     double longitude;
-    HomeDefenseGame parent;
+    MapScreen parent;
 
     double angle;
 
-    public Aimer(HomeDefenseGame parent, double latitude, double longitude) {
+    public Aimer(MapScreen parent, double latitude, double longitude) {
         this.parent = parent;
         this.latitude = latitude;
         this.longitude = longitude;

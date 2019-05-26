@@ -1,16 +1,12 @@
 package org.noses.games.homedefense.ui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
-import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.tower.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class PieMenu implements MouseHandler {
 
@@ -26,9 +22,9 @@ public class PieMenu implements MouseHandler {
     HashMap<String, PieMenuItem> pieMenuItems; // normal, glow, grey, greyglow
 
 
-    HomeDefenseGame parent;
+    MapScreen parent;
 
-    public PieMenu(HomeDefenseGame parent) {
+    public PieMenu(MapScreen parent) {
         this.parent = parent;
         hidden = true;
 
