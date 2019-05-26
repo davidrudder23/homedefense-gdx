@@ -367,6 +367,10 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
         this.money += money;
     }
 
+    public void subtractMoney(int money) {
+        this.money -= money;
+    }
+
     public List<Enemy> getEnemies() {
         List<Enemy> enemies = new ArrayList<>();
 

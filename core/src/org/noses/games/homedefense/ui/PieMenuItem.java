@@ -1,12 +1,10 @@
 package org.noses.games.homedefense.ui;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Data;
 import org.noses.games.homedefense.HomeDefenseGame;
-import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.tower.Tower;
 import org.noses.games.homedefense.tower.TowerFactory;
 
@@ -77,7 +75,11 @@ public class PieMenuItem {
     }
 
     public boolean isAllowedToBuild(int clickX, int clickY) {
-        return !closeToOtherTowers(clickX, clickY);
+        return canAffordIt() && !closeToOtherTowers(clickX, clickY);
+    }
+
+    public boolean canAffordIt() {
+        return parent.getMoney()>=towerFactory.createTower(parent, 0, 0).getCost();
     }
 
     private boolean closeToOtherTowers(int clickX, int clickY) {

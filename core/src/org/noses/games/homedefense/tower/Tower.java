@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Data;
+import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.bullet.Bullet;
 import org.noses.games.homedefense.bullet.NormalBullet;
@@ -66,6 +67,9 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
     }
 
     public abstract double minDistanceFromOtherTower();
+
+    public abstract int getCost();
+
 
     @Override
     public void kill() {

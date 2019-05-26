@@ -23,4 +23,9 @@ public class FactoryTower extends Tower {
         return HomeDefenseGame.LATLON_MOVED_IN_1s_1mph*1500;
     }
 
+    @Override
+    public int getCost() {
+        return 100;
+    }
+
 }

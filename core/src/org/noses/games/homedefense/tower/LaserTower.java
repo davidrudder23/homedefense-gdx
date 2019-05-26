@@ -23,4 +23,10 @@ public class LaserTower extends Tower {
         return HomeDefenseGame.LATLON_MOVED_IN_1s_1mph*900;
     }
 
+
+    @Override
+    public int getCost() {
+        return 75;
+    }
+
 }

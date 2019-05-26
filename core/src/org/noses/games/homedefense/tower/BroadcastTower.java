@@ -23,4 +23,9 @@ public class BroadcastTower extends Tower {
         return HomeDefenseGame.LATLON_MOVED_IN_1s_1mph*1000;
     }
 
+    @Override
+    public int getCost() {
+        return 100;
+    }
+
 }
