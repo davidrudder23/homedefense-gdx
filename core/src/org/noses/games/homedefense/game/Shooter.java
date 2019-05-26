@@ -60,7 +60,6 @@ public abstract class Shooter implements PhysicalObject, ClockTickHandler {
     @Override
     public void clockTick(double delta) {
         timeSinceLastFired += delta;
-        System.out.println ("timeSinceLastFired="+timeBetweenShots+" timeBetweenShots="+timeBetweenShots);
 
         if (timeSinceLastFired > timeBetweenShots) {
             shoot();
@@ -81,8 +80,6 @@ public abstract class Shooter implements PhysicalObject, ClockTickHandler {
     public abstract Bullet createBullet();
 
     public void shoot() {
-        System.out.println("Shooting");
-
         if (parent.getEnemies().size() == 0) {
             return;
         }
@@ -106,7 +103,6 @@ public abstract class Shooter implements PhysicalObject, ClockTickHandler {
         bullet.shoot();
         bullets.add(bullet);
 
-        System.out.println("Adding bullet to clock tick handlers");
         parent.addClockTickHandler(bullet);
     }
 

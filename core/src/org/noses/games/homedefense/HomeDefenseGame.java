@@ -270,6 +270,7 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
             //austinLongitude);
 
             map = mapClient.getMap(account, denverLatitude+0.0075, denverLatitude-0.0075, denverLongitude+0.015, denverLongitude-0.015);
+            //map = mapClient.getMap(account, denverLatitude+0.03, denverLatitude-0.013, denverLongitude+0.06, denverLongitude-0.06);
             //System.out.println(map);
         } catch (IOException ioExc) {
             ioExc.printStackTrace();

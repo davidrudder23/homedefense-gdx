@@ -124,7 +124,7 @@ public class Home extends Animation implements PhysicalObject {
         normalBullet.shoot();
         bullets.add(normalBullet);
 
-        System.out.println("Adding bullet to clock tick handlers");
+        //System.out.println("Adding bullet to clock tick handlers");
         parent.addClockTickHandler(normalBullet);
     }
 

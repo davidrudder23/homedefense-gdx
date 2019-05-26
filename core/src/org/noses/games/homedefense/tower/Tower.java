@@ -50,7 +50,6 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
     }
 
     public void clockTick(double delta) {
-        System.out.println("Tower clockTick");
         shooter.setAngle(aimer.aim(aimer.findClosestEnemy(parent.getEnemies())));
 
         shooter.clockTick(delta);
