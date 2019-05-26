@@ -21,8 +21,6 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
     String towerName;
     Animation animation;
 
-    final double timeBetweenShots = 0.8;
-
     double timeSinceLastFired = 0;
 
     final int maxOnScreen = 15;
@@ -30,7 +28,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
     Aimer aimer;
     Shooter shooter;
 
-    public Tower(HomeDefenseGame parent, String towerName, double longitude, double latitude) {
+    public Tower(HomeDefenseGame parent, String towerName, double longitude, double latitude, Shooter shooter) {
         this.towerName = towerName;
         this.parent = parent;
 
@@ -40,7 +38,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
         location = new Point(latitude, longitude);
 
         aimer = new Aimer(parent, latitude, longitude);
-        shooter = new Shooter(parent, timeBetweenShots, "normal_shot.mp3", new Point(latitude, longitude));
+        this.shooter = shooter;
     }
 
     public double getLatitude() {

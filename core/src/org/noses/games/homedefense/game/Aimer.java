@@ -24,6 +24,10 @@ public class Aimer {
     }
 
     public double aim(PhysicalObject target) {
+        if (target == null) {
+            return 0;
+        }
+        
         double enemyLong = target.getLongitude();
         double enemyLat = target.getLatitude();
 

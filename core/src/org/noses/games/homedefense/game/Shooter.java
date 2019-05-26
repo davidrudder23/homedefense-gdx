@@ -14,7 +14,7 @@ import org.noses.games.homedefense.geometry.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Shooter implements PhysicalObject, ClockTickHandler {
+public abstract class Shooter implements PhysicalObject, ClockTickHandler {
 
     List<Bullet> bullets;
 
@@ -78,6 +78,8 @@ public class Shooter implements PhysicalObject, ClockTickHandler {
         return killed;
     }
 
+    public abstract Bullet createBullet();
+
     public void shoot() {
         System.out.println("Shooting");
 
@@ -99,12 +101,13 @@ public class Shooter implements PhysicalObject, ClockTickHandler {
             return;
         }
 
-        NormalBullet normalBullet = new NormalBullet(parent, shotSound, getLatitude(), getLongitude(), angle);
-        normalBullet.shoot();
-        bullets.add(normalBullet);
+        Bullet bullet = createBullet();
+
+        bullet.shoot();
+        bullets.add(bullet);
 
         System.out.println("Adding bullet to clock tick handlers");
-        parent.addClockTickHandler(normalBullet);
+        parent.addClockTickHandler(bullet);
     }
 
     public void render(Batch batch) {
