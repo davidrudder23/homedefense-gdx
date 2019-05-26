@@ -20,6 +20,8 @@ import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.GroundEnemy;
 import org.noses.games.homedefense.game.ClockTickHandler;
+import org.noses.games.homedefense.game.MapScreen;
+import org.noses.games.homedefense.game.Screen;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Intersection;
@@ -48,6 +50,7 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
     @Getter
     Map map = null;
 
+    @Getter
     List<EnemyGroup> enemyGroups;
 
     HashMap<String, Intersection> intersections;
@@ -70,11 +73,14 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
     @Getter
     private List<Tower> towers;
 
+    @Getter
     int speedMultiplier;
 
     Timer.Task timer;
 
+    @Getter
     PieMenu towerChoiceMenu;
+    Screen currentScreen;
 
     @Override
     public void create() {
@@ -94,6 +100,9 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
         money = 0;
 
         batch = new SpriteBatch();
+
+        //currentScreen = new MainScreen(this);
+        currentScreen = new MapScreen(this);
 
         initializeMap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -405,78 +414,7 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
         Gdx.gl.glClearColor(0.2f, 0.25f, 0.95f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        ShapeRenderer sr = new ShapeRenderer();
-        sr.setColor(Color.WHITE);
-        //sr.setProjectionMatrix(camera.combined);
-
-        for (Way way : map.getWays()) {
-            Gdx.gl.glLineWidth(way.getMaxSpeed() - 24);
-
-            sr.setColor(Color.WHITE);
-            sr.setColor(way.getColor());
-
-            sr.begin(ShapeRenderer.ShapeType.Line);
-            Node prevNode = null;
-            for (Node node : way.getNodes()) {
-                if (prevNode != null) {
-                    //System.out.println("Writing line starting at "+prevNode.getLat()+"x"+prevNode.getLon()+" - "+
-                    //              convertLatToY(prevNode.getLat())+"x"+convertLongToX(prevNode.getLon()));
-                    sr.line(convertLongToX(prevNode.getLon()), convertLatToY(prevNode.getLat()),
-                            convertLongToX(node.getLon()), convertLatToY(node.getLat()));
-                }
-                prevNode = node;
-            }
-            sr.end();
-        }
-
-        batch.begin();
-        // render the enemies
-
-        for (EnemyGroup enemyGroup : enemyGroups) {
-            List<Enemy> enemies = enemyGroup.getEnemies();
-            for (Enemy enemy : enemies) {
-                Point location = enemy.getLocation();
-
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
-
-                //batch.draw(enemy.getFrameTextureRegion(), x, y);
-
-                Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
-
-                sprite.setCenterY(convertLatToY(latitude));
-                sprite.setCenterX(convertLongToX(longitude));
-                sprite.draw(batch);
-
-            }
-        }
-
-        home.render(batch);
-
-        // render the score and other text
-        BitmapFont font = new BitmapFont();
-        font.setColor(Color.WHITE);
-        font.draw(batch, "Health: " + home.getHealth(), 10, Gdx.graphics.getHeight() - 30);
-
-        font.draw(batch, "Money: " + money, 10, Gdx.graphics.getHeight() - (35 + font.getCapHeight()));
-
-        font.draw(batch, "Speed: " + speedMultiplier + "x", 10, Gdx.graphics.getHeight() - (40 + (font.getCapHeight() * 2)));
-
-        // render the towers
-        for (Tower tower: towers) {
-            tower.render(batch);
-        }
-
-
-        // render the pie menu
-
-        if (!towerChoiceMenu.isHidden()) {
-            towerChoiceMenu.renderMenu(batch);
-        }
-
-
-        batch.end();
-
+        currentScreen.render(batch);
     }
 
     public double convertXToLong(int x) {
