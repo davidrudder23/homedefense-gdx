@@ -14,7 +14,6 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
     @Getter
     private int health;
 
-    @Getter
     private boolean killed = false;
 
     Sound hitSound;
