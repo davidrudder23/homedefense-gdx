@@ -3,6 +3,7 @@ package org.noses.games.homedefense;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,17 +19,22 @@ import org.noses.games.homedefense.enemy.ArmoredGroundEnemy;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.GroundEnemy;
-import org.noses.games.homedefense.enemy.flying.LeftToRightFlyingEnemyBuilder;
+import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Intersection;
+import org.noses.games.homedefense.tower.Tower;
+import org.noses.games.homedefense.ui.MouseHandler;
+import org.noses.games.homedefense.ui.PieMenu;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
-public class HomeDefenseGame extends ApplicationAdapter {
+public class HomeDefenseGame extends ApplicationAdapter implements InputProcessor {
     // TODO: calculate this based on current lat/long, not just hardcoded to Denver
 
     //
@@ -55,10 +61,35 @@ public class HomeDefenseGame extends ApplicationAdapter {
     @Setter
     private int money;
 
+    private List<MouseHandler> mouseHandlers;
+    private List<MouseHandler> mouseHandlersToBeAdded;
+
+    private List<ClockTickHandler> clockTickHandlers;
+    private List<ClockTickHandler> clockTickHandlersToBeAdded;
+
+    @Getter
+    private List<Tower> towers;
+
+    int speedMultiplier;
+
+    Timer.Task timer;
+
+    PieMenu towerChoiceMenu;
+
     @Override
     public void create() {
 
         enemyGroups = new ArrayList<>();
+
+        mouseHandlers = new ArrayList<>();
+        mouseHandlersToBeAdded = new ArrayList<>();
+
+        clockTickHandlers = new ArrayList<>();
+        clockTickHandlersToBeAdded = new ArrayList<>();
+
+        towers = new ArrayList<>();
+
+        speedMultiplier = 1;
 
         money = 0;
 
@@ -67,11 +98,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
         initializeMap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         HomeDefenseGame.ONE_PIXEL_IN_LATLON = (map.getEast() - map.getWest()) / Gdx.graphics.getWidth();
-
-        /*System.out.println("1 pixel = "+HomeDefenseGame.ONE_PIXEL_IN_LATLON);
-        System.out.println("1 second= "+HomeDefenseGame.LATLON_MOVED_IN_1s_1mph);
-        System.out.println ("Travel ="+HomeDefenseGame.LATLON_MOVED_IN_1s_1mph/HomeDefenseGame.ONE_PIXEL_IN_LATLON);
-        */
 
         home = new Home(this,
                 ((map.getNorth() - map.getSouth()) / 2) + map.getSouth(),
@@ -97,30 +123,133 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         setupSound();
 
-        keyPressLoop();
+        Gdx.input.setInputProcessor(this);
 
-        Timer.schedule(new Timer.Task() {
-                           @Override
-                           public void run() {
-                               clockTick(1 / 10.0f);
-                           }
-                       }
-                , 0f, 1 / 10.0f);
+        towerChoiceMenu = new PieMenu(this);
+        addClickHandler(towerChoiceMenu);
+
+        timer = Timer.schedule(new Timer.Task() {
+                                   @Override
+                                   public void run() {
+                                       clockTick(1 / 10.0f);
+                                   }
+                               }
+                , 0f, 1 / (10.0f * speedMultiplier));
 
     }
 
-    private void keyPressLoop() {
-        keyPressTimer = Timer.schedule(new Timer.Task() {
+    public void addClockTickHandler(ClockTickHandler clockTickHandler) {
+        synchronized (clockTickHandlersToBeAdded) {
+            clockTickHandlersToBeAdded.add(clockTickHandler);
+        }
+    }
 
-            @Override
-            public void run() {
+    public void addClickHandler(MouseHandler mouseHandler) {
+        synchronized (mouseHandlers) {
+            mouseHandlersToBeAdded.add(mouseHandler);
+        }
+    }
 
-                if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-                    System.exit(0);
-                }
+    @Override
+    public boolean keyDown(int keycode) {
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            System.exit(0);
+
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            speedMultiplier += 1;
+
+            if ((speedMultiplier > 5) || (speedMultiplier < 1)) {
+                speedMultiplier = 1;
             }
-        }, 1, 0.1f);
 
+            timer.cancel();
+            timer = Timer.schedule(new Timer.Task() {
+                                       @Override
+                                       public void run() {
+                                           clockTick(1 / 10.0f);
+                                       }
+                                   }
+                    , 0f, 1 / (10.0f * speedMultiplier));
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    public void addTower(Tower tower) {
+        towers.add(tower);
+        addClockTickHandler(tower);
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        synchronized (mouseHandlers) {
+            for (MouseHandler mouseHandler : mouseHandlersToBeAdded) {
+                mouseHandlers.add(mouseHandler);
+            }
+            mouseHandlersToBeAdded.clear();
+        }
+
+        int x = Gdx.input.getX();
+        int y = Gdx.input.getY();
+
+        if (Gdx.input.isButtonPressed(0)) {
+
+            for (MouseHandler mouseHandler : mouseHandlers) {
+                mouseHandler.onClick(x, y);
+            }
+        } else if (Gdx.input.isButtonPressed(1)) {
+            for (MouseHandler mouseHandler : mouseHandlers) {
+                mouseHandler.onRightClick(x, y);
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        synchronized (mouseHandlers) {
+            for (MouseHandler mouseHandler : mouseHandlersToBeAdded) {
+                mouseHandlers.add(mouseHandler);
+            }
+            mouseHandlersToBeAdded.clear();
+        }
+
+        for (MouseHandler mouseHandler : mouseHandlers) {
+            mouseHandler.onClickUp();
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        for (MouseHandler mouseHandler : mouseHandlers) {
+            mouseHandler.onMouseDragged(screenX, screenY);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
     }
 
     public void initializeMap(int width, int height) {
@@ -138,10 +267,11 @@ public class HomeDefenseGame extends ApplicationAdapter {
                     "test1",
                     denverLatitude,
                     denverLongitude);
-                    //austinLatitude,
-                    //austinLongitude);
+            //austinLatitude,
+            //austinLongitude);
 
-            map = mapClient.getMap(account, width, height);
+            map = mapClient.getMap(account, denverLatitude+0.0075, denverLatitude-0.0075, denverLongitude+0.015, denverLongitude-0.015);
+            //map = mapClient.getMap(account, denverLatitude+0.03, denverLatitude-0.013, denverLongitude+0.06, denverLongitude-0.06);
             //System.out.println(map);
         } catch (IOException ioExc) {
             ioExc.printStackTrace();
@@ -172,6 +302,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .enemyBuilder(new GroundEnemy.GroundEnemyBuilder(this, intersections))
                 .build();
         enemyGroups.add(enemyGroup);
+        addClockTickHandler(enemyGroup);
 
         enemyGroup = EnemyGroup.builder()
                 .intersections(startingIntersections)
@@ -180,6 +311,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
                 .enemyBuilder(new ArmoredGroundEnemy.ArmoredGroundEnemyBuilder(this, intersections))
                 .build();
         enemyGroups.add(enemyGroup);
+        addClockTickHandler(enemyGroup);
 
         /*
         EnemyGroup enemyGroup2 = EnemyGroup.builder()
@@ -198,8 +330,27 @@ public class HomeDefenseGame extends ApplicationAdapter {
     }
 
     public void clockTick(float delta) {
-        for (EnemyGroup enemyGroup : enemyGroups) {
-            enemyGroup.clockTick(delta);
+        synchronized (clockTickHandlersToBeAdded) {
+            for (ClockTickHandler clockTickHandler : clockTickHandlersToBeAdded) {
+                clockTickHandlers.add(clockTickHandler);
+            }
+            clockTickHandlersToBeAdded.clear();
+        }
+
+        if (clockTickHandlers.size() > 0) {
+            for (int i = clockTickHandlers.size() - 1; i >= 0; i--) {
+                ClockTickHandler clockTickHandler = clockTickHandlers.get(i);
+                if (clockTickHandler.isKilled()) {
+                    clockTickHandlers.remove(i);
+                }
+            }
+        }
+
+        for (ClockTickHandler clockTickHandler : clockTickHandlers) {
+            //System.out.println ("Clock ticking "+clockTickHandler+" iskilled="+clockTickHandler.isKilled());
+            if (!clockTickHandler.isKilled()) {
+                clockTickHandler.clockTick(delta);
+            }
         }
 
     }
@@ -207,13 +358,17 @@ public class HomeDefenseGame extends ApplicationAdapter {
     public void hitHome(int damage) {
         System.out.println("Home hit for " + damage + " health=" + home.getHealth());
         home.hit(damage);
-        if (home.isDead()) {
+        if (home.isKilled()) {
             Gdx.app.exit();
         }
     }
 
     public void addMoney(int money) {
         this.money += money;
+    }
+
+    public void subtractMoney(int money) {
+        this.money -= money;
     }
 
     public List<Enemy> getEnemies() {
@@ -275,7 +430,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
         }
 
         batch.begin();
-
         // render the enemies
 
         for (EnemyGroup enemyGroup : enemyGroups) {
@@ -302,13 +456,39 @@ public class HomeDefenseGame extends ApplicationAdapter {
         // render the score and other text
         BitmapFont font = new BitmapFont();
         font.setColor(Color.WHITE);
-        font.draw(batch, "Health: "+home.getHealth(), 10,Gdx.graphics.getHeight()- 30);
+        font.draw(batch, "Health: " + home.getHealth(), 10, Gdx.graphics.getHeight() - 30);
 
-        font.draw(batch, "Money: "+money, 10, Gdx.graphics.getHeight()- (30 + font.getCapHeight()));
+        font.draw(batch, "Money: " + money, 10, Gdx.graphics.getHeight() - (35 + font.getCapHeight()));
+
+        font.draw(batch, "Speed: " + speedMultiplier + "x", 10, Gdx.graphics.getHeight() - (40 + (font.getCapHeight() * 2)));
+
+        // render the towers
+        for (Tower tower: towers) {
+            tower.render(batch);
+        }
+
+
+        // render the pie menu
+
+        if (!towerChoiceMenu.isHidden()) {
+            towerChoiceMenu.renderMenu(batch);
+        }
+
 
         batch.end();
 
     }
+
+    public double convertXToLong(int x) {
+        float longPerPixel = (map.getEast() - map.getWest()) / (float) Gdx.graphics.getWidth();
+        return map.getWest() + (x * longPerPixel);
+    }
+
+    public double convertYToLat(int y) {
+        float latPerPixel = (map.getNorth() - map.getSouth()) / Gdx.graphics.getHeight();
+        return map.getSouth() + (y * latPerPixel);
+    }
+
 
     public int convertLongToX(double longitude) {
         float longPerPixel = (map.getEast() - map.getWest()) / (float) Gdx.graphics.getWidth();

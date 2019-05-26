@@ -87,8 +87,8 @@ public class MapClient {
         return account;
     }
 
-    public Map getMap(Account account, int width, int height) throws IOException {
-        String url = "http://localhost:8080/maps/"+width+"/"+height;
+    public Map getMap(Account account, double north, double south, double east, double west) throws IOException {
+        String url = "http://localhost:8080/maps/"+north+"/"+south+"/"+east+"/"+west;
 
         Request request = new Request.Builder()
                 .url(url)

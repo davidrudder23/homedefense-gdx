@@ -1,43 +1,60 @@
-package org.noses.games.homedefense.enemy;
+package org.noses.games.homedefense.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Timer;
 import lombok.Data;
 import org.noses.games.homedefense.HomeDefenseGame;
 
 @Data
-public abstract class Animation {
+public class Animation implements ClockTickHandler {
     protected HomeDefenseGame parent;
     protected int frameNumber = 0;
     protected TextureRegion[][] animation;
-    Timer.Task timer;
 
     protected int tileWidth;
     protected int tileHeight;
 
-    protected Animation(HomeDefenseGame parent, String spriteFilename, int tileWidth, int tileHeight) {
+    boolean killed;
+    boolean loop;
+
+    public Animation(HomeDefenseGame parent, String spriteFilename, int tileWidth, int tileHeight, boolean loop) {
         this.parent = parent;
 
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
 
+        killed = false;
+        this.loop = loop;
+
         Texture avatarAnimationSheet = new Texture(spriteFilename);
         animation = TextureRegion.split(avatarAnimationSheet, tileWidth, tileHeight);
-
-        timer = Timer.schedule(new Timer.Task() {
-                                   @Override
-                                   public void run() {
-                                       advanceAnimation(0.1f);
-                                   }
-                               },
-                0f, 1 / 10.0f);
     }
 
-    protected void advanceAnimation(float delay) {
+    public void kill() {
+        killed = true;
+    }
+
+    @Override
+    public void clockTick(double delta) {
+        if (killed) {
+            return;
+        }
+
+        advanceAnimation();
+    }
+
+    protected void advanceAnimation() {
+        if (killed) {
+            return;
+        }
+
         frameNumber++;
         if (frameNumber >= animation[0].length) {
-            frameNumber = 0;
+            if (loop) {
+                frameNumber = 0;
+            } else {
+                killed = true;
+            }
         }
 
     }
