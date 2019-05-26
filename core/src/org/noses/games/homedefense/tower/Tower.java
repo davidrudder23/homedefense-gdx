@@ -65,6 +65,8 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
         shooter.render(batch);
     }
 
+    public abstract double minDistanceFromOtherTower();
+
     @Override
     public void kill() {
 

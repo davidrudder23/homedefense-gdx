@@ -67,6 +67,7 @@ public class HomeDefenseGame extends ApplicationAdapter implements InputProcesso
     private List<ClockTickHandler> clockTickHandlers;
     private List<ClockTickHandler> clockTickHandlersToBeAdded;
 
+    @Getter
     private List<Tower> towers;
 
     int speedMultiplier;

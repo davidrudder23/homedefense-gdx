@@ -37,19 +37,19 @@ public class PieMenu implements MouseHandler {
         int spiteWidth = 64;
         int spiteHeight = 64;
 
-        PieMenuItem pieMenuItem = new PieMenuItem(-60, 0, spiteWidth, spiteHeight, "rifle", new RifleTower.RifleTowerFactor());
+        PieMenuItem pieMenuItem = new PieMenuItem(parent, -60, 0, spiteWidth, spiteHeight, "rifle", new RifleTower.RifleTowerFactor());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
 
-        pieMenuItem = new PieMenuItem(-40, 40, spiteWidth, spiteHeight, "laser", new LaserTower.LaserTowerFactory());
+        pieMenuItem = new PieMenuItem(parent, -40, 40, spiteWidth, spiteHeight, "laser", new LaserTower.LaserTowerFactory());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
 
-        pieMenuItem = new PieMenuItem(0, 60, spiteWidth, spiteHeight, "bomber", new BomberTower.BomberTowerFactory());
+        pieMenuItem = new PieMenuItem(parent, 0, 60, spiteWidth, spiteHeight, "bomber", new BomberTower.BomberTowerFactory());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
 
-        pieMenuItem = new PieMenuItem(40, 40, spiteWidth, spiteHeight, "factory", new FactoryTower.FactoryTowerFactory());
+        pieMenuItem = new PieMenuItem(parent, 40, 40, spiteWidth, spiteHeight, "factory", new FactoryTower.FactoryTowerFactory());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
 
-        pieMenuItem = new PieMenuItem(60, 0, spiteWidth, spiteHeight, "broadcast", new BroadcastTower.BroadcastTowerFactory());
+        pieMenuItem = new PieMenuItem(parent, 60, 0, spiteWidth, spiteHeight, "broadcast", new BroadcastTower.BroadcastTowerFactory());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
     }
 
@@ -62,24 +62,22 @@ public class PieMenu implements MouseHandler {
         dragX = x;
         dragY = y;
 
-        System.out.println("Pie Menu clicked");
     }
 
     @Override
     public void onRightClick(int x, int y) {
-        clickX = x;
-        clickY = y;
     }
 
     @Override
     public void onClickUp() {
         hidden = true;
-        System.out.println("Pie Menu un-clicked at " + dragX + "x" + dragY);
 
         for (PieMenuItem pieMenuItem: pieMenuItems.values()) {
             if (pieMenuItem.mouseWithin(clickX, clickY, dragX, dragY)) {
-                System.out.println("Creating a "+pieMenuItem.getTowerName());
-                parent.addTower(pieMenuItem.getTower(parent, parent.convertXToLong(clickX), parent.convertYToLat(parent.getScreenHeight() - clickY)));
+
+                if (pieMenuItem.isAllowedToBuild(clickX, clickY)) {
+                    parent.addTower(pieMenuItem.getTower(parent.convertXToLong(clickX), parent.convertYToLat(parent.getScreenHeight() - clickY)));
+                }
             }
         }
     }

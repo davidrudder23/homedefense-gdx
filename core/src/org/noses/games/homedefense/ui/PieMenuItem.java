@@ -6,8 +6,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Data;
 import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.tower.Tower;
 import org.noses.games.homedefense.tower.TowerFactory;
+
+import java.util.List;
 
 @Data
 public class PieMenuItem {
@@ -21,8 +24,10 @@ public class PieMenuItem {
     Sprite[] towerSprites;
 
     TowerFactory towerFactory;
+    HomeDefenseGame parent;
 
-    public PieMenuItem(int x, int y, int width, int height, String towerName, TowerFactory towerFactory) {
+    public PieMenuItem(HomeDefenseGame parent, int x, int y, int width, int height, String towerName, TowerFactory towerFactory) {
+        this.parent = parent;
         this.x = x;
         this.y = y;
         this.width = width;
@@ -42,16 +47,24 @@ public class PieMenuItem {
         towerSprites[3] = new Sprite(textureGreyGlow);
     }
 
-    public Tower getTower(HomeDefenseGame parent, double longitude,double latitude) {
+    public Tower getTower(double longitude,double latitude) {
         return towerFactory.createTower(parent, longitude, latitude);
     }
 
     public Sprite getSprite(int clickX, int clickY, int dragX, int dragY) {
         Sprite sprite = null;
         if (mouseWithin(clickX, clickY, dragX, dragY)) {
-            sprite = getGlowSprite();
+            if (!isAllowedToBuild(clickX, clickY)) {
+                sprite = getGreyGlowSprite();
+            } else{
+                sprite = getGlowSprite();
+            }
         } else {
-            sprite = getNormalSprite();
+            if (!isAllowedToBuild(clickX, clickY)) {
+                sprite = getGreySprite();
+            } else{
+                sprite = getNormalSprite();
+            }
         }
 
         sprite.setCenterX(clickX+x+(width/2));
@@ -61,6 +74,33 @@ public class PieMenuItem {
         //System.out.println("Showing pieMenuItem "+getTowerName()+" at "+(clickX+x+(width/2))+"x"+(clickY+y+(height/2))+" scale="+sprite.getScaleX());
 
         return sprite;
+    }
+
+    public boolean isAllowedToBuild(int clickX, int clickY) {
+        return !closeToOtherTowers(clickX, clickY);
+    }
+
+    private boolean closeToOtherTowers(int clickX, int clickY) {
+        List<Tower> towers = parent.getTowers();
+
+        double longitude = parent.convertXToLong(clickX);
+        double latitude = parent.convertYToLat(parent.getScreenHeight()-clickY);
+
+        for (Tower tower: towers) {
+            double minDistanceOtherSquared = tower.minDistanceFromOtherTower()*tower.minDistanceFromOtherTower();
+            double minDistanceThisSquared = getTower(longitude, latitude).minDistanceFromOtherTower()*getTower(longitude, latitude).minDistanceFromOtherTower();
+            double actualDistanceSquared = ((tower.getLongitude()-longitude)*(tower.getLongitude()-longitude)) +
+                    ((tower.getLatitude()-latitude)*(tower.getLatitude()-latitude));
+
+            if (actualDistanceSquared < minDistanceOtherSquared) {
+                return true;
+            }
+            if (actualDistanceSquared < minDistanceThisSquared) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean mouseWithin(int clickX, int clickY, int dragX, int dragY) {
