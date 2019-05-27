@@ -14,10 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.*;
-import org.noses.games.homedefense.enemy.Enemy;
-import org.noses.games.homedefense.enemy.EnemyGroup;
-import org.noses.games.homedefense.enemy.EnemyNest;
-import org.noses.games.homedefense.enemy.WeakEnemyNest;
+import org.noses.games.homedefense.enemy.*;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Intersection;
@@ -299,16 +296,29 @@ public class MapScreen extends Screen implements InputProcessor{
 
     public void createNests() {
         double delayBeforeStart = 0;
+
         for (Nest nest : map.getNests()) {
+
+            // If it's too close, don't add the nest
+            Point nestPoint = new Point(nest.getLat(), nest.getLon());
+            Point homePoint = new Point(home.getLatitude(), home.getLongitude());
+            if (nestPoint.getDistanceFrom(homePoint) < 0.005) {
+                continue;
+            }
+
             EnemyNest enemyNest = null;
             if (nest.getType().equalsIgnoreCase("standard")) {
                 enemyNest = new WeakEnemyNest(this, delayBeforeStart, nest.getLon(), nest.getLat());
                 delayBeforeStart += 3;
+            } else if (nest.getType().equalsIgnoreCase("armored")) {
+                enemyNest = new ArmoredEnemyNest(this, delayBeforeStart, nest.getLon(), nest.getLat());
+                delayBeforeStart += 3;
             }
+
             if (enemyNest != null) {
                 addClockTickHandler(enemyNest);
+                enemyNests.add(enemyNest);
             }
-            enemyNests.add(enemyNest);
         }
 
         /*EnemyGroup enemyGroup = EnemyGroup.builder()

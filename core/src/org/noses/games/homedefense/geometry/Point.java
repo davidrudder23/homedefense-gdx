@@ -13,4 +13,14 @@ public class Point {
     public String toString() {
         return "Point ("+ latitude +"x"+ longitude +")";
     }
+
+    public double getDistanceFrom(Point other) {
+        double longitude = other.getLongitude() - getLongitude();
+        longitude *= longitude;
+
+        double latitude = other.getLatitude() - getLatitude();
+        latitude *= latitude;
+
+        return Math.sqrt(longitude+latitude);
+    }
 }
