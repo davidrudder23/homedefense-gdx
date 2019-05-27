@@ -14,10 +14,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.*;
-import org.noses.games.homedefense.enemy.ArmoredGroundEnemy;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
-import org.noses.games.homedefense.enemy.GroundEnemy;
+import org.noses.games.homedefense.enemy.EnemyNest;
+import org.noses.games.homedefense.enemy.WeakEnemyNest;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Intersection;
@@ -59,6 +59,8 @@ public class MapScreen extends Screen implements InputProcessor{
     @Getter
     private List<Tower> towers;
 
+    List<EnemyNest> enemyNests;
+
     @Getter
     int speedMultiplier;
 
@@ -77,6 +79,8 @@ public class MapScreen extends Screen implements InputProcessor{
 
         clockTickHandlers = new ArrayList<>();
         clockTickHandlersToBeAdded = new ArrayList<>();
+
+        enemyNests = new ArrayList<>();
 
         towers = new ArrayList<>();
 
@@ -109,7 +113,7 @@ public class MapScreen extends Screen implements InputProcessor{
             }
         }
 
-        createEnemies(intersections);
+        createNests();
 
         setupSound();
 
@@ -281,48 +285,40 @@ public class MapScreen extends Screen implements InputProcessor{
         for (Way way : map.getWays()) {
             for (Node node : way.getNodes()) {
 
-                float length = way.firstNode().distanceFrom(way.lastNode());
+                double length = way.firstNode().distanceFrom(way.lastNode());
 
                 if (length == 0) {
                     node.setProgress(0);
                 } else {
-                    float delta = way.firstNode().distanceFrom(node);
+                    double delta = way.firstNode().distanceFrom(node);
                     node.setProgress(delta);
                 }
             }
         }
     }
 
-    public void createEnemies(HashMap<String, Intersection> startingIntersections) {
+    public void createNests() {
+        double delayBeforeStart = 0;
+        for (Nest nest : map.getNests()) {
+            EnemyNest enemyNest = null;
+            if (nest.getType().equalsIgnoreCase("standard")) {
+                enemyNest = new WeakEnemyNest(this, delayBeforeStart, nest.getLon(), nest.getLat());
+                delayBeforeStart += 3;
+            }
+            if (enemyNest != null) {
+                addClockTickHandler(enemyNest);
+            }
+            enemyNests.add(enemyNest);
+        }
 
-        EnemyGroup enemyGroup = EnemyGroup.builder()
-                .intersections(startingIntersections)
-                .delay(10)
-                .numEnemies(10)
-                .enemyBuilder(new GroundEnemy.GroundEnemyBuilder(this, intersections))
-                .build();
-        enemyGroups.add(enemyGroup);
-        addClockTickHandler(enemyGroup);
-
-        enemyGroup = EnemyGroup.builder()
+        /*EnemyGroup enemyGroup = EnemyGroup.builder()
                 .intersections(startingIntersections)
                 .delay(20)
                 .numEnemies(10)
                 .enemyBuilder(new ArmoredGroundEnemy.ArmoredGroundEnemyBuilder(this, intersections))
                 .build();
         enemyGroups.add(enemyGroup);
-        addClockTickHandler(enemyGroup);
-
-        /*
-        EnemyGroup enemyGroup2 = EnemyGroup.builder()
-                .intersections(startingIntersections)
-                .delay(10)
-                .numEnemies(10)
-                .enemyBuilder(new LeftToRightFlyingEnemyBuilder(this))
-                .build();
-
-        enemyGroups.add(enemyGroup2);
-         */
+        addClockTickHandler(enemyGroup);*/
     }
 
     public Intersection getIntersectionForNode(Node node) {
@@ -374,8 +370,10 @@ public class MapScreen extends Screen implements InputProcessor{
     public List<Enemy> getEnemies() {
         List<Enemy> enemies = new ArrayList<>();
 
-        for (EnemyGroup enemyGroup : enemyGroups) {
-            enemies.addAll(enemyGroup.getEnemies());
+        for (EnemyNest enemyNest: enemyNests) {
+            for (EnemyGroup enemyGroup : enemyNest.getEnemyGroups()) {
+                enemies.addAll(enemyGroup.getEnemies());
+            }
         }
 
         return enemies;
@@ -420,24 +418,37 @@ public class MapScreen extends Screen implements InputProcessor{
 
         batch.begin();
 
+        // render the nests
+        for (EnemyNest enemyNest: enemyNests) {
+            Sprite sprite = new Sprite(enemyNest.getFrameTextureRegion());
+
+            sprite.setCenterX(convertLongToX(enemyNest.getLongitude()));
+            sprite.setCenterY(convertLatToY(enemyNest.getLatitude()));
+            sprite.setScale(64/sprite.getWidth());
+            sprite.draw(batch);
+
+        }
+
         // render the enemies
 
-        for (EnemyGroup enemyGroup : enemyGroups) {
-            List<Enemy> enemies = enemyGroup.getEnemies();
-            for (Enemy enemy : enemies) {
-                Point location = enemy.getLocation();
+        for (EnemyNest enemyNest: enemyNests) {
+            for (EnemyGroup enemyGroup : enemyNest.getEnemyGroups()) {
+                List<Enemy> enemies = enemyGroup.getEnemies();
+                for (Enemy enemy : enemies) {
+                    Point location = enemy.getLocation();
 
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
 
-                //batch.draw(enemy.getFrameTextureRegion(), x, y);
+                    //batch.draw(enemy.getFrameTextureRegion(), x, y);
 
-                Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
+                    Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
 
-                sprite.setCenterY(convertLatToY(latitude));
-                sprite.setCenterX(convertLongToX(longitude));
-                sprite.draw(batch);
+                    sprite.setCenterY(convertLatToY(latitude));
+                    sprite.setCenterX(convertLongToX(longitude));
+                    sprite.draw(batch);
 
+                }
             }
         }
 

@@ -26,7 +26,7 @@ public class Djikstra {
         getBestPath(fromIntersection, toX, toY);
     }
 
-    public PathStep getBestPath(Intersection from, float toX, float toY) {
+    public PathStep getBestPath(Intersection from, double toX, double toY) {
         for (Intersection intersection: allIntersections.values()) {
             intersection.setPathStep(null);
         }
@@ -38,9 +38,9 @@ public class Djikstra {
         Collections.sort(sortedIntersections, new Comparator<Intersection>() {
             @Override
             public int compare(Intersection a, Intersection b) {
-                float distanceA = (a.getNode().getLat()-toX) * (a.getNode().getLat()-toX)+
+                double distanceA = (a.getNode().getLat()-toX) * (a.getNode().getLat()-toX)+
                         (a.getNode().getLon()-toY) * (a.getNode().getLon()-toY);
-                float distanceB = (b.getNode().getLat()-toX) * (b.getNode().getLat()-toX)+
+                double distanceB = (b.getNode().getLat()-toX) * (b.getNode().getLat()-toX)+
                         (b.getNode().getLon()-toY) * (b.getNode().getLon()-toY);
 
                 if (distanceA>distanceB) {

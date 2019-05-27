@@ -232,53 +232,35 @@ public class GroundEnemy extends Enemy {
     }
 
     public static class GroundEnemyBuilder implements EnemyBuilder {
-        HashMap<String, Intersection> intersections;
         MapScreen game;
 
         Way way;
         PathStep pathStep;
 
-        public GroundEnemyBuilder(MapScreen game, HashMap<String, Intersection> intersections) {
-            this.game = game;
-            this.intersections = intersections;
+        public GroundEnemyBuilder(MapScreen parent, Node startingNode) {
+
+            this.game = parent;
+            HashMap<String, Intersection> intersections = Intersection.buildIntersectionsFromMap(parent.getMap());
 
             SecureRandom random = new SecureRandom();
             random.setSeed(System.currentTimeMillis());
 
-            // Ensure enemies always start off-screen
-            List<Way> startingWays = new ArrayList<>();
-
-            for (Way way : game.getMap().getWays()) {
-                Node node = way.firstNode();
-
-                if ((node.getLat() < game.getMap().getSouth()) ||
-                        (node.getLon() < game.getMap().getWest()) ||
-                        (node.getLat() > game.getMap().getNorth()) ||
-                        (node.getLon() > game.getMap().getEast())
-                ) {
-                    startingWays.add(way);
-                }
-
-            }
-
             pathStep = null;
 
             while (pathStep == null) {
-                Way way = startingWays.get(random.nextInt(startingWays.size()));
-
                 Djikstra djikstra = new Djikstra(intersections);
-                Intersection intersection = djikstra.getIntersectionForNode(intersections, way.firstNode());
-                float north = game.getMap().getNorth();
-                float south = game.getMap().getSouth();
-                float east = game.getMap().getEast();
-                float west = game.getMap().getWest();
+                Intersection intersection = djikstra.getIntersectionForNode(intersections, startingNode);
+                double north = parent.getMap().getNorth();
+                double south = parent.getMap().getSouth();
+                double east = parent.getMap().getEast();
+                double west = parent.getMap().getWest();
 
-                float centerX = north + ((south-north)/2);
-                float centerY = west + ((east-west)/2);
+                double centerX = north + ((south-north)/2);
+                double centerY = west + ((east-west)/2);
 
                 System.out.println("Getting best path to "
                         + new Point(centerX, centerY)
-                        +game.printPointInXY(new Point(centerX, centerY)));
+                        +parent.printPointInXY(new Point(centerX, centerY)));
                 pathStep = djikstra.getBestPath(intersection,
                         centerX,
                         centerY);

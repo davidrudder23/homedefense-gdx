@@ -112,7 +112,7 @@ public class Way {
         return endNode;
     }
 
-    public float getDistance() {
+    public double getDistance() {
         return firstNode().distanceFrom(lastNode());
     }
 

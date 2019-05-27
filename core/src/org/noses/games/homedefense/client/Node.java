@@ -42,10 +42,18 @@ public class Node {
         return true;
     }
 
-    public float distanceFrom(Node other) {
-        float lengthLat = other.getLat() - getLat();
-        float lengthLon = other.getLon() - getLon();
-        float totalLength = (float) (Math.sqrt((lengthLat * lengthLat) + (lengthLon * lengthLon)));
+    public double distanceFrom(Node other) {
+        double lengthLat = other.getLat() - getLat();
+        double lengthLon = other.getLon() - getLon();
+        double totalLength = (float) (Math.sqrt((lengthLat * lengthLat) + (lengthLon * lengthLon)));
+
+        return Math.abs(totalLength);
+    }
+
+    public double distanceFrom(double longitude, double latitude) {
+        double lengthLat = latitude- getLat();
+        double lengthLon = longitude - getLon();
+        double totalLength = Math.sqrt((lengthLat * lengthLat) + (lengthLon * lengthLon));
 
         return Math.abs(totalLength);
     }
