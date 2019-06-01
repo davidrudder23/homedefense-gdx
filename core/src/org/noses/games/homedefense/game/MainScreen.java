@@ -50,6 +50,7 @@ public class MainScreen extends Screen {
 
         startButton.setX((float)(stage.getWidth()*.8));
         startButton.setY((float)(stage.getHeight()*.1));
+        startButton.setScale((float)(parent.getScreenWidth()*.5)/startButton.getWidth());
         stage.addActor(startButton);
 
         startButton.addListener(new ChangeListener() {
