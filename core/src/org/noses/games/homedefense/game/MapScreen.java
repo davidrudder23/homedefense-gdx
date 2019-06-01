@@ -17,6 +17,7 @@ import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.*;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
+import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.tower.Tower;
 import org.noses.games.homedefense.ui.MouseHandler;
@@ -71,6 +72,8 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public MapScreen(HomeDefenseGame parent) {
         this.parent = parent;
+
+        System.out.println("Geo=" + parent.getGeolocation());
 
         enemyGroups = new ArrayList<>();
 
@@ -157,7 +160,7 @@ public class MapScreen extends Screen implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            System.exit(0);
+            parent.die();
 
         }
 
@@ -175,7 +178,7 @@ public class MapScreen extends Screen implements InputProcessor {
             speedMultiplier = 1;
         }
 
-        System.out.println("Speed multiplier="+speedMultiplier);
+        System.out.println("Speed multiplier=" + speedMultiplier);
 
         timer.cancel();
         timer = Timer.schedule(new Timer.Task() {
@@ -266,6 +269,8 @@ public class MapScreen extends Screen implements InputProcessor {
     public void initializeMap(int width, int height) {
         try {
 
+            Point location = parent.getGeolocation();
+
             float denverLatitude = 39.7392f;
             float denverLongitude = -104.9874f;
 
@@ -281,7 +286,11 @@ public class MapScreen extends Screen implements InputProcessor {
             //austinLatitude,
             //austinLongitude);
 
-            map = mapClient.getMap(account, denverLatitude + 0.0075, denverLatitude - 0.0075, denverLongitude + 0.015, denverLongitude - 0.015);
+            map = mapClient.getMap(account, location.getLatitude() + 0.0075,
+                    location.getLatitude() - 0.0075,
+                    location.getLongitude() + 0.015,
+                    location.getLongitude() - 0.015);
+            //map = mapClient.getMap(account, denverLatitude + 0.0075, denverLatitude - 0.0075, denverLongitude + 0.015, denverLongitude - 0.015);
             //map = mapClient.getMap(account, denverLatitude+0.03, denverLatitude-0.013, denverLongitude+0.06, denverLongitude-0.06);
             //System.out.println(map);
         } catch (IOException ioExc) {
@@ -306,6 +315,7 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public void createNests() {
         double delayBeforeStart = 0;
+        Djikstra djikstra = new Djikstra(intersections);
 
         for (Nest nest : map.getNests()) {
 
@@ -325,10 +335,16 @@ public class MapScreen extends Screen implements InputProcessor {
                 delayBeforeStart += 3;
             }
 
-            if (enemyNest != null) {
-                addClockTickHandler(enemyNest);
-                enemyNests.add(enemyNest);
+            if (enemyNest == null) {
+                continue;
             }
+
+            if (djikstra.getBestPath(enemyNest.getNode(), homePoint.getLongitude(), homePoint.getLongitude()) == null) {
+                continue;
+            }
+
+            addClockTickHandler(enemyNest);
+            enemyNests.add(enemyNest);
         }
 
         /*EnemyGroup enemyGroup = EnemyGroup.builder()
@@ -375,8 +391,13 @@ public class MapScreen extends Screen implements InputProcessor {
         System.out.println("Home hit for " + damage + " health=" + home.getHealth());
         home.hit(damage);
         if (home.isKilled()) {
-            Gdx.app.exit();
+            die();
         }
+    }
+
+    private void die() {
+        timer.cancel();
+        parent.die();
     }
 
     public void addMoney(int money) {

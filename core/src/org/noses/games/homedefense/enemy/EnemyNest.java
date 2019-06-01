@@ -1,6 +1,8 @@
 package org.noses.games.homedefense.enemy;
 
 import lombok.Getter;
+import org.noses.games.homedefense.client.Node;
+import org.noses.games.homedefense.client.Way;
 import org.noses.games.homedefense.game.Animation;
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.MapScreen;
@@ -15,6 +17,8 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
     double latitude;
 
     boolean killed;
+
+    Node bestNode;
 
     @Getter
     List<EnemyGroup> enemyGroups;
@@ -78,5 +82,29 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
     @Override
     public boolean isKilled() {
         return killed;
+    }
+
+    public Node getNode() {
+        if (bestNode != null) {
+            return bestNode;
+        }
+
+        double distanceToBest = 99999999;
+        for (Way way: parent.getMap().getWays()) {
+            for (Node node: way.getNodes()) {
+                double distanceToThis = node.distanceFrom(getLongitude(), getLatitude());
+                if (distanceToThis < distanceToBest) {
+                    bestNode = node;
+                    distanceToBest = distanceToThis;
+                }
+            }
+        }
+
+        System.out.println("bestNode="+bestNode);
+
+        if (bestNode == null) {
+            return null;
+        }
+        return bestNode;
     }
 }

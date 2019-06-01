@@ -4,11 +4,14 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import org.noses.games.homedefense.game.DeathScreen;
 import org.noses.games.homedefense.game.MainScreen;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.game.Screen;
+import org.noses.games.homedefense.geolocation.Geolocator;
+import org.noses.games.homedefense.geometry.Point;
 
-public class HomeDefenseGame extends ApplicationAdapter  {
+public class HomeDefenseGame extends ApplicationAdapter {
     // TODO: calculate this based on current lat/long, not just hardcoded to Denver
 
     //
@@ -19,8 +22,17 @@ public class HomeDefenseGame extends ApplicationAdapter  {
 
     SpriteBatch batch;
 
-
     Screen currentScreen;
+
+    Geolocator geolocator;
+
+    public HomeDefenseGame(Geolocator geolocator) {
+        this.geolocator = geolocator;
+    }
+
+    public Point getGeolocation() {
+        return geolocator.getGeolocation();
+    }
 
     @Override
     public void create() {
@@ -34,6 +46,13 @@ public class HomeDefenseGame extends ApplicationAdapter  {
         currentScreen = new MapScreen(this);
     }
 
+    public void die() {
+        currentScreen = new DeathScreen(this);
+    }
+
+    public void endGame() {
+        Gdx.app.exit();
+    }
 
     @Override
     public void render() {

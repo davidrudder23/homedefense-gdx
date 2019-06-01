@@ -18,23 +18,8 @@ public class WeakEnemyNest extends EnemyNest {
     @Override
     public EnemyGroup getNewEnemyGroup() {
 
-        Node bestNode = null;
-        double distanceToBest = 99999999;
-        for (Way way: parent.getMap().getWays()) {
-            for (Node node: way.getNodes()) {
-                double distanceToThis = node.distanceFrom(getLongitude(), getLatitude());
-                if (distanceToThis < distanceToBest) {
-                    bestNode = node;
-                    distanceToBest = distanceToThis;
-                }
-            }
-        }
-
-        System.out.println("bestNode="+bestNode);
-
-        if (bestNode == null) {
-            return null;
-        }
+        Node bestNode = getNode();
+        if (bestNode == null) return null;
 
         EnemyGroup enemyGroup = EnemyGroup.builder()
                 .delay(10)
@@ -44,4 +29,6 @@ public class WeakEnemyNest extends EnemyNest {
         parent.addClockTickHandler(enemyGroup);
         return enemyGroup;
     }
+
+
 }

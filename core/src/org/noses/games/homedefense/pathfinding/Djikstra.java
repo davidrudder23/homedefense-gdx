@@ -20,28 +20,28 @@ public class Djikstra {
         seen = new HashMap<>();
     }
 
-    public void getBestPath(Node from, int toX, int toY) {
+    public PathStep getBestPath(Node from, double latitude, double longitude) {
         Intersection fromIntersection = getIntersectionForNode(allIntersections, from);
 
-        getBestPath(fromIntersection, toX, toY);
+        return getBestPath(fromIntersection, latitude, longitude);
     }
 
-    public PathStep getBestPath(Intersection from, double toX, double toY) {
+    public PathStep getBestPath(Intersection from, double latitude, double longitude) {
         for (Intersection intersection: allIntersections.values()) {
             intersection.setPathStep(null);
         }
 
-        // Sort by distance to toX and toY, so we can find the closest intersections
+        // Sort by distance to latitude and longitude, so we can find the closest intersections
         List<Intersection> sortedIntersections = new ArrayList<>();
         sortedIntersections.addAll(allIntersections.values());
 
         Collections.sort(sortedIntersections, new Comparator<Intersection>() {
             @Override
             public int compare(Intersection a, Intersection b) {
-                double distanceA = (a.getNode().getLat()-toX) * (a.getNode().getLat()-toX)+
-                        (a.getNode().getLon()-toY) * (a.getNode().getLon()-toY);
-                double distanceB = (b.getNode().getLat()-toX) * (b.getNode().getLat()-toX)+
-                        (b.getNode().getLon()-toY) * (b.getNode().getLon()-toY);
+                double distanceA = (a.getNode().getLat()-latitude) * (a.getNode().getLat()-latitude)+
+                        (a.getNode().getLon()-longitude) * (a.getNode().getLon()-longitude);
+                double distanceB = (b.getNode().getLat()-latitude) * (b.getNode().getLat()-latitude)+
+                        (b.getNode().getLon()-longitude) * (b.getNode().getLon()-longitude);
 
                 if (distanceA>distanceB) {
                     return 1;

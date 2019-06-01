@@ -1,10 +1,13 @@
 package org.noses.games.homedefense.geometry;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
-@Getter
+@NoArgsConstructor
+@Data
 public class Point {
     double latitude;
     double longitude;
