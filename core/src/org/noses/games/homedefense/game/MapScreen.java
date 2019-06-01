@@ -21,13 +21,14 @@ import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.tower.Tower;
 import org.noses.games.homedefense.ui.MouseHandler;
 import org.noses.games.homedefense.ui.PieMenu;
+import org.noses.games.homedefense.ui.SpeedButton;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MapScreen extends Screen implements InputProcessor{
+public class MapScreen extends Screen implements InputProcessor {
     HomeDefenseGame parent;
 
     @Getter
@@ -61,6 +62,8 @@ public class MapScreen extends Screen implements InputProcessor{
     @Getter
     int speedMultiplier;
 
+    SpeedButton speedButton;
+
     Timer.Task timer;
 
     @Getter
@@ -84,7 +87,6 @@ public class MapScreen extends Screen implements InputProcessor{
         speedMultiplier = 1;
 
         money = 0;
-
 
         initializeMap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -110,6 +112,9 @@ public class MapScreen extends Screen implements InputProcessor{
             }
         }
 
+        speedButton = new SpeedButton(this, getScreenWidth() - 40, getScreenHeight() - 40);
+        addClickHandler(speedButton);
+
         createNests();
 
         setupSound();
@@ -129,7 +134,6 @@ public class MapScreen extends Screen implements InputProcessor{
 
     }
 
-
     public int getScreenWidth() {
         return Gdx.graphics.getWidth();
     }
@@ -137,7 +141,6 @@ public class MapScreen extends Screen implements InputProcessor{
     public int getScreenHeight() {
         return Gdx.graphics.getHeight();
     }
-
 
     public void addClockTickHandler(ClockTickHandler clockTickHandler) {
         synchronized (clockTickHandlersToBeAdded) {
@@ -159,23 +162,30 @@ public class MapScreen extends Screen implements InputProcessor{
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            speedMultiplier += 1;
-
-            if ((speedMultiplier > 5) || (speedMultiplier < 1)) {
-                speedMultiplier = 1;
-            }
-
-            timer.cancel();
-            timer = Timer.schedule(new Timer.Task() {
-                                       @Override
-                                       public void run() {
-                                           clockTick(1 / 10.0f);
-                                       }
-                                   }
-                    , 0f, 1 / (10.0f * speedMultiplier));
+            speedUp();
         }
 
         return false;
+    }
+
+    public void speedUp() {
+        speedMultiplier += 1;
+
+        if ((speedMultiplier > 5) || (speedMultiplier < 1)) {
+            speedMultiplier = 1;
+        }
+
+        System.out.println("Speed multiplier="+speedMultiplier);
+
+        timer.cancel();
+        timer = Timer.schedule(new Timer.Task() {
+                                   @Override
+                                   public void run() {
+                                       clockTick(1 / 10.0f);
+                                   }
+                               }
+                , 0f, 1 / (10.0f * speedMultiplier));
+
     }
 
     @Override
@@ -271,7 +281,7 @@ public class MapScreen extends Screen implements InputProcessor{
             //austinLatitude,
             //austinLongitude);
 
-            map = mapClient.getMap(account, denverLatitude+0.0075, denverLatitude-0.0075, denverLongitude+0.015, denverLongitude-0.015);
+            map = mapClient.getMap(account, denverLatitude + 0.0075, denverLatitude - 0.0075, denverLongitude + 0.015, denverLongitude - 0.015);
             //map = mapClient.getMap(account, denverLatitude+0.03, denverLatitude-0.013, denverLongitude+0.06, denverLongitude-0.06);
             //System.out.println(map);
         } catch (IOException ioExc) {
@@ -380,7 +390,7 @@ public class MapScreen extends Screen implements InputProcessor{
     public List<Enemy> getEnemies() {
         List<Enemy> enemies = new ArrayList<>();
 
-        for (EnemyNest enemyNest: enemyNests) {
+        for (EnemyNest enemyNest : enemyNests) {
             for (EnemyGroup enemyGroup : enemyNest.getEnemyGroups()) {
                 enemies.addAll(enemyGroup.getEnemies());
             }
@@ -429,19 +439,19 @@ public class MapScreen extends Screen implements InputProcessor{
         batch.begin();
 
         // render the nests
-        for (EnemyNest enemyNest: enemyNests) {
+        for (EnemyNest enemyNest : enemyNests) {
             Sprite sprite = new Sprite(enemyNest.getFrameTextureRegion());
 
             sprite.setCenterX(convertLongToX(enemyNest.getLongitude()));
             sprite.setCenterY(convertLatToY(enemyNest.getLatitude()));
-            sprite.setScale(64/sprite.getWidth());
+            sprite.setScale(64 / sprite.getWidth());
             sprite.draw(batch);
 
         }
 
         // render the enemies
 
-        for (EnemyNest enemyNest: enemyNests) {
+        for (EnemyNest enemyNest : enemyNests) {
             for (EnemyGroup enemyGroup : enemyNest.getEnemyGroups()) {
                 List<Enemy> enemies = enemyGroup.getEnemies();
                 for (Enemy enemy : enemies) {
@@ -473,18 +483,18 @@ public class MapScreen extends Screen implements InputProcessor{
 
         font.draw(batch, "Speed: " + getSpeedMultiplier() + "x", 10, Gdx.graphics.getHeight() - (40 + (font.getCapHeight() * 2)));
 
+        speedButton.render(batch);
+
         // render the towers
-        for (Tower tower: getTowers()) {
+        for (Tower tower : getTowers()) {
             tower.render(batch);
         }
-
 
         // render the pie menu
 
         if (!towerChoiceMenu.isHidden()) {
             towerChoiceMenu.renderMenu(batch);
         }
-
 
         batch.end();
     }
@@ -498,7 +508,6 @@ public class MapScreen extends Screen implements InputProcessor{
         float latPerPixel = (map.getNorth() - map.getSouth()) / Gdx.graphics.getHeight();
         return map.getSouth() + (y * latPerPixel);
     }
-
 
     public int convertLongToX(double longitude) {
         float longPerPixel = (map.getEast() - map.getWest()) / (float) Gdx.graphics.getWidth();
@@ -514,6 +523,5 @@ public class MapScreen extends Screen implements InputProcessor{
     public String printPointInXY(Point point) {
         return (convertLongToX(point.getLongitude()) + "x" + convertLatToY(point.getLatitude()));
     }
-
 
 }
