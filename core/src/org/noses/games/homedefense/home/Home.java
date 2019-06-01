@@ -14,11 +14,12 @@ import org.noses.games.homedefense.game.Aimer;
 import org.noses.games.homedefense.game.Animation;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.game.PhysicalObject;
+import org.noses.games.homedefense.geometry.Point;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Home extends Animation implements PhysicalObject {
+public class Home extends Enemy implements PhysicalObject {
 
     final double timeBetweenShots = 0.8;
 
@@ -35,10 +36,6 @@ public class Home extends Animation implements PhysicalObject {
     Sound hitSound;
 
     @Getter
-    @Setter
-    int health;
-
-    @Getter
     double latitude;
 
     @Getter
@@ -47,7 +44,7 @@ public class Home extends Animation implements PhysicalObject {
     Aimer aimer;
 
     public Home(MapScreen parent, double latitude, double longitude) {
-        super(parent, "home.png", 64, 64, true);
+        super(parent, "home.png", parent.loadSound("home_hit.mp3"), 64, 64, 100);
         this.latitude = latitude;
         this.longitude = longitude;
         angle = 0;
@@ -60,20 +57,24 @@ public class Home extends Animation implements PhysicalObject {
 
         hitSound = parent.loadSound("home_hit.mp3");
 
-        health = 100;
         aimer = new Aimer(parent, latitude, longitude);
 
         parent.addClockTickHandler(this);
     }
 
-    public void hit(int damage) {
-        health -= damage;
-        hitSound.play();
+    @Override
+    public int getDamage() {
+        return 300;
     }
 
     @Override
-    public boolean isKilled() {
-        return health <= 0;
+    public int getValue() {
+        return 0;
+    }
+
+    @Override
+    public Point getLocation() {
+        return new Point(latitude, longitude);
     }
 
     public void clockTick(double delay) {
@@ -117,7 +118,7 @@ public class Home extends Animation implements PhysicalObject {
             return;
         }
 
-        NormalBullet normalBullet = new NormalBullet(parent, shotSound, getLatitude(), getLongitude(), angle);
+        NormalBullet normalBullet = new NormalBullet(parent, shotSound, getLatitude(), getLongitude(), angle, getDamage());
         normalBullet.shoot();
         bullets.add(normalBullet);
 

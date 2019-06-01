@@ -6,15 +6,17 @@ import org.noses.games.homedefense.geometry.Point;
 
 public class NormalBulletShooter extends Shooter {
 
-    public NormalBulletShooter(MapScreen parent, double timeBetweenShots, Point location) {
+    int damage;
 
+    public NormalBulletShooter(MapScreen parent, double timeBetweenShots, Point location, int damage) {
         super(parent, timeBetweenShots, "normal_shot.mp3", location);
+        this.damage = damage;
     }
 
     @Override
     public Bullet createBullet() {
 
-        NormalBullet normalBullet = new NormalBullet(parent, shotSound, getLatitude(), getLongitude(), angle);
+        NormalBullet normalBullet = new NormalBullet(parent, shotSound, getLatitude(), getLongitude(), angle, damage);
 
         return normalBullet;
     }

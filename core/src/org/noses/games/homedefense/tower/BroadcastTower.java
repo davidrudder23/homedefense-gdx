@@ -9,7 +9,7 @@ public class BroadcastTower extends Tower {
 
     public BroadcastTower(MapScreen parent, double longitude, double latitude) {
         super(parent, "broadcast", longitude, latitude,
-                new NormalBulletShooter(parent, 0.8, new Point(latitude, longitude)));
+                new NormalBulletShooter(parent, 0.8, new Point(latitude, longitude), 4));
     }
 
     public static class BroadcastTowerFactory extends TowerFactory {

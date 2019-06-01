@@ -9,7 +9,7 @@ public class LaserTower extends Tower {
 
     public LaserTower(MapScreen parent, double longitude, double latitude) {
         super(parent, "laser", longitude, latitude,
-                new NormalBulletShooter(parent, 0.8, new Point(latitude, longitude)));
+                new NormalBulletShooter(parent, 0.8, new Point(latitude, longitude), 10));
     }
 
     public static class LaserTowerFactory extends TowerFactory {

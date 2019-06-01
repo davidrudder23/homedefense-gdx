@@ -5,7 +5,9 @@ import org.noses.games.homedefense.game.MapScreen;
 
 public class NormalBullet extends Bullet {
 
-    public NormalBullet(MapScreen parent, Sound shotSound, double latitude, double longitude, double angle) {
+    int damage;
+
+    public NormalBullet(MapScreen parent, Sound shotSound, double latitude, double longitude, double angle, int damage) {
         super(parent, "bullet_small.png", shotSound, 16, 16);
         currentLatitude = latitude;
         currentLongitude = longitude;
@@ -14,6 +16,8 @@ public class NormalBullet extends Bullet {
 
         this.angle = angle;
         this.speed = 1000;
+
+        this.damage = damage;
     }
 
     public double getRadius() {
@@ -22,6 +26,6 @@ public class NormalBullet extends Bullet {
 
     @Override
     public int getDamage() {
-        return 4;
+        return damage;
     }
 }

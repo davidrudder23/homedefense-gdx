@@ -9,7 +9,7 @@ public class RifleTower extends Tower {
 
     public RifleTower(MapScreen parent, double longitude, double latitude) {
         super(parent, "rifle", longitude, latitude,
-                new NormalBulletShooter(parent, 0.8, new Point(latitude, longitude)));
+                new NormalBulletShooter(parent, 0.8, new Point(latitude, longitude), 4));
     }
 
     public static class RifleTowerFactor extends TowerFactory {
