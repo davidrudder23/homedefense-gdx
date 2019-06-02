@@ -7,5 +7,17 @@ public class Configuration {
 
     int width = 640;
     int height = 480;
-    String baseURL = "http://10.10.10.1:8080/";
+    String baseURL = "http://homedefense.noses.org:8080/";
+
+    public String getBaseURL() {
+        if ((baseURL == null) || (baseURL.length()==0)) {
+            return "http://homedefense.noses.org:8080/";
+        }
+
+        if (baseURL.endsWith("/")) {
+            return baseURL;
+        }
+
+        return baseURL+"/";
+    }
 }

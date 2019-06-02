@@ -277,7 +277,7 @@ public class MapScreen extends Screen implements InputProcessor {
             float austinLatitude = 30.2746f;
             float austinLongitude = -97.7404f;
 
-            MapClient mapClient = new MapClient();
+            MapClient mapClient = new MapClient(parent.getConfiguration().getBaseURL());
             Account account = mapClient.register("drig1",
                     "drig1@noses.org",
                     "test1",

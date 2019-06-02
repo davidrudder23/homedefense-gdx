@@ -35,6 +35,6 @@ public class DesktopLauncher {
         System.out.println("Base URL=" + desktopConfig.getBaseURL());
 
         // TODO Get api key from props
-        new LwjglApplication(new HomeDefenseGame(new IPAddressGeolocator("00a4da2c55a1d6b04c9dc8abe8a9474d")), config);
+        new LwjglApplication(new HomeDefenseGame(new IPAddressGeolocator("00a4da2c55a1d6b04c9dc8abe8a9474d"), desktopConfig), config);
     }
 }
