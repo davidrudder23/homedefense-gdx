@@ -55,6 +55,8 @@ public class MapScreen extends Screen implements InputProcessor {
     private List<ClockTickHandler> clockTickHandlers;
     private List<ClockTickHandler> clockTickHandlersToBeAdded;
 
+    BitmapFont font;
+
     @Getter
     private List<Tower> towers;
 
@@ -88,6 +90,9 @@ public class MapScreen extends Screen implements InputProcessor {
         speedMultiplier = 1;
 
         money = 0;
+
+        font = new BitmapFont();
+        font.setColor(Color.WHITE);
 
         initializeMap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), location);
 
@@ -496,8 +501,6 @@ public class MapScreen extends Screen implements InputProcessor {
         getHome().render(batch);
 
         // render the score and other text
-        BitmapFont font = new BitmapFont();
-        font.setColor(Color.WHITE);
         font.draw(batch, "Health: " + getHome().getHealth(), 10, Gdx.graphics.getHeight() - 30);
 
         font.draw(batch, "Money: " + getMoney(), 10, Gdx.graphics.getHeight() - (35 + font.getCapHeight()));
