@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import org.noses.games.homedefense.game.MapScreen;
 
-public class SpeedButton implements MouseHandler{
+public class SpeedButton implements MouseHandler {
 
     int x;
     int y;
@@ -28,27 +28,28 @@ public class SpeedButton implements MouseHandler{
     }
 
     @Override
-    public void onClick(int x, int y) {
+    public boolean onClick(int x, int y) {
 
-        if (isClicked(x, parent.getScreenHeight()-y)) {
+        if (isClicked(x, parent.getScreenHeight() - y)) {
             parent.speedUp();
+            return false;
         }
-
+        return true;
     }
 
     @Override
-    public void onRightClick(int x, int y) {
-
+    public boolean onRightClick(int x, int y) {
+        return true;
     }
 
     @Override
-    public void onClickUp() {
-
+    public boolean onClickUp() {
+        return true;
     }
 
     @Override
-    public void onMouseDragged(int x, int y) {
-
+    public boolean onMouseDragged(int x, int y) {
+        return true;
     }
 
     public boolean isClicked(int x, int y) {

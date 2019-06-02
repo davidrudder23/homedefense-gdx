@@ -50,7 +50,7 @@ public class PieMenu implements MouseHandler {
     }
 
     @Override
-    public void onClick(int x, int y) {
+    public boolean onClick(int x, int y) {
         hidden = false;
         clickX = x;
         clickY = y;
@@ -58,14 +58,16 @@ public class PieMenu implements MouseHandler {
         dragX = x;
         dragY = y;
 
+        return true;
     }
 
     @Override
-    public void onRightClick(int x, int y) {
+    public boolean onRightClick(int x, int y) {
+        return true;
     }
 
     @Override
-    public void onClickUp() {
+    public boolean onClickUp() {
         hidden = true;
 
         for (PieMenuItem pieMenuItem: pieMenuItems.values()) {
@@ -76,6 +78,7 @@ public class PieMenu implements MouseHandler {
                 }
             }
         }
+        return true;
     }
 
     public void renderMenu(Batch batch) {
@@ -94,8 +97,9 @@ public class PieMenu implements MouseHandler {
     }
 
     @Override
-    public void onMouseDragged(int x, int y) {
+    public boolean onMouseDragged(int x, int y) {
         dragX = x;
         dragY = y;
+        return true;
     }
 }

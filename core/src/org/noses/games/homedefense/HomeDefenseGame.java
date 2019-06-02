@@ -42,8 +42,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
         currentScreen = new MainScreen(this);
     }
 
-    public void startGame() {
-        currentScreen = new MapScreen(this);
+    public void startGame(Point location) {
+        currentScreen = new MapScreen(this, location);
     }
 
     public void die() {

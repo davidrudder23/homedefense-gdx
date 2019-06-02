@@ -70,10 +70,8 @@ public class MapScreen extends Screen implements InputProcessor {
     @Getter
     PieMenu towerChoiceMenu;
 
-    public MapScreen(HomeDefenseGame parent) {
+    public MapScreen(HomeDefenseGame parent, Point location) {
         this.parent = parent;
-
-        System.out.println("Geo=" + parent.getGeolocation());
 
         enemyGroups = new ArrayList<>();
 
@@ -91,7 +89,7 @@ public class MapScreen extends Screen implements InputProcessor {
 
         money = 0;
 
-        initializeMap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        initializeMap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), location);
 
         HomeDefenseGame.ONE_PIXEL_IN_LATLON = (map.getEast() - map.getWest()) / Gdx.graphics.getWidth();
 
@@ -221,11 +219,16 @@ public class MapScreen extends Screen implements InputProcessor {
         if (Gdx.input.isButtonPressed(0)) {
 
             for (MouseHandler mouseHandler : mouseHandlers) {
-                mouseHandler.onClick(x, y);
+                if (!mouseHandler.onClick(x, y)) {
+                    break;
+                }
             }
         } else if (Gdx.input.isButtonPressed(1)) {
-            for (MouseHandler mouseHandler : mouseHandlers) {
-                mouseHandler.onRightClick(x, y);
+            for (int i = mouseHandlers.size()-1; i>=0; i++) {
+                MouseHandler mouseHandler = mouseHandlers.get(i);
+                if (!mouseHandler.onRightClick(x, y)) {
+                    break;
+                }
             }
         }
 
@@ -266,11 +269,8 @@ public class MapScreen extends Screen implements InputProcessor {
         return false;
     }
 
-    public void initializeMap(int width, int height) {
+    public void initializeMap(int width, int height, Point location) {
         try {
-
-            Point location = parent.getGeolocation();
-
             float denverLatitude = 39.7392f;
             float denverLongitude = -104.9874f;
 
