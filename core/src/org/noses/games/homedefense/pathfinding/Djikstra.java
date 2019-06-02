@@ -52,9 +52,9 @@ public class Djikstra {
                 }
             }
         });
-        
+
         Node finishNode = sortedIntersections.get(0).getNode();
-        System.out.println("Closest is at "+finishNode+" which has pathstep="+sortedIntersections.get(0).getPathStep());
+        //System.out.println("Closest is at "+finishNode+" which has pathstep="+sortedIntersections.get(0).getPathStep());
 
 
         long startTime = System.currentTimeMillis();
