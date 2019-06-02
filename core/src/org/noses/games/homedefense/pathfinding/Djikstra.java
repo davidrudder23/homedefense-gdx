@@ -26,7 +26,7 @@ public class Djikstra {
         return getBestPath(fromIntersection, latitude, longitude);
     }
 
-    public PathStep getBestPath(Intersection from, double latitude, double longitude) {
+    public PathStep getBestPath(Intersection from, final double latitude, final double longitude) {
         for (Intersection intersection: allIntersections.values()) {
             intersection.setPathStep(null);
         }
@@ -52,7 +52,7 @@ public class Djikstra {
                 }
             }
         });
-
+        
         Node finishNode = sortedIntersections.get(0).getNode();
         System.out.println("Closest is at "+finishNode+" which has pathstep="+sortedIntersections.get(0).getPathStep());
 

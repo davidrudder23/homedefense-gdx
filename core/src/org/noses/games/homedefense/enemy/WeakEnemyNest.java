@@ -1,10 +1,10 @@
 package org.noses.games.homedefense.enemy;
 
 import org.noses.games.homedefense.client.Node;
-import org.noses.games.homedefense.client.Way;
 import org.noses.games.homedefense.game.MapScreen;
 
 public class WeakEnemyNest extends EnemyNest {
+    GroundEnemy.GroundEnemyBuilder builder;
 
     public WeakEnemyNest(MapScreen parent, double delayBeforeStart, double longitude, double latitude) {
         super (parent, "cell_tower", delayBeforeStart, longitude, latitude);
@@ -17,14 +17,21 @@ public class WeakEnemyNest extends EnemyNest {
 
     @Override
     public EnemyGroup getNewEnemyGroup() {
+        if (builder == null) {
+            Node bestNode = getNode();
+            if (bestNode != null) {
+                builder = new GroundEnemy.GroundEnemyBuilder(parent, bestNode);
+            }
+        }
 
-        Node bestNode = getNode();
-        if (bestNode == null) return null;
+        if (builder == null) {
+            return null;
+        }
 
         EnemyGroup enemyGroup = EnemyGroup.builder()
                 .delay(10)
                 .numEnemies(10)
-                .enemyBuilder(new GroundEnemy.GroundEnemyBuilder(parent, bestNode))
+                .enemyBuilder(builder)
                 .build();
         parent.addClockTickHandler(enemyGroup);
         return enemyGroup;

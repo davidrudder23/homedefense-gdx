@@ -1,12 +1,11 @@
 package org.noses.games.homedefense;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.geolocation.AndroidGeolocator;
+import org.noses.games.homedefense.geolocation.NullGeolocator;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
@@ -14,6 +13,6 @@ public class AndroidLauncher extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize(new HomeDefenseGame(), config);
+		initialize(new HomeDefenseGame(new AndroidGeolocator()), config);
 	}
 }

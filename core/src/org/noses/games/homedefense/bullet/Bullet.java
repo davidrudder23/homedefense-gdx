@@ -29,16 +29,12 @@ public abstract class Bullet extends Animation {
 
     boolean dead;
 
-    double rad;
-
     public Bullet(MapScreen parent, String spriteFilename, Sound shotSound, int tileWidth, int tileHeight) {
         super(parent, spriteFilename, tileWidth, tileHeight, true);
 
         this.shotSound = shotSound;
 
         dead = false;
-
-        rad = angle * Math.PI / 180;
     }
 
     public void clockTick(double delta) {
@@ -67,6 +63,8 @@ public abstract class Bullet extends Animation {
         }
 
         distanceTraveled += delta * speed * HomeDefenseGame.LATLON_MOVED_IN_1s_1mph ;
+
+        double rad = angle * Math.PI / 180;
 
         currentLatitude = originalLatitude + (Math.cos(rad) * distanceTraveled);
         currentLongitude = originalLongitude + (Math.sin(rad) * distanceTraveled);
