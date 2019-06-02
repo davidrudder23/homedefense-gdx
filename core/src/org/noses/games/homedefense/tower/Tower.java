@@ -4,10 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Data;
-import lombok.Getter;
-import org.noses.games.homedefense.HomeDefenseGame;
-import org.noses.games.homedefense.bullet.Bullet;
-import org.noses.games.homedefense.bullet.NormalBullet;
 import org.noses.games.homedefense.game.*;
 import org.noses.games.homedefense.geometry.Point;
 
@@ -18,7 +14,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
 
     private Point location;
 
-    HomeDefenseGame parent;
+    MapScreen parent;
     String towerName;
     Animation animation;
 
@@ -29,7 +25,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
     Aimer aimer;
     Shooter shooter;
 
-    public Tower(HomeDefenseGame parent, String towerName, double longitude, double latitude, Shooter shooter) {
+    public Tower(MapScreen parent, String towerName, double longitude, double latitude, Shooter shooter) {
         this.towerName = towerName;
         this.parent = parent;
 

@@ -3,11 +3,10 @@ package org.noses.games.homedefense.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Data;
-import org.noses.games.homedefense.HomeDefenseGame;
 
 @Data
 public class Animation implements ClockTickHandler {
-    protected HomeDefenseGame parent;
+    protected MapScreen parent;
     protected int frameNumber = 0;
     protected TextureRegion[][] animation;
 
@@ -17,7 +16,7 @@ public class Animation implements ClockTickHandler {
     boolean killed;
     boolean loop;
 
-    public Animation(HomeDefenseGame parent, String spriteFilename, int tileWidth, int tileHeight, boolean loop) {
+    public Animation(MapScreen parent, String spriteFilename, int tileWidth, int tileHeight, boolean loop) {
         this.parent = parent;
 
         this.tileWidth = tileWidth;

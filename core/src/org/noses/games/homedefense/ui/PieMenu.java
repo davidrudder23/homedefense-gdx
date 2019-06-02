@@ -1,16 +1,12 @@
 package org.noses.games.homedefense.ui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
-import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.tower.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class PieMenu implements MouseHandler {
 
@@ -26,9 +22,9 @@ public class PieMenu implements MouseHandler {
     HashMap<String, PieMenuItem> pieMenuItems; // normal, glow, grey, greyglow
 
 
-    HomeDefenseGame parent;
+    MapScreen parent;
 
-    public PieMenu(HomeDefenseGame parent) {
+    public PieMenu(MapScreen parent) {
         this.parent = parent;
         hidden = true;
 
@@ -54,7 +50,7 @@ public class PieMenu implements MouseHandler {
     }
 
     @Override
-    public void onClick(int x, int y) {
+    public boolean onClick(int x, int y) {
         hidden = false;
         clickX = x;
         clickY = y;
@@ -62,14 +58,16 @@ public class PieMenu implements MouseHandler {
         dragX = x;
         dragY = y;
 
+        return true;
     }
 
     @Override
-    public void onRightClick(int x, int y) {
+    public boolean onRightClick(int x, int y) {
+        return true;
     }
 
     @Override
-    public void onClickUp() {
+    public boolean onClickUp() {
         hidden = true;
 
         for (PieMenuItem pieMenuItem: pieMenuItems.values()) {
@@ -80,6 +78,7 @@ public class PieMenu implements MouseHandler {
                 }
             }
         }
+        return true;
     }
 
     public void renderMenu(Batch batch) {
@@ -98,8 +97,9 @@ public class PieMenu implements MouseHandler {
     }
 
     @Override
-    public void onMouseDragged(int x, int y) {
+    public boolean onMouseDragged(int x, int y) {
         dragX = x;
         dragY = y;
+        return true;
     }
 }

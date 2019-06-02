@@ -3,8 +3,9 @@ package org.noses.games.homedefense.bullet;
 import com.badlogic.gdx.audio.Sound;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.Map;
-import org.noses.games.homedefense.game.Animation;
 import org.noses.games.homedefense.enemy.Enemy;
+import org.noses.games.homedefense.game.Animation;
+import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.geometry.Rectangle;
 
@@ -28,7 +29,7 @@ public abstract class Bullet extends Animation {
 
     boolean dead;
 
-    public Bullet(HomeDefenseGame parent, String spriteFilename, Sound shotSound, int tileWidth, int tileHeight) {
+    public Bullet(MapScreen parent, String spriteFilename, Sound shotSound, int tileWidth, int tileHeight) {
         super(parent, spriteFilename, tileWidth, tileHeight, true);
 
         this.shotSound = shotSound;
@@ -64,6 +65,7 @@ public abstract class Bullet extends Animation {
         distanceTraveled += delta * speed * HomeDefenseGame.LATLON_MOVED_IN_1s_1mph ;
 
         double rad = angle * Math.PI / 180;
+
         currentLatitude = originalLatitude + (Math.cos(rad) * distanceTraveled);
         currentLongitude = originalLongitude + (Math.sin(rad) * distanceTraveled);
 

@@ -6,9 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Getter;
 import lombok.Setter;
-import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.bullet.Bullet;
-import org.noses.games.homedefense.bullet.NormalBullet;
 import org.noses.games.homedefense.geometry.Point;
 
 import java.util.ArrayList;
@@ -18,7 +16,7 @@ public abstract class Shooter implements PhysicalObject, ClockTickHandler {
 
     List<Bullet> bullets;
 
-    HomeDefenseGame parent;
+    MapScreen parent;
 
     double timeBetweenShots;
 
@@ -36,7 +34,7 @@ public abstract class Shooter implements PhysicalObject, ClockTickHandler {
 
     boolean killed;
 
-    public Shooter(HomeDefenseGame parent, double timeBetweenShots, String shotSoundFilename, Point location) {
+    public Shooter(MapScreen parent, double timeBetweenShots, String shotSoundFilename, Point location) {
         this.parent = parent;
         this.timeBetweenShots = timeBetweenShots;
         this.location = location;

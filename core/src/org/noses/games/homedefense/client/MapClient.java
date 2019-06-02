@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MapClient {
     ObjectMapper objectMapper;
@@ -63,6 +66,8 @@ public class MapClient {
         // Update is a write operation, just throw away the response
         String responseJSON = response.body().string();
         System.out.println("Set Home Response="+responseJSON);
+
+        // TODO
         objectMapper.readValue(responseJSON, Account.class);
     }
 
@@ -102,4 +107,20 @@ public class MapClient {
         Map map = objectMapper.readValue(mapJSON, Map.class);
         return map;
     }
+
+    public List<Destination> getDestinations() throws IOException {
+        String url = "http://localhost:8080/maps/destinations";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        String destinationsJSON = response.body().string();
+        System.out.println(destinationsJSON);
+        List<Destination> destinations = new ArrayList<>(Arrays.asList(objectMapper.readValue(destinationsJSON, Destination[].class)));
+        return destinations;
+    }
+
 }

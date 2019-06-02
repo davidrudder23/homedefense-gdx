@@ -2,6 +2,7 @@ package org.noses.games.homedefense.enemy.flying;
 
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.enemy.Enemy;
+import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 
 public class FlyingEnemy extends Enemy {
@@ -15,7 +16,7 @@ public class FlyingEnemy extends Enemy {
     Point startingPoint;
     Point endingPoint;
 
-    public FlyingEnemy(HomeDefenseGame parent, Point startingPoint, Point endingPoint) {
+    public FlyingEnemy(MapScreen parent, Point startingPoint, Point endingPoint) {
         super(parent, "line64.png", parent.loadSound("normal_hit.mp3"), 32, 32, 2);
 
         this.startingPoint = startingPoint;
