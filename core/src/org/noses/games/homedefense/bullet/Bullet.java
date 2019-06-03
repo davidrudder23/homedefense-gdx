@@ -21,6 +21,7 @@ public abstract class Bullet extends Animation {
     protected double currentLongitude;
 
     protected double angle;
+    double rad;
     protected double speed;
 
     protected double distanceTraveled;
@@ -29,10 +30,12 @@ public abstract class Bullet extends Animation {
 
     boolean dead;
 
-    public Bullet(MapScreen parent, String spriteFilename, Sound shotSound, int tileWidth, int tileHeight) {
+    public Bullet(MapScreen parent, String spriteFilename, Sound shotSound, int tileWidth, int tileHeight, double angle) {
         super(parent, spriteFilename, tileWidth, tileHeight, true);
 
         this.shotSound = shotSound;
+        this.angle = angle;
+        rad = angle * Math.PI / 180;
 
         dead = false;
     }
@@ -63,8 +66,6 @@ public abstract class Bullet extends Animation {
         }
 
         distanceTraveled += delta * speed * HomeDefenseGame.LATLON_MOVED_IN_1s_1mph ;
-
-        double rad = angle * Math.PI / 180;
 
         currentLatitude = originalLatitude + (Math.cos(rad) * distanceTraveled);
         currentLongitude = originalLongitude + (Math.sin(rad) * distanceTraveled);

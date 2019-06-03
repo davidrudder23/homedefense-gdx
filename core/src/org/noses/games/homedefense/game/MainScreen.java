@@ -39,7 +39,7 @@ public class MainScreen extends Screen {
     public MainScreen(HomeDefenseGame parent) {
         this.parent = parent;
 
-        MapClient mapClient = new MapClient();
+        MapClient mapClient = new MapClient(parent.getConfiguration().getBaseURL());
 
         try {
             destinations = mapClient.getDestinations();
