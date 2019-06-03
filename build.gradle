@@ -1,14 +1,16 @@
+
 buildscript {
     
 
     repositories {
-        mavenLocal()
-        mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
+        mavenCentral()
+        maven { url 'https://maven.google.com' }
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath 'com.android.tools.build:gradle:3.4.0'
     }
 }
 
@@ -23,7 +25,8 @@ lombok {
 }
 
 dependencies {
-    compile "org.projectlombok:lombok:1.16.18"
+    //compileOnly 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
 }
 
 allprojects {
@@ -43,8 +46,11 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+        jcenter()
+
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        google()
     }
 }
 
