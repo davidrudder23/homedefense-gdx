@@ -7,6 +7,8 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.noses.games.homedefense.game.Configuration;
 import org.noses.games.homedefense.geolocation.AndroidGeolocator;
+import org.noses.games.homedefense.geolocation.IPAddressGeolocator;
+import org.noses.games.homedefense.geolocation.NullGeolocator;
 
 import java.io.File;
 
@@ -30,6 +32,7 @@ public class AndroidLauncher extends AndroidApplication {
         }
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        initialize(new HomeDefenseGame(new AndroidGeolocator(), gameConfig), config);
+//        initialize(new HomeDefenseGame(new AndroidGeolocator(), gameConfig), config);
+        initialize(new HomeDefenseGame(new IPAddressGeolocator(), gameConfig), config);
     }
 }
