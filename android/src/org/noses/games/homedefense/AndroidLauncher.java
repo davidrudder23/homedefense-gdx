@@ -5,7 +5,6 @@ import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import org.noses.games.homedefense.geolocation.AndroidGeolocator;
-import org.noses.games.homedefense.geolocation.NullGeolocator;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
