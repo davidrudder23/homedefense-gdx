@@ -7,6 +7,7 @@ public class BombBullet extends Bullet {
 
     public BombBullet(MapScreen parent, Sound shotSound, double latitude, double longitude, double angle) {
         super(parent, "bullet_small.png", shotSound, 16, 16, angle);
+
         currentLatitude = latitude;
         currentLongitude = longitude;
         originalLatitude = latitude;

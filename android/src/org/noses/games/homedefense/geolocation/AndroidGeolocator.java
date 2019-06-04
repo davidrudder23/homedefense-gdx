@@ -6,13 +6,16 @@ import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.provider.Settings;
 import org.noses.games.homedefense.geometry.Point;
 
 public class AndroidGeolocator extends Activity implements Geolocator {
+    Point geoLocation;
 
     @Override
-    public Point getGeolocation() {
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
 
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         boolean enabled = service
@@ -28,9 +31,15 @@ public class AndroidGeolocator extends Activity implements Geolocator {
 
         try {
             Location location = service.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            return new Point(location.getLatitude(), location.getLongitude());
+            geoLocation = new Point(location.getLatitude(), location.getLongitude());
         } catch (SecurityException exc) {
-            return null;
         }
+
+    }
+
+    @Override
+    public Point getGeolocation() {
+
+        return geoLocation;
     }
 }

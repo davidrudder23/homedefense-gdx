@@ -94,7 +94,7 @@ public class MapScreen extends Screen implements InputProcessor {
         font = new BitmapFont();
         font.setColor(Color.WHITE);
 
-        initializeMap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), location);
+        initializeMap(location);
 
         HomeDefenseGame.ONE_PIXEL_IN_LATLON = (map.getEast() - map.getWest()) / Gdx.graphics.getWidth();
 
@@ -274,7 +274,7 @@ public class MapScreen extends Screen implements InputProcessor {
         return false;
     }
 
-    public void initializeMap(int width, int height, Point location) {
+    public void initializeMap(Point location) {
         try {
             float denverLatitude = 39.7392f;
             float denverLongitude = -104.9874f;
@@ -283,6 +283,7 @@ public class MapScreen extends Screen implements InputProcessor {
             float austinLongitude = -97.7404f;
 
             MapClient mapClient = new MapClient(parent.getConfiguration().getBaseURL());
+
             Account account = mapClient.register("drig1",
                     "drig1@noses.org",
                     "test1",

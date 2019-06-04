@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.noses.games.homedefense.game.Configuration;
 import org.noses.games.homedefense.geolocation.AndroidGeolocator;
 import org.noses.games.homedefense.geolocation.IPAddressGeolocator;
-import org.noses.games.homedefense.geolocation.NullGeolocator;
+import org.noses.games.homedefense.geometry.Point;
 
 import java.io.File;
 
@@ -32,7 +32,10 @@ public class AndroidLauncher extends AndroidApplication {
         }
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-//        initialize(new HomeDefenseGame(new AndroidGeolocator(), gameConfig), config);
-        initialize(new HomeDefenseGame(new IPAddressGeolocator(), gameConfig), config);
+        //Point location = new AndroidGeolocator().getGeolocation();
+        initialize(new HomeDefenseGame(new AndroidGeolocator(), gameConfig), config);
+        //initialize(new HomeDefenseGame(new IPAddressGeolocator("00a4da2c55a1d6b04c9dc8abe8a9474d"), gameConfig), config);
     }
+
+
 }

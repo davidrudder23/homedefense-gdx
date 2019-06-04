@@ -6,6 +6,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import lombok.Getter;
 import org.noses.games.homedefense.game.*;
+import org.noses.games.homedefense.game.DeathScreen;
+import org.noses.games.homedefense.game.MainScreen;
+import org.noses.games.homedefense.game.MapScreen;
+import org.noses.games.homedefense.game.Screen;
 import org.noses.games.homedefense.geolocation.Geolocator;
 import org.noses.games.homedefense.geometry.Point;
 
