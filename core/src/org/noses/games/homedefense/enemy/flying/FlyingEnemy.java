@@ -17,7 +17,7 @@ public class FlyingEnemy extends Enemy {
     Point endingPoint;
 
     public FlyingEnemy(MapScreen parent, Point startingPoint, Point endingPoint) {
-        super(parent, "line64.png", parent.loadSound("normal_hit.mp3"), 32, 32, 2);
+        super(parent, "line64.png", parent.loadSound("normal_hit.mp3"), 32, 32, 0.02, 2);
 
         this.startingPoint = startingPoint;
         this.endingPoint = endingPoint;

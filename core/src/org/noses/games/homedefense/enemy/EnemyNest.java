@@ -26,12 +26,12 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
     double timeSinceLastWave;
 
     public EnemyNest(MapScreen parent, String nestName, double delayBeforeStart, double longitude, double latitude) {
-        super (parent, "nest/"+nestName+".png", 199, 199, true);
+        super(parent, "nest/" + nestName + ".png", 199, 199, 0.03, true);
         this.longitude = longitude;
         this.latitude = latitude;
         killed = false;
 
-        timeSinceLastWave = delayBetweenWaves()-delayBeforeStart;
+        timeSinceLastWave = delayBetweenWaves() - delayBeforeStart;
 
         enemyGroups = new ArrayList<>();
     }
@@ -64,7 +64,7 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
         }
 
         synchronized (enemyGroups) {
-            for (int i = enemyGroups.size()-1; i>=0; i--) {
+            for (int i = enemyGroups.size() - 1; i >= 0; i--) {
                 EnemyGroup enemyGroup = enemyGroups.get(i);
                 if (enemyGroup.isEmpty()) {
                     enemyGroup.kill();
@@ -90,8 +90,8 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
         }
 
         double distanceToBest = 99999999;
-        for (Way way: parent.getMap().getWays()) {
-            for (Node node: way.getNodes()) {
+        for (Way way : parent.getMap().getWays()) {
+            for (Node node : way.getNodes()) {
                 double distanceToThis = node.distanceFrom(getLongitude(), getLatitude());
                 if (distanceToThis < distanceToBest) {
                     bestNode = node;
@@ -100,7 +100,7 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
             }
         }
 
-        System.out.println("bestNode="+bestNode);
+        System.out.println("bestNode=" + bestNode);
 
         if (bestNode == null) {
             return null;

@@ -15,8 +15,9 @@ public class Animation implements ClockTickHandler {
 
     boolean killed;
     boolean loop;
+    double scale;
 
-    public Animation(MapScreen parent, String spriteFilename, int tileWidth, int tileHeight, boolean loop) {
+    public Animation(MapScreen parent, String spriteFilename, int tileWidth, int tileHeight, double scale, boolean loop) {
         this.parent = parent;
 
         this.tileWidth = tileWidth;
@@ -24,6 +25,7 @@ public class Animation implements ClockTickHandler {
 
         killed = false;
         this.loop = loop;
+        this.scale = scale;
 
         Texture avatarAnimationSheet = new Texture(spriteFilename);
         animation = TextureRegion.split(avatarAnimationSheet, tileWidth, tileHeight);
