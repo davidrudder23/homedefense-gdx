@@ -17,6 +17,8 @@ public class FactoryTower extends Tower {
         public Tower createTower(MapScreen parent, double longitude, double latitude) {
             return new FactoryTower(parent, longitude, latitude);
         }
+        public int getCost() { return 100; }
+
     }
 
     @Override

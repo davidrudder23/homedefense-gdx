@@ -17,6 +17,8 @@ public class RifleTower extends Tower {
         public Tower createTower(MapScreen parent, double longitude, double latitude) {
             return new RifleTower(parent, longitude, latitude);
         }
+
+        public int getCost() { return 25; }
     }
 
     @Override

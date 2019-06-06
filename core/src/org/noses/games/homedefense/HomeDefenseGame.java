@@ -31,9 +31,16 @@ public class HomeDefenseGame extends ApplicationAdapter {
     @Getter
     Configuration configuration;
 
+    @Getter
+    double ppcX;
+
+    @Getter
+    double ppcY;
+
     public HomeDefenseGame(Geolocator geolocator, Configuration configuration) {
         this.geolocator = geolocator;
         this.configuration = configuration;
+
     }
 
     public Point getGeolocation() {
@@ -46,6 +53,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         //currentScreen = new MapScreen(this);
         currentScreen = new MainScreen(this);
+        this.ppcX = Gdx.graphics.getPpcX();
+        this.ppcY = Gdx.graphics.getPpcY();
     }
 
     public void startGame(Point location) {

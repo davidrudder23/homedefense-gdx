@@ -491,6 +491,8 @@ public class MapScreen extends Screen implements InputProcessor {
 
                     Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
 
+                    sprite.setScale((float)((parent.getScreenWidth()*.04)/sprite.getWidth()));
+
                     sprite.setCenterY(convertLatToY(latitude));
                     sprite.setCenterX(convertLongToX(longitude));
                     sprite.draw(batch);
@@ -548,5 +550,14 @@ public class MapScreen extends Screen implements InputProcessor {
     public String printPointInXY(Point point) {
         return (convertLongToX(point.getLongitude()) + "x" + convertLatToY(point.getLatitude()));
     }
+
+    public double getPpcX() {
+        return parent.getPpcX();
+    }
+
+    public double getPpcY() {
+        return parent.getPpcY();
+    }
+
 
 }
