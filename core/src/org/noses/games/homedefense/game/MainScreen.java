@@ -39,7 +39,7 @@ public class MainScreen extends Screen {
     public MainScreen(HomeDefenseGame parent) {
         this.parent = parent;
 
-        MapClient mapClient = new MapClient();
+        MapClient mapClient = new MapClient(parent.getConfiguration().getBaseURL());
 
         try {
             destinations = mapClient.getDestinations();
@@ -61,7 +61,6 @@ public class MainScreen extends Screen {
 
         Skin skin = new Skin(Gdx.files.internal("skin/comic/skin/comic-ui.json"));
 
-
         startButton = new TextButton("Start", skin);
 
         startButton.setX((float)(stage.getWidth()*.6));
@@ -77,11 +76,14 @@ public class MainScreen extends Screen {
         });
 
         destinationSelect = new SelectBox<String>(skin);
+
         Array<String> destinationNameArray = new Array<>();
         Point currentLocation = parent.getGeolocation();
         if (currentLocation != null) {
             destinations.add(new Destination("C", currentLocation.getLatitude(), currentLocation.getLongitude(), "Current Location", "Current Location"));
         }
+
+        System.out.println("PPCY="+Gdx.graphics.getPpcY());
 
         for (Destination destination: destinations) {
             System.out.println(destination.getName()+" "+destination.getLat()+","+destination.getLon());
@@ -131,4 +133,13 @@ public class MainScreen extends Screen {
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }
+
+    public double getPpcX() {
+        return parent.getPpcX();
+    }
+
+    public double getPpcY() {
+        return parent.getPpcY();
+    }
+
 }

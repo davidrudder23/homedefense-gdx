@@ -17,6 +17,9 @@ public class BroadcastTower extends Tower {
         public Tower createTower(MapScreen parent, double longitude, double latitude) {
             return new BroadcastTower(parent, longitude, latitude);
         }
+
+        public int getCost() { return 100; }
+
     }
 
     @Override

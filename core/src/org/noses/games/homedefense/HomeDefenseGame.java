@@ -4,6 +4,8 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import lombok.Getter;
+import org.noses.games.homedefense.game.*;
 import org.noses.games.homedefense.game.DeathScreen;
 import org.noses.games.homedefense.game.MainScreen;
 import org.noses.games.homedefense.game.MapScreen;
@@ -26,8 +28,19 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     Geolocator geolocator;
 
-    public HomeDefenseGame(Geolocator geolocator) {
+    @Getter
+    Configuration configuration;
+
+    @Getter
+    double ppcX;
+
+    @Getter
+    double ppcY;
+
+    public HomeDefenseGame(Geolocator geolocator, Configuration configuration) {
         this.geolocator = geolocator;
+        this.configuration = configuration;
+
     }
 
     public Point getGeolocation() {
@@ -40,6 +53,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         //currentScreen = new MapScreen(this);
         currentScreen = new MainScreen(this);
+        this.ppcX = Gdx.graphics.getPpcX();
+        this.ppcY = Gdx.graphics.getPpcY();
     }
 
     public void startGame(Point location) {

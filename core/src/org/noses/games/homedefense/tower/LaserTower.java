@@ -17,6 +17,9 @@ public class LaserTower extends Tower {
         public Tower createTower(MapScreen parent, double longitude, double latitude) {
             return new LaserTower(parent, longitude, latitude);
         }
+
+        public int getCost() { return 75; }
+
     }
 
     @Override

@@ -17,6 +17,9 @@ public class BomberTower extends Tower {
         public Tower createTower(MapScreen parent, double longitude, double latitude) {
             return new BomberTower(parent, longitude, latitude);
         }
+
+        public int getCost() { return 50; }
+
     }
 
     @Override

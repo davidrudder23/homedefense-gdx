@@ -11,10 +11,13 @@ import java.util.List;
 public class MapClient {
     ObjectMapper objectMapper;
     OkHttpClient client;
+    String baseURL;
 
-    public MapClient() {
+    public MapClient(String baseURL) {
         objectMapper = new ObjectMapper();
         client = new OkHttpClient();
+
+        this.baseURL = baseURL;
     }
 
     public Account register(String name,
@@ -22,8 +25,8 @@ public class MapClient {
                             String password,
                             float latitude,
                             float longitude) throws IOException {
-        String registerURL = "http://localhost:8080/users/register";
-        String updateURL = "http://localhost:8080/users/user";
+        String registerURL = baseURL+"users/register";
+        String updateURL = baseURL+"users/user";
 
         Register register = new Register();
         register.setUsername(name);
@@ -72,7 +75,7 @@ public class MapClient {
     }
 
     public Account login(String name, String password) throws IOException {
-        String url = "http://localhost:8080/users/login";
+        String url = baseURL+"users/login";
 
         Login login = new Login();
         login.setUsername(name);
@@ -93,7 +96,9 @@ public class MapClient {
     }
 
     public Map getMap(Account account, double north, double south, double east, double west) throws IOException {
-        String url = "http://localhost:8080/maps/"+north+"/"+south+"/"+east+"/"+west;
+        String url = baseURL+"maps/"+north+"/"+south+"/"+east+"/"+west;
+
+        System.out.println("url="+url);
 
         Request request = new Request.Builder()
                 .url(url)
@@ -109,7 +114,7 @@ public class MapClient {
     }
 
     public List<Destination> getDestinations() throws IOException {
-        String url = "http://localhost:8080/maps/destinations";
+        String url = baseURL+"maps/destinations";
 
         Request request = new Request.Builder()
                 .url(url)

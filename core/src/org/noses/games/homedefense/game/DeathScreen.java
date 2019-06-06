@@ -39,14 +39,9 @@ public class DeathScreen extends Screen {
 
         stage.addActor(backgroundImage);
 
-        Skin skin = new Skin();
+        Skin skin = new Skin(Gdx.files.internal("skin/comic/skin/comic-ui.json"));
 
-        BitmapFont font = new BitmapFont();
-
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = font;
-
-        endButton = new TextButton("Quit", textButtonStyle);
+        endButton = new TextButton("Quit", skin);
 
         endButton.setX((float)(stage.getWidth()*.8));
         endButton.setY((float)(stage.getHeight()*.1));

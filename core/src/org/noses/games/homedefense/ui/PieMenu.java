@@ -1,5 +1,6 @@
 package org.noses.games.homedefense.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
@@ -20,7 +21,6 @@ public class PieMenu implements MouseHandler {
     private int dragY;
 
     HashMap<String, PieMenuItem> pieMenuItems; // normal, glow, grey, greyglow
-
 
     MapScreen parent;
 
@@ -58,6 +58,10 @@ public class PieMenu implements MouseHandler {
         dragX = x;
         dragY = y;
 
+        for (PieMenuItem pieMenuItem: pieMenuItems.values()) {
+            pieMenuItem.setCloseToOthers(pieMenuItem.closeToOtherTowers(x, y));
+        }
+
         return true;
     }
 
@@ -70,7 +74,7 @@ public class PieMenu implements MouseHandler {
     public boolean onClickUp() {
         hidden = true;
 
-        for (PieMenuItem pieMenuItem: pieMenuItems.values()) {
+        for (PieMenuItem pieMenuItem : pieMenuItems.values()) {
             if (pieMenuItem.mouseWithin(clickX, clickY, dragX, dragY)) {
 
                 if (pieMenuItem.isAllowedToBuild(clickX, clickY)) {
@@ -82,24 +86,21 @@ public class PieMenu implements MouseHandler {
     }
 
     public void renderMenu(Batch batch) {
-        for (PieMenuItem pieMenuItem: pieMenuItems.values()) {
+        for (PieMenuItem pieMenuItem : pieMenuItems.values()) {
             Sprite sprite = pieMenuItem.getSprite(clickX, clickY, dragX, dragY);
+            sprite.setScale(Gdx.graphics.getPpcX()/sprite.getWidth(), Gdx.graphics.getPpcY()/sprite.getHeight());
             sprite.draw(batch);
         }
-    }
-
-    private boolean mouseWithin(int x, int y, int xp, int yp) {
-        if ((dragX >= x) && (dragX <= xp) &&
-                (dragY >= y) && (dragY <= yp)) {
-            return true;
-        }
-        return false;
     }
 
     @Override
     public boolean onMouseDragged(int x, int y) {
         dragX = x;
         dragY = y;
+
+        for (PieMenuItem pieMenuItem : pieMenuItems.values()) {
+            pieMenuItem.setMouseWithin(pieMenuItem.mouseWithin(clickX,clickY, x,y));
+        }
         return true;
     }
 }

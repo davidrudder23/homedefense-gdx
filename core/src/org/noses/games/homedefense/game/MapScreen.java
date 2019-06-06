@@ -55,6 +55,8 @@ public class MapScreen extends Screen implements InputProcessor {
     private List<ClockTickHandler> clockTickHandlers;
     private List<ClockTickHandler> clockTickHandlersToBeAdded;
 
+    BitmapFont font;
+
     @Getter
     private List<Tower> towers;
 
@@ -89,7 +91,10 @@ public class MapScreen extends Screen implements InputProcessor {
 
         money = 0;
 
-        initializeMap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), location);
+        font = new BitmapFont();
+        font.setColor(Color.WHITE);
+
+        initializeMap(location);
 
         HomeDefenseGame.ONE_PIXEL_IN_LATLON = (map.getEast() - map.getWest()) / Gdx.graphics.getWidth();
 
@@ -269,7 +274,7 @@ public class MapScreen extends Screen implements InputProcessor {
         return false;
     }
 
-    public void initializeMap(int width, int height, Point location) {
+    public void initializeMap(Point location) {
         try {
             float denverLatitude = 39.7392f;
             float denverLongitude = -104.9874f;
@@ -277,7 +282,8 @@ public class MapScreen extends Screen implements InputProcessor {
             float austinLatitude = 30.2746f;
             float austinLongitude = -97.7404f;
 
-            MapClient mapClient = new MapClient();
+            MapClient mapClient = new MapClient(parent.getConfiguration().getBaseURL());
+
             Account account = mapClient.register("drig1",
                     "drig1@noses.org",
                     "test1",
@@ -485,6 +491,8 @@ public class MapScreen extends Screen implements InputProcessor {
 
                     Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
 
+                    sprite.setScale((float)((parent.getScreenWidth()*.04)/sprite.getWidth()));
+
                     sprite.setCenterY(convertLatToY(latitude));
                     sprite.setCenterX(convertLongToX(longitude));
                     sprite.draw(batch);
@@ -496,8 +504,6 @@ public class MapScreen extends Screen implements InputProcessor {
         getHome().render(batch);
 
         // render the score and other text
-        BitmapFont font = new BitmapFont();
-        font.setColor(Color.WHITE);
         font.draw(batch, "Health: " + getHome().getHealth(), 10, Gdx.graphics.getHeight() - 30);
 
         font.draw(batch, "Money: " + getMoney(), 10, Gdx.graphics.getHeight() - (35 + font.getCapHeight()));
@@ -544,5 +550,14 @@ public class MapScreen extends Screen implements InputProcessor {
     public String printPointInXY(Point point) {
         return (convertLongToX(point.getLongitude()) + "x" + convertLatToY(point.getLatitude()));
     }
+
+    public double getPpcX() {
+        return parent.getPpcX();
+    }
+
+    public double getPpcY() {
+        return parent.getPpcY();
+    }
+
 
 }
