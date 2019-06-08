@@ -2,14 +2,12 @@ package org.noses.games.homedefense;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
-import android.provider.Settings;
 import android.util.Log;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -73,7 +71,6 @@ public class AndroidLauncher extends AndroidApplication {
         initialize(new HomeDefenseGame(androidGeolocator, gameConfig), config);
         //initialize(new HomeDefenseGame(new IPAddressGeolocator("00a4da2c55a1d6b04c9dc8abe8a9474d"), gameConfig), config);
     }
-
 }
 
 class mylocationlistener implements LocationListener {

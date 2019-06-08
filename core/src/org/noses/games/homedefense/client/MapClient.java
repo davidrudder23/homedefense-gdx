@@ -98,8 +98,6 @@ public class MapClient {
     public Map getMap(Account account, double north, double south, double east, double west) throws IOException {
         String url = baseURL+"maps/"+north+"/"+south+"/"+east+"/"+west;
 
-        System.out.println("url="+url);
-
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("X-Authorization-Token", account.getToken())
