@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class IPAddressGeolocator extends Geolocator implements ClockTickHandler {
+public class IPAddressGeolocator extends Geolocator {
     private String apiKey;
     OkHttpClient client;
 
@@ -34,24 +34,7 @@ public class IPAddressGeolocator extends Geolocator implements ClockTickHandler 
     }
 
     @Override
-    public void clockTick(double delay) {
-        delayCount+=delay;
-        if (delayCount<1) {
-            return;
-        }
-        delayCount = 0;
-
-        geoLocation.setLatitude(geoLocation.getLatitude()+0.0001);
-        updateLocation();
-    }
-
-    @Override
-    public void kill() {
-
-    }
-
-    @Override
-    public boolean isKilled() {
+    public boolean hasLiveGeolocation() {
         return false;
     }
 
@@ -62,16 +45,21 @@ public class IPAddressGeolocator extends Geolocator implements ClockTickHandler 
 
     private Point getGeoFromIP() {
         try {
-            String ipAddress = "73.95.36.144";
-
             URL whatismyip = new URL("http://checkip.amazonaws.com");
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     whatismyip.openStream()));
 
-            String ip = in.readLine(); //you get the IP as a String
-            System.out.println(ip);
+            if (in == null) {
+                return null;
+            }
 
-            String url = "http://api.ipstack.com/" + ipAddress + "?access_key=" + apiKey;
+            String ip = in.readLine(); //you get the IP as a String
+
+            if (ip == null) {
+                return null;
+            }
+
+            String url = "http://api.ipstack.com/" + ip + "?access_key=" + apiKey;
 
             Request request = new Request.Builder()
                     .url(url)

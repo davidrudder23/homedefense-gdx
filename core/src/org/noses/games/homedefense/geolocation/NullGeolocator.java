@@ -8,4 +8,11 @@ public class NullGeolocator extends Geolocator {
     public Point getGeolocation() {
         return null;
     }
+
+    @Override
+    public boolean hasLiveGeolocation() {
+        return false;
+    }
+
+
 }

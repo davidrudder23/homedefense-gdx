@@ -147,9 +147,12 @@ public class MapScreen extends Screen implements InputProcessor {
     }
 
     public void setupHero() {
-        hero = new Hero(this);
-        addClockTickHandler(hero);
-        parent.addGeolocationListener(hero);
+
+        if (parent.hasLiveGeolocation()) {
+            hero = new Hero(this);
+            addClockTickHandler(hero);
+            parent.addGeolocationListener(hero);
+        }
     }
 
 
@@ -534,11 +537,13 @@ public class MapScreen extends Screen implements InputProcessor {
             towerChoiceMenu.renderMenu(batch);
         }
 
-        Sprite heroSprite = new Sprite(hero.getFrameTextureRegion());
-        heroSprite.setScale((float)((parent.getScreenWidth()*hero.getScale())/heroSprite.getWidth()));
-        heroSprite.setCenterX(convertLongToX(hero.getLongitude()));
-        heroSprite.setCenterY(convertLatToY(hero.getLatitude()));
-        heroSprite.draw(batch);
+        if (parent.hasLiveGeolocation()) {
+            Sprite heroSprite = new Sprite(hero.getFrameTextureRegion());
+            heroSprite.setScale((float) ((parent.getScreenWidth() * hero.getScale()) / heroSprite.getWidth()));
+            heroSprite.setCenterX(convertLongToX(hero.getLongitude()));
+            heroSprite.setCenterY(convertLatToY(hero.getLatitude()));
+            heroSprite.draw(batch);
+        }
 
         batch.end();
     }

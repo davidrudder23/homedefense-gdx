@@ -119,6 +119,12 @@ public class MainScreen extends Screen {
             if (destination.getName().equals(destinationSelect.getSelected())) {
                 location = new Point(destination.getLat(), destination.getLon());
             }
+
+            if (destination.getName().equals("Current Location")) {
+                parent.setUsingCurrentAddress(true);
+            } else {
+                parent.setUsingCurrentAddress(false);
+            }
         }
 
         if (location == null) {

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import lombok.Getter;
+import lombok.Setter;
 import org.noses.games.homedefense.client.Map;
 import org.noses.games.homedefense.game.*;
 import com.badlogic.gdx.math.Matrix4;
@@ -40,6 +41,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
     @Getter
     double ppcY;
 
+    @Getter
+    @Setter
+    boolean isUsingCurrentAddress;
+
     public HomeDefenseGame(Geolocator geolocator, Configuration configuration) {
         this.geolocator = geolocator;
         this.configuration = configuration;
@@ -54,6 +59,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
         geolocator.addListener(listener);
     }
 
+    public boolean hasLiveGeolocation() {
+        return isUsingCurrentAddress && geolocator.hasLiveGeolocation();
+    }
+
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -66,10 +75,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     public void startGame(Point location) {
         currentScreen = new MapScreen(this, location);
-
-        if (geolocator instanceof  ClockTickHandler) {
-            ((MapScreen) currentScreen).addClockTickHandler((ClockTickHandler)geolocator);
-        }
     }
 
     public void die() {

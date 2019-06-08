@@ -11,6 +11,8 @@ public abstract class Geolocator {
 
     public abstract Point getGeolocation();
 
+    public abstract boolean hasLiveGeolocation();
+
     public void updateLocation() {
         getListeners().stream().forEach(l-> {
             l.updateLocation(getGeolocation());
