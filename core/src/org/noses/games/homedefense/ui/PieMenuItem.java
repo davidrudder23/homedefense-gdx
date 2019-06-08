@@ -1,6 +1,5 @@
 package org.noses.games.homedefense.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Data;
@@ -24,6 +23,9 @@ public class PieMenuItem {
     TowerFactory towerFactory;
     MapScreen parent;
 
+    boolean mouseWithin;
+    boolean closeToOthers;
+
     public PieMenuItem(MapScreen parent, int x, int y, int width, int height, String towerName, TowerFactory towerFactory) {
         this.parent = parent;
         this.x = x;
@@ -32,6 +34,8 @@ public class PieMenuItem {
         this.height = height;
         this.towerName = towerName;
         this.towerFactory = towerFactory;
+        this.mouseWithin = false;
+        this.closeToOthers = false;
 
         Texture textureNormal = new Texture("tower/" + towerName + ".png");
         Texture textureGlow = new Texture("tower/" + towerName + "_glow.png");
@@ -51,7 +55,7 @@ public class PieMenuItem {
 
     public Sprite getSprite(int clickX, int clickY, int dragX, int dragY) {
         Sprite sprite = null;
-        if (mouseWithin(clickX, clickY, dragX, dragY)) {
+        if (mouseWithin) {
             if (!isAllowedToBuild(clickX, clickY)) {
                 sprite = getGreyGlowSprite();
             } else{
@@ -66,23 +70,23 @@ public class PieMenuItem {
         }
 
         sprite.setCenterX(clickX+x+(width/2));
-        sprite.setCenterY(Gdx.graphics.getHeight()-clickY+y+(height/2));
+        sprite.setCenterY(parent.getScreenHeight()-clickY+y+(height/2));
         sprite.setScale(width/sprite.getWidth());
 
-        //System.out.println("Showing pieMenuItem "+getTowerName()+" at "+(clickX+x+(width/2))+"x"+(clickY+y+(height/2))+" scale="+sprite.getScaleX());
+        //System.out.println("Showing pieMenuItem "+getTowerName()+" at "+(clickX+x+(width/2))+"x"+(clickY+y+(height/2))+" scale="+sprite.getPpcX());
 
         return sprite;
     }
 
     public boolean isAllowedToBuild(int clickX, int clickY) {
-        return canAffordIt() && !closeToOtherTowers(clickX, clickY);
+        return canAffordIt() && !closeToOthers;
     }
 
     public boolean canAffordIt() {
-        return parent.getMoney()>=towerFactory.createTower(parent, 0, 0).getCost();
+        return parent.getMoney()>=towerFactory.getCost();
     }
 
-    private boolean closeToOtherTowers(int clickX, int clickY) {
+    public boolean closeToOtherTowers(int clickX, int clickY) {
         List<Tower> towers = parent.getTowers();
 
         double longitude = parent.convertXToLong(clickX);
@@ -108,8 +112,8 @@ public class PieMenuItem {
     public boolean mouseWithin(int clickX, int clickY, int dragX, int dragY) {
 
         if ((dragX >= (clickX+x)) && (dragX<= (clickX+x+width)) &&
-                ((Gdx.graphics.getHeight()-dragY) >= ((Gdx.graphics.getHeight()-clickY)+y)) &&
-                ((Gdx.graphics.getHeight()-dragY) <=((Gdx.graphics.getHeight()-clickY)+y+height))) {
+                ((parent.getScreenHeight()-dragY) >= ((parent.getScreenHeight()-clickY)+y)) &&
+                ((parent.getScreenHeight()-dragY) <=((parent.getScreenHeight()-clickY)+y+height))) {
             return true;
         }
         return false;

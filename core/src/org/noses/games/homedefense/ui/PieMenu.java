@@ -1,5 +1,6 @@
 package org.noses.games.homedefense.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
@@ -21,7 +22,6 @@ public class PieMenu implements MouseHandler {
 
     HashMap<String, PieMenuItem> pieMenuItems; // normal, glow, grey, greyglow
 
-
     MapScreen parent;
 
     public PieMenu(MapScreen parent) {
@@ -33,20 +33,28 @@ public class PieMenu implements MouseHandler {
         int spiteWidth = 64;
         int spiteHeight = 64;
 
-        PieMenuItem pieMenuItem = new PieMenuItem(parent, -60, 0, spiteWidth, spiteHeight, "rifle", new RifleTower.RifleTowerFactor());
+        PieMenuItem pieMenuItem = new PieMenuItem(parent, getX(Math.PI), getY(Math.PI), spiteWidth, spiteHeight, "rifle", new RifleTower.RifleTowerFactor());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
 
-        pieMenuItem = new PieMenuItem(parent, -40, 40, spiteWidth, spiteHeight, "laser", new LaserTower.LaserTowerFactory());
+        pieMenuItem = new PieMenuItem(parent, getX(Math.PI*.75), getY(Math.PI*.75), spiteWidth, spiteHeight, "laser", new LaserTower.LaserTowerFactory());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
 
-        pieMenuItem = new PieMenuItem(parent, 0, 60, spiteWidth, spiteHeight, "bomber", new BomberTower.BomberTowerFactory());
+        pieMenuItem = new PieMenuItem(parent, getX(Math.PI/2), getY(Math.PI/2), spiteWidth, spiteHeight, "bomber", new BomberTower.BomberTowerFactory());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
 
-        pieMenuItem = new PieMenuItem(parent, 40, 40, spiteWidth, spiteHeight, "factory", new FactoryTower.FactoryTowerFactory());
+        pieMenuItem = new PieMenuItem(parent, getX(Math.PI*.25), getY(Math.PI*.25), spiteWidth, spiteHeight, "factory", new FactoryTower.FactoryTowerFactory());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
 
-        pieMenuItem = new PieMenuItem(parent, 60, 0, spiteWidth, spiteHeight, "broadcast", new BroadcastTower.BroadcastTowerFactory());
+        pieMenuItem = new PieMenuItem(parent, getX(0), getY(0), spiteWidth, spiteHeight, "broadcast", new BroadcastTower.BroadcastTowerFactory());
         pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
+    }
+
+    private int getX(double radians) {
+        return (int)(Math.cos(radians)*parent.getScreenWidth()*.08);
+    }
+
+    private int getY(double radians) {
+        return (int)(Math.sin(radians)*parent.getScreenWidth()*.08);
     }
 
     @Override
@@ -57,6 +65,10 @@ public class PieMenu implements MouseHandler {
 
         dragX = x;
         dragY = y;
+
+        for (PieMenuItem pieMenuItem: pieMenuItems.values()) {
+            pieMenuItem.setCloseToOthers(pieMenuItem.closeToOtherTowers(x, y));
+        }
 
         return true;
     }
@@ -70,7 +82,7 @@ public class PieMenu implements MouseHandler {
     public boolean onClickUp() {
         hidden = true;
 
-        for (PieMenuItem pieMenuItem: pieMenuItems.values()) {
+        for (PieMenuItem pieMenuItem : pieMenuItems.values()) {
             if (pieMenuItem.mouseWithin(clickX, clickY, dragX, dragY)) {
 
                 if (pieMenuItem.isAllowedToBuild(clickX, clickY)) {
@@ -82,24 +94,21 @@ public class PieMenu implements MouseHandler {
     }
 
     public void renderMenu(Batch batch) {
-        for (PieMenuItem pieMenuItem: pieMenuItems.values()) {
+        for (PieMenuItem pieMenuItem : pieMenuItems.values()) {
             Sprite sprite = pieMenuItem.getSprite(clickX, clickY, dragX, dragY);
+            sprite.setScale((float)((parent.getScreenWidth()*0.08)/sprite.getWidth()));
             sprite.draw(batch);
         }
-    }
-
-    private boolean mouseWithin(int x, int y, int xp, int yp) {
-        if ((dragX >= x) && (dragX <= xp) &&
-                (dragY >= y) && (dragY <= yp)) {
-            return true;
-        }
-        return false;
     }
 
     @Override
     public boolean onMouseDragged(int x, int y) {
         dragX = x;
         dragY = y;
+
+        for (PieMenuItem pieMenuItem : pieMenuItems.values()) {
+            pieMenuItem.setMouseWithin(pieMenuItem.mouseWithin(clickX,clickY, x,y));
+        }
         return true;
     }
 }

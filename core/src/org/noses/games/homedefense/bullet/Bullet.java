@@ -30,8 +30,8 @@ public abstract class Bullet extends Animation {
 
     boolean dead;
 
-    public Bullet(MapScreen parent, String spriteFilename, Sound shotSound, int tileWidth, int tileHeight, double angle) {
-        super(parent, spriteFilename, tileWidth, tileHeight, true);
+    public Bullet(MapScreen parent, String spriteFilename, Sound shotSound, int tileWidth, int tileHeight, double scale, double angle) {
+        super(parent, spriteFilename, tileWidth, tileHeight, scale, true);
 
         this.shotSound = shotSound;
         this.angle = angle;

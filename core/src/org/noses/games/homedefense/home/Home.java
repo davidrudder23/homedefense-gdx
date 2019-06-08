@@ -6,12 +6,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Getter;
-import lombok.Setter;
 import org.noses.games.homedefense.bullet.Bullet;
 import org.noses.games.homedefense.bullet.NormalBullet;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.game.Aimer;
-import org.noses.games.homedefense.game.Animation;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.game.PhysicalObject;
 import org.noses.games.homedefense.geometry.Point;
@@ -44,7 +42,7 @@ public class Home extends Enemy implements PhysicalObject {
     Aimer aimer;
 
     public Home(MapScreen parent, double latitude, double longitude) {
-        super(parent, "home.png", parent.loadSound("home_hit.mp3"), 64, 64, 100);
+        super(parent, "home.png", parent.loadSound("home_hit.mp3"), 64, 64, .08, 100);
         this.latitude = latitude;
         this.longitude = longitude;
         angle = 0;
@@ -129,6 +127,7 @@ public class Home extends Enemy implements PhysicalObject {
     public void render(Batch batch) {
 
         Sprite homeSprite = getSprite();
+        homeSprite.setScale((float)((parent.getScreenWidth()/homeSprite.getWidth())*getScale()));
         homeSprite.setCenterX(parent.convertLongToX(longitude));
         homeSprite.setCenterY(parent.convertLatToY(latitude));
 

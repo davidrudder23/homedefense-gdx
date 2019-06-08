@@ -8,7 +8,7 @@ import org.noses.games.homedefense.geometry.Point;
 public class BomberTower extends Tower {
 
     public BomberTower(MapScreen parent, double longitude, double latitude) {
-        super(parent, "bomber", longitude, latitude,
+        super(parent, "bomber", longitude, latitude, 0.03,
                 new BombBulletShooter(parent, 0.8, new Point(latitude, longitude)));
     }
 
@@ -17,6 +17,9 @@ public class BomberTower extends Tower {
         public Tower createTower(MapScreen parent, double longitude, double latitude) {
             return new BomberTower(parent, longitude, latitude);
         }
+
+        public int getCost() { return 50; }
+
     }
 
     @Override

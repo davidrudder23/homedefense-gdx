@@ -8,7 +8,7 @@ import org.noses.games.homedefense.geometry.Point;
 public class LaserTower extends Tower {
 
     public LaserTower(MapScreen parent, double longitude, double latitude) {
-        super(parent, "laser", longitude, latitude,
+        super(parent, "laser", longitude, latitude,0.03,
                 new NormalBulletShooter(parent, 0.8, new Point(latitude, longitude), 10));
     }
 
@@ -17,6 +17,9 @@ public class LaserTower extends Tower {
         public Tower createTower(MapScreen parent, double longitude, double latitude) {
             return new LaserTower(parent, longitude, latitude);
         }
+
+        public int getCost() { return 75; }
+
     }
 
     @Override

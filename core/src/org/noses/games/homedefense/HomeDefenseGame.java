@@ -6,6 +6,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import lombok.Getter;
 import org.noses.games.homedefense.game.*;
+import com.badlogic.gdx.math.Matrix4;
+import org.noses.games.homedefense.game.DeathScreen;
+import org.noses.games.homedefense.game.MainScreen;
+import org.noses.games.homedefense.game.MapScreen;
+import org.noses.games.homedefense.game.Screen;
 import org.noses.games.homedefense.geolocation.Geolocator;
 import org.noses.games.homedefense.geometry.Point;
 
@@ -27,9 +32,16 @@ public class HomeDefenseGame extends ApplicationAdapter {
     @Getter
     Configuration configuration;
 
+    @Getter
+    double ppcX;
+
+    @Getter
+    double ppcY;
+
     public HomeDefenseGame(Geolocator geolocator, Configuration configuration) {
         this.geolocator = geolocator;
         this.configuration = configuration;
+
     }
 
     public Point getGeolocation() {
@@ -42,6 +54,8 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
         //currentScreen = new MapScreen(this);
         currentScreen = new MainScreen(this);
+        this.ppcX = Gdx.graphics.getPpcX();
+        this.ppcY = Gdx.graphics.getPpcY();
     }
 
     public void startGame(Point location) {
@@ -66,18 +80,9 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     @Override
     public void resize(int width, int height) {
-        /*int originalWidth = Gdx.graphics.getWidth();
-        int originalHeight = Gdx.graphics.getHeight();
-
-        double xRatio = width / originalWidth;
-        double yRatio = height / originalHeight;
-
-        for (Way way : map.getWays()) {
-            for (Node node : way.getNodes()) {
-                node.setX((int) ((double) node.getLatitude() * xRatio));
-                node.setY((int) ((double) node.getLongitude() * yRatio));
-            }
-        }*/
+        Matrix4 matrix = new Matrix4();
+        matrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.setProjectionMatrix(matrix);
     }
 
     public int getScreenWidth() {
