@@ -438,10 +438,8 @@ public class MapScreen extends Screen implements InputProcessor {
     }
 
     public void render(Batch batch) {
-        List<EnemyGroup> enemyGroups = getEnemyGroups();
         ShapeRenderer sr = new ShapeRenderer();
         sr.setColor(Color.WHITE);
-        //sr.setProjectionMatrix(camera.combined);
 
         for (Way way : getMap().getWays()) {
             Gdx.gl.glLineWidth(way.getMaxSpeed() - 24);

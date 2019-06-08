@@ -129,9 +129,9 @@ public class Home extends Enemy implements PhysicalObject {
     public void render(Batch batch) {
 
         Sprite homeSprite = getSprite();
+        homeSprite.setScale((float)((parent.getScreenWidth()/homeSprite.getWidth())*getScale()));
         homeSprite.setCenterX(parent.convertLongToX(longitude));
         homeSprite.setCenterY(parent.convertLatToY(latitude));
-        homeSprite.setScale((float)(parent.getScreenWidth()*getScale())/homeSprite.getWidth());
 
         homeSprite.draw(batch);
 
