@@ -2,17 +2,16 @@ package org.noses.games.homedefense.geolocation;
 
 import org.noses.games.homedefense.geometry.Point;
 
-public class AndroidGeolocator implements Geolocator {
+public class AndroidGeolocator extends Geolocator {
     Point geoLocation;
 
     public void setGeoLocation(Point point) {
         this.geoLocation = point;
+        updateLocation();
     }
 
     @Override
     public Point getGeolocation() {
-
-        System.out.println("Getting location " + geoLocation);
         return geoLocation;
     }
 }

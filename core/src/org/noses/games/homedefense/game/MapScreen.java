@@ -16,6 +16,7 @@ import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.*;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.hero.Hero;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
@@ -72,6 +73,9 @@ public class MapScreen extends Screen implements InputProcessor {
     @Getter
     PieMenu towerChoiceMenu;
 
+    @Getter
+    Hero hero;
+
     public MapScreen(HomeDefenseGame parent, Point location) {
         this.parent = parent;
 
@@ -125,6 +129,8 @@ public class MapScreen extends Screen implements InputProcessor {
 
         setupSound();
 
+        setupHero();
+
         Gdx.input.setInputProcessor(this);
 
         towerChoiceMenu = new PieMenu(this);
@@ -139,6 +145,13 @@ public class MapScreen extends Screen implements InputProcessor {
                 , 0f, 1 / (10.0f * speedMultiplier));
 
     }
+
+    public void setupHero() {
+        hero = new Hero(this);
+        addClockTickHandler(hero);
+        parent.addGeolocationListener(hero);
+    }
+
 
     public int getScreenWidth() {
         return Gdx.graphics.getWidth();
@@ -520,6 +533,12 @@ public class MapScreen extends Screen implements InputProcessor {
         if (!towerChoiceMenu.isHidden()) {
             towerChoiceMenu.renderMenu(batch);
         }
+
+        Sprite heroSprite = new Sprite(hero.getFrameTextureRegion());
+        heroSprite.setScale((float)((parent.getScreenWidth()*hero.getScale())/heroSprite.getWidth()));
+        heroSprite.setCenterX(convertLongToX(hero.getLongitude()));
+        heroSprite.setCenterY(convertLatToY(hero.getLatitude()));
+        heroSprite.draw(batch);
 
         batch.end();
     }

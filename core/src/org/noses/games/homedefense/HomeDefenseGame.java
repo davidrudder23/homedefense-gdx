@@ -5,12 +5,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import lombok.Getter;
+import org.noses.games.homedefense.client.Map;
 import org.noses.games.homedefense.game.*;
 import com.badlogic.gdx.math.Matrix4;
 import org.noses.games.homedefense.game.DeathScreen;
 import org.noses.games.homedefense.game.MainScreen;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.game.Screen;
+import org.noses.games.homedefense.geolocation.GeolocationListener;
 import org.noses.games.homedefense.geolocation.Geolocator;
 import org.noses.games.homedefense.geometry.Point;
 
@@ -48,6 +50,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
         return geolocator.getGeolocation();
     }
 
+    public void addGeolocationListener(GeolocationListener listener) {
+        geolocator.addListener(listener);
+    }
+
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -60,6 +66,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     public void startGame(Point location) {
         currentScreen = new MapScreen(this, location);
+
+        if (geolocator instanceof  ClockTickHandler) {
+            ((MapScreen) currentScreen).addClockTickHandler((ClockTickHandler)geolocator);
+        }
     }
 
     public void die() {
