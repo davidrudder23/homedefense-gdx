@@ -8,7 +8,7 @@ import org.noses.games.homedefense.geometry.Point;
 public class RifleTower extends Tower {
 
     public RifleTower(MapScreen parent, double longitude, double latitude) {
-        super(parent, "rifle", longitude, latitude,
+        super(parent, "rifle", longitude, latitude,0.03,
                 new NormalBulletShooter(parent, 0.8, new Point(latitude, longitude), 4));
     }
 

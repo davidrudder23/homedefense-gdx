@@ -25,11 +25,11 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
     Aimer aimer;
     Shooter shooter;
 
-    public Tower(MapScreen parent, String towerName, double longitude, double latitude, Shooter shooter) {
+    public Tower(MapScreen parent, String towerName, double longitude, double latitude, double scale, Shooter shooter) {
         this.towerName = towerName;
         this.parent = parent;
 
-        animation = new Animation(parent, "tower/" + towerName + ".png", 199, 199, true);
+        animation = new Animation(parent, "tower/" + towerName + ".png", 199, 199, scale, true);
         parent.addClockTickHandler(animation);
 
         location = new Point(latitude, longitude);

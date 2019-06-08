@@ -6,7 +6,7 @@ import org.noses.games.homedefense.game.MapScreen;
 public class BombBullet extends Bullet {
 
     public BombBullet(MapScreen parent, Sound shotSound, double latitude, double longitude, double angle) {
-        super(parent, "bullet_small.png", shotSound, 16, 16, angle);
+        super(parent, "bullet_small.png", shotSound, 16, 16, 0.03, angle);
 
         currentLatitude = latitude;
         currentLongitude = longitude;

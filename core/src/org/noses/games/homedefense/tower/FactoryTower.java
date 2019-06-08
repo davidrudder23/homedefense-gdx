@@ -8,7 +8,7 @@ import org.noses.games.homedefense.geometry.Point;
 public class FactoryTower extends Tower {
 
     public FactoryTower(MapScreen parent, double longitude, double latitude) {
-        super(parent, "factory", longitude, latitude,
+        super(parent, "factory", longitude, latitude, 0.03,
                 new NormalBulletShooter(parent, 0.8, new Point(latitude, longitude), 12));
     }
 

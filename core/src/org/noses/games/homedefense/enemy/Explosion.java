@@ -7,7 +7,7 @@ import org.noses.games.homedefense.game.MapScreen;
 public class Explosion extends Animation implements ClockTickHandler {
 
     protected Explosion(MapScreen parent, String spriteFilename, int tileWidth, int tileHeight) {
-        super(parent, "explosion.png", tileWidth, tileHeight, true);
+        super(parent, "explosion.png", tileWidth, tileHeight, 0.02, true);
     }
 
     public void clockTick(double delta) {

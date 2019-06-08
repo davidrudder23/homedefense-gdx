@@ -8,7 +8,7 @@ public class NormalBullet extends Bullet {
     int damage;
 
     public NormalBullet(MapScreen parent, Sound shotSound, double latitude, double longitude, double angle, int damage) {
-        super(parent, "bullet_small.png", shotSound, 16, 16, angle);
+        super(parent, "bullet_small.png", shotSound, 16, 16, 0.02, angle);
 
         currentLatitude = latitude;
         currentLongitude = longitude;

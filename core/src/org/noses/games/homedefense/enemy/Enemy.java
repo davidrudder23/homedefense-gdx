@@ -19,8 +19,8 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
 
     Sound hitSound;
 
-    protected Enemy(MapScreen parent, String spriteFilename, Sound hitSound, int tileWidth, int tileHeight, int startingHealth) {
-        super(parent, spriteFilename, tileWidth, tileHeight, true);
+    protected Enemy(MapScreen parent, String spriteFilename, Sound hitSound, int tileWidth, int tileHeight, double scale, int startingHealth) {
+        super(parent, spriteFilename, tileWidth, tileHeight, scale, true);
         this.health = startingHealth;
         this.hitSound = hitSound;
     }
