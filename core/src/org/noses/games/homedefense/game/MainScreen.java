@@ -63,9 +63,9 @@ public class MainScreen extends Screen {
 
         startButton = new TextButton("Start", skin);
 
-        startButton.setX((float)(stage.getWidth()*.6));
+        startButton.setX((float)(stage.getWidth()*.7));
         startButton.setY((float)(stage.getHeight()*.1));
-        startButton.setScale((float)(parent.getScreenWidth()*.5)/startButton.getWidth());
+        startButton.setScale((float)(parent.getScreenWidth()*.6)/startButton.getWidth());
         stage.addActor(startButton);
 
         startButton.addListener(new ChangeListener() {
@@ -74,6 +74,9 @@ public class MainScreen extends Screen {
                 startButtonClicked();
             }
         });
+
+        SelectBox.SelectBoxStyle destinationSelectStyle = skin.get(SelectBox.SelectBoxStyle.class);
+        destinationSelectStyle.font.getData().setScale(parent.getScreenWidth()/300);
 
         destinationSelect = new SelectBox<String>(skin);
 
@@ -97,9 +100,9 @@ public class MainScreen extends Screen {
             destinationSelect.setSelectedIndex(0);
         }
 
-        destinationSelect.setX((float)(stage.getWidth()*.3));
+        destinationSelect.setX((float)(stage.getWidth()*.2));
         destinationSelect.setY((float)(stage.getHeight()*.1));
-        destinationSelect.setWidth((float)(stage.getWidth() * .3));
+        destinationSelect.setWidth((float)(stage.getWidth() * .5));
         stage.addActor(destinationSelect);
 
         destinationLabel = new Label("Choose where to defend", skin);
