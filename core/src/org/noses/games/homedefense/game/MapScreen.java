@@ -60,6 +60,7 @@ public class MapScreen extends Screen implements InputProcessor {
     @Getter
     private List<Tower> towers;
 
+    @Getter
     List<EnemyNest> enemyNests;
 
     @Getter
@@ -320,6 +321,9 @@ public class MapScreen extends Screen implements InputProcessor {
     }
 
     public void createNests() {
+        NestLayingNest nestLayingNest = new NestLayingNest(this);
+        addClockTickHandler(nestLayingNest);
+
         double delayBeforeStart = 0;
         Djikstra djikstra = new Djikstra(intersections);
 
@@ -351,7 +355,9 @@ public class MapScreen extends Screen implements InputProcessor {
 
             addClockTickHandler(enemyNest);
             enemyNests.add(enemyNest);
+
         }
+        enemyNests.add(new NestLayingNest(this));
 
         /*EnemyGroup enemyGroup = EnemyGroup.builder()
                 .intersections(startingIntersections)
@@ -361,6 +367,12 @@ public class MapScreen extends Screen implements InputProcessor {
                 .build();
         enemyGroups.add(enemyGroup);
         addClockTickHandler(enemyGroup);*/
+    }
+
+    public List<Intersection> getIntersections() {
+        List<Intersection> retList = new ArrayList<>();
+        retList.addAll(intersections.values());
+        return retList;
     }
 
     public Intersection getIntersectionForNode(Node node) {
@@ -465,25 +477,25 @@ public class MapScreen extends Screen implements InputProcessor {
 
         // render the nests
         for (EnemyNest enemyNest : enemyNests) {
-            Sprite sprite = new Sprite(enemyNest.getFrameTextureRegion());
-
-            sprite.setCenterX(convertLongToX(enemyNest.getLongitude()));
-            sprite.setCenterY(convertLatToY(enemyNest.getLatitude()));
-            sprite.setScale(64 / sprite.getWidth());
-            sprite.draw(batch);
-
+            enemyNest.render(batch);
         }
 
         // render the enemies
 
         for (EnemyNest enemyNest : enemyNests) {
+            System.out.println("Rendering enemyNest "+enemyNest.getClass());
             for (EnemyGroup enemyGroup : enemyNest.getEnemyGroups()) {
                 List<Enemy> enemies = enemyGroup.getEnemies();
+                System.out.println("Rendering "+enemies.size()+" enemies");
                 for (Enemy enemy : enemies) {
                     Point location = enemy.getLocation();
 
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
+
+                    if(enemy instanceof NestLayingEnemy) {
+                        System.out.println("Rendering nest layer at "+convertLatToY(latitude)+"x"+convertLongToX(longitude));
+                    }
 
                     //batch.draw(enemy.getFrameTextureRegion(), x, y);
 

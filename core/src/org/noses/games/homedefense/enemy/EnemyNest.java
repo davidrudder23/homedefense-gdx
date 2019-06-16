@@ -1,5 +1,7 @@
 package org.noses.games.homedefense.enemy;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
 import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.client.Way;
@@ -82,6 +84,15 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
     @Override
     public boolean isKilled() {
         return killed;
+    }
+
+    public void render(Batch batch) {
+        Sprite sprite = new Sprite(getFrameTextureRegion());
+
+        sprite.setCenterX(parent.convertLongToX(getLongitude()));
+        sprite.setCenterY(parent.convertLatToY(getLatitude()));
+        sprite.setScale(64 / sprite.getWidth());
+        sprite.draw(batch);
     }
 
     public Node getNode() {

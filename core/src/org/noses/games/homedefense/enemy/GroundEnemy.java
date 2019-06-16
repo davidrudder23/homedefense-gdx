@@ -250,13 +250,9 @@ public class GroundEnemy extends Enemy {
             while (pathStep == null) {
                 Djikstra djikstra = new Djikstra(intersections);
                 Intersection intersection = djikstra.getIntersectionForNode(intersections, startingNode);
-                double north = parent.getMap().getNorth();
-                double south = parent.getMap().getSouth();
-                double east = parent.getMap().getEast();
-                double west = parent.getMap().getWest();
 
-                double centerX = north + ((south-north)/2);
-                double centerY = west + ((east-west)/2);
+                double centerX = parent.getHome().getLatitude();
+                double centerY = parent.getHome().getLongitude();
 
                 System.out.println("Getting best path to "
                         + new Point(centerX, centerY)
