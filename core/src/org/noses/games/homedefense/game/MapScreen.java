@@ -193,13 +193,13 @@ public class MapScreen extends Screen implements InputProcessor {
     public void speedUp() {
         speedMultiplier += 1;
 
-        if ((speedMultiplier > 5) || (speedMultiplier < 1)) {
+        if ((speedMultiplier > 3) || (speedMultiplier < 1)) {
             speedMultiplier = 1;
         }
 
         System.out.println("Speed multiplier=" + speedMultiplier);
 
-        timer.cancel();
+        /*timer.cancel();
         timer = Timer.schedule(new Timer.Task() {
                                    @Override
                                    public void run() {
@@ -207,6 +207,8 @@ public class MapScreen extends Screen implements InputProcessor {
                                    }
                                }
                 , 0f, 1 / (10.0f * speedMultiplier));
+
+         */
 
     }
 
@@ -384,6 +386,7 @@ public class MapScreen extends Screen implements InputProcessor {
     }
 
     public void clockTick(float delta) {
+        System.out.println(delta+" vs "+(speedMultiplier/10));
         synchronized (clockTickHandlersToBeAdded) {
             for (ClockTickHandler clockTickHandler : clockTickHandlersToBeAdded) {
                 clockTickHandlers.add(clockTickHandler);
@@ -403,7 +406,7 @@ public class MapScreen extends Screen implements InputProcessor {
         for (ClockTickHandler clockTickHandler : clockTickHandlers) {
             //System.out.println ("Clock ticking "+clockTickHandler+" iskilled="+clockTickHandler.isKilled());
             if (!clockTickHandler.isKilled()) {
-                clockTickHandler.clockTick(delta);
+                clockTickHandler.clockTick((float)(1+(speedMultiplier/2))/10);
             }
         }
 
