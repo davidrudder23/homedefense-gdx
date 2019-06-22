@@ -62,15 +62,19 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
                 return;
             }
 
+            System.out.println("Is layer dead? "+enemyGroups.get(0).getEnemies().get(0).isKilled());
+
             if (enemyGroups.get(0).getEnemies().get(0).isKilled()) {
+                enemyGroups.get(0).getEnemies().clear();
                 makingNest = false;
             } else {
                 return;
             }
         }
+
         makingNest = true;
         System.out.println("Parent has "+parent.getEnemyNests().size()+" enemy nests");
-        if (parent.getEnemyNests().size() < 3) {
+        if (parent.getEnemyNests().size() < 4) {
             System.out.println("Making a new nest layer");
             double latitude = 0;
             double longitude = 0;

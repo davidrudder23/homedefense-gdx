@@ -1,11 +1,9 @@
 package org.noses.games.homedefense.enemy.nestlaying;
 
-import com.badlogic.gdx.graphics.Color;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
-import org.noses.games.homedefense.home.Home;
 
 public class NestLayingEnemy extends Enemy {
     Point targetNestLocation;
@@ -67,7 +65,7 @@ public class NestLayingEnemy extends Enemy {
     public void clockTick(double delta) {
         progressAlong += HomeDefenseGame.LATLON_MOVED_IN_1s_1mph * delta * 10000;
 
-        if (isCloseToHome()) {
+        if (isCloseToTarget()) {
             System.out.println("Dropping a nest");
             parent.dropNest(targetNestLocation);
             killed = true;
@@ -86,10 +84,8 @@ public class NestLayingEnemy extends Enemy {
         return new Point((float) currentLatitude, (float) currentLongitude);
     }
 
-    private boolean isCloseToHome() {
+    private boolean isCloseToTarget() {
         Point location = getLocation();
-
-        System.out.println("Distance from home="+location.getDistanceFrom(targetNestLocation));
 
         if (location.getDistanceFrom(targetNestLocation) <= (HomeDefenseGame.LATLON_MOVED_IN_1s_1mph*10)) {
             return true;
