@@ -409,8 +409,7 @@ public class MapScreen extends Screen implements InputProcessor {
         addClockTickHandler(enemyGroup);*/
     }
 
-    public void dropNest(Point location) {
-        EnemyNest enemyNest = new WeakEnemyNest(this, 1, location.getLongitude(), location.getLatitude());
+    public void dropNest(EnemyNest enemyNest) {
         addClockTickHandler(enemyNest);
         enemyNests.add(enemyNest);
 

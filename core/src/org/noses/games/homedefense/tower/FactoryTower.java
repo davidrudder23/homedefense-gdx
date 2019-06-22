@@ -31,4 +31,8 @@ public class FactoryTower extends Tower {
         return 100;
     }
 
+    @Override
+    public int getStartingHealth() {
+        return 50;
+    }
 }

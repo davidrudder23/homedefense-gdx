@@ -13,6 +13,7 @@ import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.pathfinding.PathStep;
+import org.noses.games.homedefense.tower.Tower;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -46,6 +47,16 @@ public class GroundEnemy extends Enemy {
         this.speedMultiplier = speedMultiplier;
     }
 
+    @Override
+    public boolean canBeHitBy(Tower tower) {
+        return true;
+    }
+
+    @Override
+    public boolean canBeHitByHome() {
+        return true;
+    }
+
     public void setPath(PathStep finalPathStep) {
         pathSteps = new ArrayList<>();
 
@@ -65,14 +76,6 @@ public class GroundEnemy extends Enemy {
         Intersection intersection = pathStep.getIntersection();
         progressAlong = intersection.getNode(way).getProgress();
 
-        /*System.out.println("Reconfigured finalPath: ");
-        for (PathStep debugPathStep : pathSteps) {
-            System.out.println("  " + debugPathStep);
-        }
-
-        System.out.println("Starting on " + way.getName() + " " + progressAlong);
-        */
-
         currentPathStep = 1;
         putOnPathStep(pathSteps.get(1));
     }
@@ -90,23 +93,6 @@ public class GroundEnemy extends Enemy {
 
         progressAlong = newPathStep.getStartingNode().getProgress();
         direction = ((newPathStep.getEndingNode().getProgress() - newPathStep.getStartingNode().getProgress()) > 0) ? 1 : -1;
-        if (currentPathStep >= 2) {
-            /*System.out.println("Moving from " + pathSteps.get(currentPathStep - 1).getConnectingWay().getName() +
-                    pathSteps.get(currentPathStep - 1).getEndingNode().getLatitude()+"x"+
-                    pathSteps.get(currentPathStep - 1).getEndingNode().getLongitude()+" "+
-                    " to " + pathSteps.get(currentPathStep).getConnectingWay().getName() +
-                    pathSteps.get(currentPathStep).getStartingNode().getLatitude()+"x"+
-                    pathSteps.get(currentPathStep).getStartingNode().getLongitude());
-                    */
-            /*System.out.println("Moving from " + getWay().getName() + " " +
-                    getLocation().getLatitude() + "x" +
-                    getLocation().getLongitude() + " " +
-                    " to " + newPathStep.getConnectingWay().getName() + " " +
-                    newPathStep.getStartingNode().getLatitude() + "x" +
-                    newPathStep.getStartingNode().getLongitude() + " but actually " +
-                    getLocation().getLatitude() + "x" +
-                    getLocation().getLongitude() +  " direction="+direction+" progress along="+progressAlong);*/
-        }
     }
 
     @Override
@@ -134,32 +120,21 @@ public class GroundEnemy extends Enemy {
         Point firstPoint = way.firstPoint();
         Point lastPoint = way.lastPoint();
 
-        double currentLatitude = firstPoint.getLatitude() + (progressAlong*(lastPoint.getLatitude() - firstPoint.getLatitude()))/way.getDistance();
-        double currentLongitude = firstPoint.getLongitude() + (progressAlong*(lastPoint.getLongitude() - firstPoint.getLongitude()))/way.getDistance();
+        double currentLatitude = firstPoint.getLatitude() + (progressAlong * (lastPoint.getLatitude() - firstPoint.getLatitude())) / way.getDistance();
+        double currentLongitude = firstPoint.getLongitude() + (progressAlong * (lastPoint.getLongitude() - firstPoint.getLongitude())) / way.getDistance();
 
         return new Point((float) currentLatitude, (float) currentLongitude);
     }
 
     public void clockTick(double delta) {
         crossesIntersection(delta);
+        checkForCollision();
 
         double speed = way.getMaxSpeed() * speedMultiplier;
 
         double newProgress = direction * HomeDefenseGame.LATLON_MOVED_IN_1s_1mph * delta * speed;// * (1.0f / Math.sqrt(way.getDistance()));
-        /*System.out.println("  "
-                + " direction=" + direction
-                + " way distance=" + way.getDistance()
-                + " first=" + way.firstPoint()
-                + " last=" + way.lastPoint()
-                + " baseSpeed=" + baseSpeed
-                + " delta=" + delta
-                + " speed=" + speed
-                + " inv distance=" + (1f / (double) way.getDistance())
-                + " newProgress="+newProgress
-                + " progressAlong=" + (progressAlong + newProgress));
-        */
+
         if (way.getDistance() != 0) {
-            //double newProgress = direction * baseSpeed * delta * speed * (1.0f / Math.sqrt(way.getDistance()));
             progressAlong += newProgress;
         }
         if (progressAlong < 0) {
@@ -168,6 +143,27 @@ public class GroundEnemy extends Enemy {
         } else if (progressAlong > way.getDistance()) {
             progressAlong = way.getDistance();
             direction = -1;
+        }
+    }
+
+    protected void checkForCollision() {
+        Point location = getLocation();
+        for (Tower tower : parent.getTowers()) {
+            if (location.getDistanceFrom(tower.getLocation()) < HomeDefenseGame.LATLON_MOVED_IN_1s_1mph * 10) {
+                System.out.println("Enemy hit tower " + tower);
+
+                tower.damage(getDamage());
+                kill();
+            } else if (location.getDistanceFrom(parent.getHome().getLocation()) < HomeDefenseGame.LATLON_MOVED_IN_1s_1mph * 10) {
+                parent.hitHome(getDamage());
+                kill();
+            }
+        }
+
+        for (int i = parent.getTowers().size()-1; i>=0; i--) {
+            if (parent.getTowers().get(i).isKilled()) {
+                parent.getTowers().remove(i);
+            }
         }
     }
 
@@ -186,7 +182,6 @@ public class GroundEnemy extends Enemy {
         }
 
         float speed = way.getMaxSpeed();
-        //double newProgress = progressAlong + (direction * baseSpeed * delta * speed);
         double newProgress = progressAlong + (direction * HomeDefenseGame.LATLON_MOVED_IN_1s_1mph * delta * speed * (1.0f / Math.sqrt(way.getDistance())));
 
         Node node = pathSteps.get(currentPathStep).getEndingNode();
@@ -213,21 +208,7 @@ public class GroundEnemy extends Enemy {
         }
         if (needsNewPath) {
             currentPathStep++;
-            if (currentPathStep >= pathSteps.size()) {
-                // TODO
-                System.out.println("\n\n\n");
-                System.out.println("BOOM!!! at "+parent.printPointInXY(getLocation()));
-                System.out.println("\n\n\n");
-                Texture avatarAnimationSheet = new Texture("explosion.png");
-                frameNumber = 0;
-
-                //animation = TextureRegion.split(avatarAnimationSheet, 64,64);
-
-                parent.hitHome(getDamage());
-                kill();
-            } else {
-                putOnPathStep(pathSteps.get(currentPathStep));
-            }
+            putOnPathStep(pathSteps.get(currentPathStep));
         }
     }
 
@@ -256,7 +237,7 @@ public class GroundEnemy extends Enemy {
 
                 System.out.println("Getting best path to "
                         + new Point(centerX, centerY)
-                        +parent.printPointInXY(new Point(centerX, centerY)));
+                        + parent.printPointInXY(new Point(centerX, centerY)));
                 pathStep = djikstra.getBestPath(intersection,
                         centerX,
                         centerY);

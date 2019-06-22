@@ -1,9 +1,13 @@
 package org.noses.games.homedefense.enemy.nestlaying;
 
 import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.enemy.ArmoredEnemyNest;
 import org.noses.games.homedefense.enemy.Enemy;
+import org.noses.games.homedefense.enemy.EnemyNest;
+import org.noses.games.homedefense.enemy.WeakEnemyNest;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.tower.Tower;
 
 public class NestLayingEnemy extends Enemy {
     Point targetNestLocation;
@@ -12,7 +16,9 @@ public class NestLayingEnemy extends Enemy {
 
     boolean killed;
 
-    public NestLayingEnemy(MapScreen parent, Point targetNestLocation) {
+    int enemyType;
+
+    public NestLayingEnemy(MapScreen parent, Point targetNestLocation, int enemyType) {
         super(parent, "line64.png", parent.loadSound("normal_hit.mp3"), 32, 32, 0.02, 200);
 
         this.targetNestLocation = targetNestLocation;
@@ -67,9 +73,29 @@ public class NestLayingEnemy extends Enemy {
 
         if (isCloseToTarget()) {
             System.out.println("Dropping a nest");
-            parent.dropNest(targetNestLocation);
+            EnemyNest enemyNest = null;
+
+            if (enemyType == NestLayingNest.ENEMY_TYPE_ARMORED) {
+                enemyNest = new ArmoredEnemyNest(parent, 1, targetNestLocation.getLongitude(), targetNestLocation.getLatitude());
+            } else if (enemyType == NestLayingNest.ENEMY_TYPE_GROUND) {
+                enemyNest = new WeakEnemyNest(parent, 1, targetNestLocation.getLongitude(), targetNestLocation.getLatitude());
+            }
+
+            enemyType++;
+
+            parent.dropNest(enemyNest);
             killed = true;
         }
+    }
+
+    @Override
+    public boolean canBeHitBy(Tower tower) {
+        return false;
+    }
+
+    @Override
+    public boolean canBeHitByHome() {
+        return false;
     }
 
     @Override

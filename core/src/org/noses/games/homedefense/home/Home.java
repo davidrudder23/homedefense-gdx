@@ -13,6 +13,7 @@ import org.noses.games.homedefense.game.Aimer;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.game.PhysicalObject;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.tower.Tower;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,16 @@ public class Home extends Enemy implements PhysicalObject {
     @Override
     public Point getLocation() {
         return new Point(latitude, longitude);
+    }
+
+    @Override
+    public boolean canBeHitBy(Tower tower) {
+        return false;
+    }
+
+    @Override
+    public boolean canBeHitByHome() {
+        return false;
     }
 
     public void clockTick(double delay) {

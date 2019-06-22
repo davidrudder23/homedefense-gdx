@@ -31,4 +31,10 @@ public class RifleTower extends Tower {
         return 25;
     }
 
+    @Override
+    public int getStartingHealth() {
+        return 30;
+    }
+
+
 }

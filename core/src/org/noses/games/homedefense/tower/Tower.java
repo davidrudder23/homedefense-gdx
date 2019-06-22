@@ -25,9 +25,15 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
     Aimer aimer;
     Shooter shooter;
 
+    boolean killed;
+
+    int health;
+
     public Tower(MapScreen parent, String towerName, double longitude, double latitude, double scale, Shooter shooter) {
         this.towerName = towerName;
         this.parent = parent;
+
+        killed = false;
 
         animation = new Animation(parent, "tower/" + towerName + ".png", 199, 199, scale, true);
         parent.addClockTickHandler(animation);
@@ -36,6 +42,8 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
 
         aimer = new Aimer(parent, latitude, longitude);
         this.shooter = shooter;
+
+        health = getStartingHealth();
     }
 
     public double getLatitude() {
@@ -66,15 +74,26 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
 
     public abstract int getCost();
 
+    public abstract int getStartingHealth();
+
+    public void damage(int points) {
+        health -= points;
+
+        System.out.println(this+" was damaged with "+points+" now at "+health);
+
+        if (health <= 0) {
+            kill();
+        }
+    }
 
     @Override
     public void kill() {
-
+        killed = true;
     }
 
     @Override
     public boolean isKilled() {
-        return false;
+        return killed;
     }
 
     public TextureRegion getFrameTextureRegion() {

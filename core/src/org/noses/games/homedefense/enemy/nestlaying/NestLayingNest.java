@@ -20,6 +20,11 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
 
     List<EnemyGroup> enemyGroups;
 
+    int enemyType;
+
+    public static int ENEMY_TYPE_GROUND;
+    public static int ENEMY_TYPE_ARMORED;
+
     public NestLayingNest(MapScreen parent) {
         super(parent, "hataak", 0, 0, 0);
         this.parent = parent;
@@ -28,6 +33,7 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
         enemyGroups = new ArrayList<>();
         enemyGroups.add(enemyGroup);
         //parent.addClockTickHandler(enemyGroups.get(0));
+        enemyType = 0;
 
     }
 
@@ -62,8 +68,6 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
                 return;
             }
 
-            System.out.println("Is layer dead? "+enemyGroups.get(0).getEnemies().get(0).isKilled());
-
             if (enemyGroups.get(0).getEnemies().get(0).isKilled()) {
                 enemyGroups.get(0).getEnemies().clear();
                 makingNest = false;
@@ -94,7 +98,6 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
                 System.out.println("Testing intersection "+intersection);
 
                 if (!parent.isGoodLocationForNest(intersection.getNode())) {
-                    System.out.println(intersection+" is bad");
                     continue;
                 }
 
@@ -102,10 +105,11 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
             }
 
             //System.out.println("Targetting nest at "+intersection);
-            NestLayingEnemy nestLayingEnemy = new NestLayingEnemy(parent, new Point(intersection.getLatitude(), intersection.getLongitude()));
+            NestLayingEnemy nestLayingEnemy = new NestLayingEnemy(parent, new Point(intersection.getLatitude(), intersection.getLongitude()), enemyType);
             parent.addClockTickHandler(nestLayingEnemy);
             enemyGroups.get(0).addEnemy(nestLayingEnemy);
-            System.out.println("now " + enemyGroups.get(0).getEnemies().size());
+            enemyType++;
+            enemyType %= 2;
         }
     }
 

@@ -31,4 +31,10 @@ public class BomberTower extends Tower {
     public int getCost() {
         return 50;
     }
+
+    @Override
+    public int getStartingHealth() {
+        return 60;
+    }
+
 }

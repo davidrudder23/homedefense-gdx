@@ -33,4 +33,9 @@ public class LaserTower extends Tower {
         return 75;
     }
 
+    @Override
+    public int getStartingHealth() {
+        return 20;
+    }
+
 }
