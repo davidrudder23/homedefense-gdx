@@ -1,27 +1,33 @@
-package org.noses.games.homedefense.enemy;
+package org.noses.games.homedefense.enemy.nestlaying;
 
 import com.badlogic.gdx.graphics.Color;
 import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.home.Home;
 
 public class NestLayingEnemy extends Enemy {
     Point targetNestLocation;
     Point currentLocation;
     double progressAlong;
 
+    boolean killed;
+
     public NestLayingEnemy(MapScreen parent, Point targetNestLocation) {
-        super(parent, "line128.png", parent.loadSound("normal_hit.mp3"), 32,32, 0.02, 200);
+        super(parent, "line64.png", parent.loadSound("normal_hit.mp3"), 32, 32, 0.02, 200);
 
         this.targetNestLocation = targetNestLocation;
 
         progressAlong = 0;
 
+        killed = false;
+
         // find the start location
         double startLat;
         double startLon;
 
-        int topOrBottom = (int)(Math.random()*2);
+        int topOrBottom = (int) (Math.random() * 2);
         if (topOrBottom == 0) {
             double distanceFromTop = Math.abs(targetNestLocation.getLatitude() - parent.getMap().getNorth());
             double distanceFromBottom = Math.abs(targetNestLocation.getLatitude() - parent.getMap().getSouth());
@@ -34,7 +40,7 @@ public class NestLayingEnemy extends Enemy {
             double distanceFromEast = Math.abs(targetNestLocation.getLongitude() - parent.getMap().getEast());
             double distanceFromWest = Math.abs(targetNestLocation.getLongitude() - parent.getMap().getWest());
 
-            if (distanceFromEast> distanceFromWest) {
+            if (distanceFromEast > distanceFromWest) {
                 currentLocation = new Point(parent.getHome().getLatitude(), parent.getMap().getEast());
             } else {
                 currentLocation = new Point(parent.getHome().getLatitude(), parent.getMap().getWest());
@@ -53,9 +59,19 @@ public class NestLayingEnemy extends Enemy {
     }
 
     @Override
+    public boolean isKilled() {
+        return killed;
+    }
+
+    @Override
     public void clockTick(double delta) {
-        progressAlong += HomeDefenseGame.LATLON_MOVED_IN_1s_1mph*delta;
-        System.out.println("nest layer progress="+progressAlong);
+        progressAlong += HomeDefenseGame.LATLON_MOVED_IN_1s_1mph * delta * 10000;
+
+        if (isCloseToHome()) {
+            System.out.println("Dropping a nest");
+            parent.dropNest(targetNestLocation);
+            killed = true;
+        }
     }
 
     @Override
@@ -64,10 +80,22 @@ public class NestLayingEnemy extends Enemy {
         Point firstPoint = currentLocation;
         Point lastPoint = targetNestLocation;
 
-        double currentLatitude = firstPoint.getLatitude() + (progressAlong*(lastPoint.getLatitude() - firstPoint.getLatitude()));
-        double currentLongitude = firstPoint.getLongitude() + (progressAlong*(lastPoint.getLongitude() - firstPoint.getLongitude()));
+        double currentLatitude = firstPoint.getLatitude() + (progressAlong * (lastPoint.getLatitude() - firstPoint.getLatitude()));
+        double currentLongitude = firstPoint.getLongitude() + (progressAlong * (lastPoint.getLongitude() - firstPoint.getLongitude()));
 
-        return new Point((float) currentLatitude, (float) currentLongitude);    }
+        return new Point((float) currentLatitude, (float) currentLongitude);
+    }
+
+    private boolean isCloseToHome() {
+        Point location = getLocation();
+
+        System.out.println("Distance from home="+location.getDistanceFrom(targetNestLocation));
+
+        if (location.getDistanceFrom(targetNestLocation) <= (HomeDefenseGame.LATLON_MOVED_IN_1s_1mph*10)) {
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public double getLatitude() {

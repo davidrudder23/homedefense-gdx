@@ -20,7 +20,7 @@ public class EnemyGroup implements ClockTickHandler {
 
     int numEnemies;
 
-    EnemyGroup(int numEnemies, int delay) {
+    protected EnemyGroup(int numEnemies, int delay) {
         enemies = new ArrayList<>();
         upcomingEnemies = new ArrayList<>();
 
@@ -28,7 +28,7 @@ public class EnemyGroup implements ClockTickHandler {
         this.delay = delay;
     }
 
-    void addEnemy(Enemy enemy) {
+    public void addEnemy(Enemy enemy) {
         upcomingEnemies.add(enemy);
     }
 

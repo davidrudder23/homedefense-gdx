@@ -1,6 +1,8 @@
-package org.noses.games.homedefense.enemy;
+package org.noses.games.homedefense.enemy.nestlaying;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import org.noses.games.homedefense.enemy.EnemyGroup;
+import org.noses.games.homedefense.enemy.EnemyNest;
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
@@ -19,13 +21,13 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
     List<EnemyGroup> enemyGroups;
 
     public NestLayingNest(MapScreen parent) {
-        super(parent,"hataak", 0, 0,  0);
+        super(parent, "hataak", 0, 0, 0);
         this.parent = parent;
         makingNest = false;
-        EnemyGroup enemyGroup = new EnemyGroup(0, 100);
+        NestLayingEnemyGroup enemyGroup = new NestLayingEnemyGroup();
         enemyGroups = new ArrayList<>();
         enemyGroups.add(enemyGroup);
-        parent.addClockTickHandler(enemyGroups.get(0));
+        //parent.addClockTickHandler(enemyGroups.get(0));
 
     }
 
@@ -51,11 +53,23 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
 
     @Override
     public void clockTick(double delta) {
-        System.out.println("Nest laying nest clock tick, making="+makingNest);
         if (makingNest) {
-            return;
+            if (enemyGroups.size() <= 0) {
+                return;
+            }
+
+            if (enemyGroups.get(0).getEnemies().size() <= 0) {
+                return;
+            }
+
+            if (enemyGroups.get(0).getEnemies().get(0).isKilled()) {
+                makingNest = false;
+            } else {
+                return;
+            }
         }
         makingNest = true;
+        System.out.println("Parent has "+parent.getEnemyNests().size()+" enemy nests");
         if (parent.getEnemyNests().size() < 3) {
             System.out.println("Making a new nest layer");
             double latitude = 0;
@@ -73,20 +87,21 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
 
             while (!foundIntersection) {
                 intersection = intersections.get((int) (Math.random() * intersections.size()));
+                System.out.println("Testing intersection "+intersection);
 
-                Point nestPoint = new Point(intersection.getLatitude(), intersection.getLongitude());
-                if (nestPoint.getDistanceFrom(homePoint) < 0.005) {
+                if (!parent.isGoodLocationForNest(intersection.getNode())) {
+                    System.out.println(intersection+" is bad");
                     continue;
                 }
 
                 foundIntersection = true;
             }
 
-            System.out.println("Targetting nest at "+intersection);
+            //System.out.println("Targetting nest at "+intersection);
             NestLayingEnemy nestLayingEnemy = new NestLayingEnemy(parent, new Point(intersection.getLatitude(), intersection.getLongitude()));
             parent.addClockTickHandler(nestLayingEnemy);
             enemyGroups.get(0).addEnemy(nestLayingEnemy);
-            System.out.println("now "+enemyGroups.get(0).getEnemies().size());
+            System.out.println("now " + enemyGroups.get(0).getEnemies().size());
         }
     }
 
@@ -98,5 +113,10 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
     @Override
     public boolean isKilled() {
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Nest laying nest";
     }
 }

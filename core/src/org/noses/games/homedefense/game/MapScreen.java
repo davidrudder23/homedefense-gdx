@@ -15,6 +15,8 @@ import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.*;
+import org.noses.games.homedefense.enemy.nestlaying.NestLayingEnemy;
+import org.noses.games.homedefense.enemy.nestlaying.NestLayingNest;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Djikstra;
@@ -320,13 +322,51 @@ public class MapScreen extends Screen implements InputProcessor {
         }
     }
 
+    public boolean isGoodLocationForNest(Node node) {
+        Point homePoint = getHome().getLocation();
+        Point enemyPoint = new Point(node.getLat(), node.getLon());
+        if (enemyPoint.getDistanceFrom(homePoint) < 0.005) {
+            return false;
+        }
+
+        Djikstra djikstra = new Djikstra(intersections);
+        if (djikstra.getBestPath(node, homePoint.getLongitude(), homePoint.getLongitude()) == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public Node findGoodPlaceForNest() {
+        // If it's too close, don't add the nest
+        Point homePoint = new Point(home.getLatitude(), home.getLongitude());
+
+        Intersection intersection = null;
+
+        int count = 0;
+
+        while (count<1000) {
+            count++;
+            intersection = intersections.get((int) (Math.random() * intersections.size()));
+            System.out.println("Testing intersection "+intersection);
+
+            if (!isGoodLocationForNest(intersection.getNode())) {
+                System.out.println(intersection+" is bad");
+                continue;
+            }
+
+            return intersection.getNode();
+        }
+
+        return null;
+    }
+
     public void createNests() {
         NestLayingNest nestLayingNest = new NestLayingNest(this);
         addClockTickHandler(nestLayingNest);
 
         double delayBeforeStart = 0;
-        Djikstra djikstra = new Djikstra(intersections);
 
+        Djikstra djikstra = new Djikstra(intersections);
         for (Nest nest : map.getNests()) {
 
             // If it's too close, don't add the nest
@@ -357,7 +397,7 @@ public class MapScreen extends Screen implements InputProcessor {
             enemyNests.add(enemyNest);
 
         }
-        enemyNests.add(new NestLayingNest(this));
+        enemyNests.add(nestLayingNest);
 
         /*EnemyGroup enemyGroup = EnemyGroup.builder()
                 .intersections(startingIntersections)
@@ -367,6 +407,13 @@ public class MapScreen extends Screen implements InputProcessor {
                 .build();
         enemyGroups.add(enemyGroup);
         addClockTickHandler(enemyGroup);*/
+    }
+
+    public void dropNest(Point location) {
+        EnemyNest enemyNest = new WeakEnemyNest(this, 1, location.getLongitude(), location.getLatitude());
+        addClockTickHandler(enemyNest);
+        enemyNests.add(enemyNest);
+
     }
 
     public List<Intersection> getIntersections() {
@@ -483,21 +530,17 @@ public class MapScreen extends Screen implements InputProcessor {
         // render the enemies
 
         for (EnemyNest enemyNest : enemyNests) {
-            System.out.println("Rendering enemyNest "+enemyNest.getClass());
             for (EnemyGroup enemyGroup : enemyNest.getEnemyGroups()) {
                 List<Enemy> enemies = enemyGroup.getEnemies();
-                System.out.println("Rendering "+enemies.size()+" enemies");
                 for (Enemy enemy : enemies) {
                     Point location = enemy.getLocation();
 
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
 
-                    if(enemy instanceof NestLayingEnemy) {
-                        System.out.println("Rendering nest layer at "+convertLatToY(latitude)+"x"+convertLongToX(longitude));
-                    }
-
-                    //batch.draw(enemy.getFrameTextureRegion(), x, y);
+                    //if(enemy instanceof NestLayingEnemy) {
+                     //   System.out.println("Rendering nest layer at "+convertLatToY(latitude)+"x"+convertLongToX(longitude));
+                    //}
 
                     Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
 
