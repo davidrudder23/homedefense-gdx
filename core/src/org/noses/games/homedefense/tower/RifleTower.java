@@ -23,7 +23,7 @@ public class RifleTower extends Tower {
 
     @Override
     public double minDistanceFromOtherTower() {
-        return HomeDefenseGame.LATLON_MOVED_IN_1s_1mph*500;
+        return HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph *500;
     }
 
     @Override

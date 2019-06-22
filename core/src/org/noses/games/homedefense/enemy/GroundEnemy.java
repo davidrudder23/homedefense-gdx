@@ -1,7 +1,6 @@
 package org.noses.games.homedefense.enemy;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -132,7 +131,7 @@ public class GroundEnemy extends Enemy {
 
         double speed = way.getMaxSpeed() * speedMultiplier;
 
-        double newProgress = direction * HomeDefenseGame.LATLON_MOVED_IN_1s_1mph * delta * speed;// * (1.0f / Math.sqrt(way.getDistance()));
+        double newProgress = direction * HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * delta * speed;// * (1.0f / Math.sqrt(way.getDistance()));
 
         if (way.getDistance() != 0) {
             progressAlong += newProgress;
@@ -149,15 +148,17 @@ public class GroundEnemy extends Enemy {
     protected void checkForCollision() {
         Point location = getLocation();
         for (Tower tower : parent.getTowers()) {
-            if (location.getDistanceFrom(tower.getLocation()) < HomeDefenseGame.LATLON_MOVED_IN_1s_1mph * 10) {
+            if (location.getDistanceFrom(tower.getLocation()) < HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * 10) {
                 System.out.println("Enemy hit tower " + tower);
 
                 tower.damage(getDamage());
                 kill();
-            } else if (location.getDistanceFrom(parent.getHome().getLocation()) < HomeDefenseGame.LATLON_MOVED_IN_1s_1mph * 10) {
-                parent.hitHome(getDamage());
-                kill();
             }
+        }
+
+        if (location.getDistanceFrom(parent.getHome().getLocation()) < HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * 100) {
+            parent.hitHome(getDamage());
+            kill();
         }
 
         for (int i = parent.getTowers().size()-1; i>=0; i--) {
@@ -182,7 +183,7 @@ public class GroundEnemy extends Enemy {
         }
 
         float speed = way.getMaxSpeed();
-        double newProgress = progressAlong + (direction * HomeDefenseGame.LATLON_MOVED_IN_1s_1mph * delta * speed * (1.0f / Math.sqrt(way.getDistance())));
+        double newProgress = progressAlong + (direction * HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * delta * speed * (1.0f / Math.sqrt(way.getDistance())));
 
         Node node = pathSteps.get(currentPathStep).getEndingNode();
         while ((node == null) && (currentPathStep < (pathSteps.size() - 1))) {
@@ -208,7 +209,10 @@ public class GroundEnemy extends Enemy {
         }
         if (needsNewPath) {
             currentPathStep++;
-            putOnPathStep(pathSteps.get(currentPathStep));
+
+            if (currentPathStep < pathSteps.size()) {
+                putOnPathStep(pathSteps.get(currentPathStep));
+            }
         }
     }
 

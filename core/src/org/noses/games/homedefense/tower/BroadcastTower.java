@@ -24,7 +24,7 @@ public class BroadcastTower extends Tower {
 
     @Override
     public double minDistanceFromOtherTower() {
-        return HomeDefenseGame.LATLON_MOVED_IN_1s_1mph*1000;
+        return HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph *1000;
     }
 
     @Override

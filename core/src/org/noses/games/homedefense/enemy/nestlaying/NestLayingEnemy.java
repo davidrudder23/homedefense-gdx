@@ -69,7 +69,7 @@ public class NestLayingEnemy extends Enemy {
 
     @Override
     public void clockTick(double delta) {
-        progressAlong += HomeDefenseGame.LATLON_MOVED_IN_1s_1mph * delta * 10000;
+        progressAlong += HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * delta * 10000;
 
         if (isCloseToTarget()) {
             System.out.println("Dropping a nest");
@@ -113,7 +113,7 @@ public class NestLayingEnemy extends Enemy {
     private boolean isCloseToTarget() {
         Point location = getLocation();
 
-        if (location.getDistanceFrom(targetNestLocation) <= (HomeDefenseGame.LATLON_MOVED_IN_1s_1mph*10)) {
+        if (location.getDistanceFrom(targetNestLocation) <= (HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph *10)) {
             return true;
         }
         return false;
