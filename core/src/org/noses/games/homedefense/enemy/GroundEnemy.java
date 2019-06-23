@@ -235,6 +235,10 @@ public class GroundEnemy extends Enemy {
         }
 
         public GroundEnemyBuilder(MapScreen parent, Node startingNode, Point target) {
+            this (parent, startingNode, parent.getNodeForLocation(target));
+        }
+
+        public GroundEnemyBuilder(MapScreen parent, Node startingNode, Node target) {
 
             this.game = parent;
             HashMap<String, Intersection> intersections = Intersection.buildIntersectionsFromMap(parent.getMap());
@@ -248,12 +252,7 @@ public class GroundEnemy extends Enemy {
                 Djikstra djikstra = new Djikstra(intersections);
                 Intersection intersection = djikstra.getIntersectionForNode(intersections, startingNode);
 
-                System.out.println("Getting best path to "
-                        + target
-                        + parent.printPointInXY(target));
-                pathStep = djikstra.getBestPath(intersection,
-                        target.getLatitude(),
-                        target.getLongitude());
+                pathStep = djikstra.getBestPath(intersection, target);
                 System.out.println("Enemy's path - " + pathStep);
             }
         }

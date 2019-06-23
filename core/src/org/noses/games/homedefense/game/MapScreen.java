@@ -330,7 +330,7 @@ public class MapScreen extends Screen implements InputProcessor {
         }
 
         Djikstra djikstra = new Djikstra(intersections);
-        if (djikstra.getBestPath(node, homePoint.getLongitude(), homePoint.getLongitude()) == null) {
+        if (djikstra.getBestPath(node, getNodeForLocation(homePoint)) == null) {
             return false;
         }
         return true;
@@ -389,7 +389,7 @@ public class MapScreen extends Screen implements InputProcessor {
                 continue;
             }
 
-            if (djikstra.getBestPath(enemyNest.getNode(), homePoint.getLongitude(), homePoint.getLongitude()) == null) {
+            if (djikstra.getBestPath(enemyNest.getNode(), getNodeForLocation(homePoint)) == null) {
                 continue;
             }
 
@@ -543,7 +543,9 @@ public class MapScreen extends Screen implements InputProcessor {
 
         // render the nests
         for (EnemyNest enemyNest : enemyNests) {
-            enemyNest.render(batch);
+            if (!enemyNest.isKilled()) {
+                enemyNest.render(batch);
+            }
         }
 
         // render the enemies

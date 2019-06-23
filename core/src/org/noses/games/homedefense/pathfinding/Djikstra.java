@@ -36,7 +36,7 @@ public class Djikstra {
         PathStep pathStep = new PathStep();
         pathStep.setIntersection(from);
 
-        if (from.closeTo(finishNode.getLat(), finishNode.getLon())) {
+        if (from.getNode().equals(finishNode)) {
             return pathStep; // TODO SUCCESS!
         }
         from.pathStep = pathStep;
@@ -45,7 +45,7 @@ public class Djikstra {
 
         while (unvisitedIntersections.size() > 0) {
             from = unvisitedIntersections.get(0);
-            if (from.closeTo(finishNode.getLat(), finishNode.getLon())) {
+            if (from.getNode().equals(finishNode)) {
                 if (destination == null) {
                     destination = from;
                 }
@@ -95,7 +95,8 @@ public class Djikstra {
             System.out.println("Current PathStep=" + pathStep);*/
         }
 
-        if (destination == null) {
+        if ((destination == null) || (destination.getPathStep() == null)){
+            System.out.println("Can not find a path from "+from.getNode()+" to "+finishNode);
             return null;
         }
 
