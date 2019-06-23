@@ -20,42 +20,16 @@ public class Djikstra {
         seen = new HashMap<>();
     }
 
-    public PathStep getBestPath(Node from, double latitude, double longitude) {
+    public PathStep getBestPath(Node from, Node finishNode) {
         Intersection fromIntersection = getIntersectionForNode(allIntersections, from);
 
-        return getBestPath(fromIntersection, latitude, longitude);
+        return getBestPath(fromIntersection, finishNode);
     }
 
-    public PathStep getBestPath(Intersection from, final double latitude, final double longitude) {
+    public PathStep getBestPath(Intersection from, Node finishNode) {
         for (Intersection intersection: allIntersections.values()) {
             intersection.setPathStep(null);
         }
-
-        // Sort by distance to latitude and longitude, so we can find the closest intersections
-        List<Intersection> sortedIntersections = new ArrayList<>();
-        sortedIntersections.addAll(allIntersections.values());
-
-        Collections.sort(sortedIntersections, new Comparator<Intersection>() {
-            @Override
-            public int compare(Intersection a, Intersection b) {
-                double distanceA = (a.getNode().getLat()-latitude) * (a.getNode().getLat()-latitude)+
-                        (a.getNode().getLon()-longitude) * (a.getNode().getLon()-longitude);
-                double distanceB = (b.getNode().getLat()-latitude) * (b.getNode().getLat()-latitude)+
-                        (b.getNode().getLon()-longitude) * (b.getNode().getLon()-longitude);
-
-                if (distanceA>distanceB) {
-                    return 1;
-                } else if (distanceB > distanceA) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            }
-        });
-
-        Node finishNode = sortedIntersections.get(0).getNode();
-        //System.out.println("Closest is at "+finishNode+" which has pathstep="+sortedIntersections.get(0).getPathStep());
-
 
         long startTime = System.currentTimeMillis();
 
