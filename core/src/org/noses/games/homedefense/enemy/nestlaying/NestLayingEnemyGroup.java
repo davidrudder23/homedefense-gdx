@@ -11,7 +11,7 @@ public class NestLayingEnemyGroup extends EnemyGroup {
     List<Enemy> enemies;
 
     public NestLayingEnemyGroup() {
-        super(0, 100);
+        super(100);
 
         enemies = new ArrayList<>();
     }

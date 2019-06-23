@@ -12,7 +12,7 @@ public class SplittingEnemyNest extends EnemyNest {
 
     @Override
     public double delayBetweenWaves() {
-        return 15;
+        return 50;
     }
 
     @Override
@@ -20,7 +20,6 @@ public class SplittingEnemyNest extends EnemyNest {
         if (builder == null) {
             Node bestNode = getNode();
             if (bestNode != null) {
-                System.out.println("Making builder with parent="+parent);
                 builder = new SplittingGroundEnemy.SplittingGroundEnemyBuilder(parent, bestNode);
             }
         }
@@ -30,8 +29,8 @@ public class SplittingEnemyNest extends EnemyNest {
         }
 
         EnemyGroup enemyGroup = EnemyGroup.builder()
-                .delay(10)
-                .numEnemies(10)
+                .delay(30)
+                .numEnemies(3)
                 .enemyBuilder(builder)
                 .build();
         parent.addClockTickHandler(enemyGroup);

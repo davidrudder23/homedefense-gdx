@@ -150,6 +150,9 @@ public class GroundEnemy extends Enemy {
     protected void checkForCollision() {
         Point location = getLocation();
         for (Tower tower : parent.getTowers()) {
+            if (tower == null) {
+                continue;
+            }
             if (location.getDistanceFrom(tower.getLocation()) < HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * 100) {
                 System.out.println("Enemy hit tower " + tower);
 
@@ -176,6 +179,10 @@ public class GroundEnemy extends Enemy {
 
     private void crossesIntersection(double delta) {
         if (pathSteps.size() <= currentPathStep) {
+            return;
+        }
+
+        if (getWay() == null) {
             return;
         }
 

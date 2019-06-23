@@ -29,11 +29,16 @@ public class SplitEnemyNest extends EnemyNest {
 
     @Override
     public EnemyGroup getNewEnemyGroup() {
-        EnemyGroup enemyGroup = new EnemyGroup(4, 0);
+        EnemyGroup enemyGroup = new EnemyGroup(0);
 
+        Node node = parent.getNodeForLocation(new Point(getLatitude(), getLongitude()));
         for (Tower tower: towers) {
-            Node node = parent.getNodeForLocation(new Point(getLatitude(), getLongitude()));
-            PathStep pathStep = djikstra.getBestPath(node, tower.getLongitude(), tower.getLatitude());
+            PathStep pathStep = djikstra.getBestPath(node, tower.getLatitude(), tower.getLongitude());
+
+            if (pathStep == null) {
+                System.out.println("Couldn't find pathstep for tower at "+tower.getLocation());
+                continue;
+            }
 
             GroundEnemy enemy = new GroundEnemy(parent, pathStep);
             enemyGroup.addEnemy(enemy);

@@ -28,6 +28,7 @@ public class SplittingGroundEnemy extends GroundEnemy {
         }
 
         SplitEnemyNest splitEnemyNest = new SplitEnemyNest(parent, parent.getTowers(), getLocation());
+        parent.addClockTickHandler(splitEnemyNest);
 
         parent.getEnemyNests().add(splitEnemyNest);
     }
