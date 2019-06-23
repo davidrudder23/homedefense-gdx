@@ -1,10 +1,7 @@
 package org.noses.games.homedefense.enemy.nestlaying;
 
 import org.noses.games.homedefense.HomeDefenseGame;
-import org.noses.games.homedefense.enemy.ArmoredEnemyNest;
-import org.noses.games.homedefense.enemy.Enemy;
-import org.noses.games.homedefense.enemy.EnemyNest;
-import org.noses.games.homedefense.enemy.WeakEnemyNest;
+import org.noses.games.homedefense.enemy.*;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.tower.Tower;
@@ -20,6 +17,7 @@ public class NestLayingEnemy extends Enemy {
 
     public NestLayingEnemy(MapScreen parent, Point targetNestLocation, int enemyType) {
         super(parent, "line64.png", parent.loadSound("normal_hit.mp3"), 32, 32, 0.02, 200);
+        this.enemyType = enemyType;
 
         this.targetNestLocation = targetNestLocation;
 
@@ -72,13 +70,16 @@ public class NestLayingEnemy extends Enemy {
         progressAlong += HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * delta * 10000;
 
         if (isCloseToTarget()) {
-            System.out.println("Dropping a nest");
+            System.out.println("Dropping a nest, type="+enemyType+" splitting="+NestLayingNest.ENEMY_TYPE_SPLITTING);
             EnemyNest enemyNest = null;
 
             if (enemyType == NestLayingNest.ENEMY_TYPE_ARMORED) {
                 enemyNest = new ArmoredEnemyNest(parent, 1, targetNestLocation.getLongitude(), targetNestLocation.getLatitude());
             } else if (enemyType == NestLayingNest.ENEMY_TYPE_GROUND) {
                 enemyNest = new WeakEnemyNest(parent, 1, targetNestLocation.getLongitude(), targetNestLocation.getLatitude());
+            } else if (enemyType == NestLayingNest.ENEMY_TYPE_SPLITTING) {
+                enemyNest = new SplittingEnemyNest(parent, 1, targetNestLocation.getLongitude(), targetNestLocation.getLatitude());
+                System.out.println ("New splitting nest="+enemyNest);
             }
 
             enemyType++;
@@ -113,7 +114,7 @@ public class NestLayingEnemy extends Enemy {
     private boolean isCloseToTarget() {
         Point location = getLocation();
 
-        if (location.getDistanceFrom(targetNestLocation) <= (HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph *10)) {
+        if (location.getDistanceFrom(targetNestLocation) <= (HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * 10)) {
             return true;
         }
         return false;

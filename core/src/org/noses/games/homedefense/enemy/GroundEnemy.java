@@ -26,24 +26,26 @@ public class GroundEnemy extends Enemy {
 
     private final int DAMAGE = 20;
 
-    private Way way;
     private double progressAlong = 0;
     private double direction;
     private List<PathStep> pathSteps;
     private int currentPathStep;
+    private Way way;
 
     private double speedMultiplier;
 
-    public GroundEnemy(MapScreen parent, Way way) {
-        this(parent, way, "line0.png", 10, 32, 32, 10);
+    public GroundEnemy(MapScreen parent, PathStep pathStep) {
+        this(parent, pathStep, "line0.png", 10, 32, 32, 10);
     }
 
-    protected GroundEnemy(MapScreen parent, Way way, String spriteFilename, double speedMultiplier, int tileWidth, int tileHeight, int startingHealth) {
+    protected GroundEnemy(MapScreen parent, PathStep pathStep, String spriteFilename, double speedMultiplier, int tileWidth, int tileHeight, int startingHealth) {
         super(parent, spriteFilename, parent.loadSound("normal_hit.mp3"), tileWidth, tileHeight, 0.02, startingHealth);
-        this.way = way;
+
         progressAlong = 0;
         direction = 1;
         this.speedMultiplier = speedMultiplier;
+
+        setPath(pathStep);
     }
 
     @Override
@@ -148,7 +150,7 @@ public class GroundEnemy extends Enemy {
     protected void checkForCollision() {
         Point location = getLocation();
         for (Tower tower : parent.getTowers()) {
-            if (location.getDistanceFrom(tower.getLocation()) < HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * 10) {
+            if (location.getDistanceFrom(tower.getLocation()) < HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * 100) {
                 System.out.println("Enemy hit tower " + tower);
 
                 tower.damage(getDamage());
@@ -161,7 +163,7 @@ public class GroundEnemy extends Enemy {
             kill();
         }
 
-        for (int i = parent.getTowers().size()-1; i>=0; i--) {
+        for (int i = parent.getTowers().size() - 1; i >= 0; i--) {
             if (parent.getTowers().get(i).isKilled()) {
                 parent.getTowers().remove(i);
             }
@@ -219,10 +221,13 @@ public class GroundEnemy extends Enemy {
     public static class GroundEnemyBuilder implements EnemyBuilder {
         MapScreen game;
 
-        Way way;
         PathStep pathStep;
 
         public GroundEnemyBuilder(MapScreen parent, Node startingNode) {
+            this(parent, startingNode, parent.getHome().getLocation());
+        }
+
+        public GroundEnemyBuilder(MapScreen parent, Node startingNode, Point target) {
 
             this.game = parent;
             HashMap<String, Intersection> intersections = Intersection.buildIntersectionsFromMap(parent.getMap());
@@ -236,24 +241,19 @@ public class GroundEnemy extends Enemy {
                 Djikstra djikstra = new Djikstra(intersections);
                 Intersection intersection = djikstra.getIntersectionForNode(intersections, startingNode);
 
-                double centerX = parent.getHome().getLatitude();
-                double centerY = parent.getHome().getLongitude();
-
                 System.out.println("Getting best path to "
-                        + new Point(centerX, centerY)
-                        + parent.printPointInXY(new Point(centerX, centerY)));
+                        + target
+                        + parent.printPointInXY(target));
                 pathStep = djikstra.getBestPath(intersection,
-                        centerX,
-                        centerY);
+                        target.getLatitude(),
+                        target.getLongitude());
                 System.out.println("Enemy's path - " + pathStep);
             }
         }
 
         @Override
         public Enemy build() {
-            GroundEnemy enemy = new GroundEnemy(game, way);
-            enemy.setPath(pathStep);
-
+            GroundEnemy enemy = new GroundEnemy(game, pathStep);
             return enemy;
         }
     }

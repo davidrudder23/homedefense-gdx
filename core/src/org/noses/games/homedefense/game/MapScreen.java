@@ -415,6 +415,10 @@ public class MapScreen extends Screen implements InputProcessor {
 
     }
 
+    public HashMap<String, Intersection> getIntersectionsAsHashmap() {
+        return intersections;
+    }
+
     public List<Intersection> getIntersections() {
         List<Intersection> retList = new ArrayList<>();
         retList.addAll(intersections.values());
@@ -423,6 +427,22 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public Intersection getIntersectionForNode(Node node) {
         return intersections.get(node.getLat() + "_" + node.getLon());
+    }
+
+    public Node getNodeForLocation(Point location) {
+        double closestDistance = 99999;
+        Node closestNode = null;
+        for (Way way: map.getWays()) {
+            for (Node node: way.getNodes()) {
+                double distance = new Point(node.getLat(), node.getLon()).getDistanceFrom(location);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestNode = node;
+                }
+            }
+        }
+
+        return closestNode;
     }
 
     public void clockTick(float delta) {
