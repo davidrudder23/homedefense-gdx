@@ -65,7 +65,7 @@ public abstract class Bullet extends Animation {
             return;
         }
 
-        distanceTraveled += delta * speed * HomeDefenseGame.LATLON_MOVED_IN_1s_1mph ;
+        distanceTraveled += delta * speed * HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph;
 
         currentLatitude = originalLatitude + (Math.cos(rad) * distanceTraveled);
         currentLongitude = originalLongitude + (Math.sin(rad) * distanceTraveled);

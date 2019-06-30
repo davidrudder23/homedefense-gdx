@@ -15,6 +15,8 @@ import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.*;
+import org.noses.games.homedefense.enemy.nestlaying.NestLayingEnemy;
+import org.noses.games.homedefense.enemy.nestlaying.NestLayingNest;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Djikstra;
@@ -60,6 +62,7 @@ public class MapScreen extends Screen implements InputProcessor {
     @Getter
     private List<Tower> towers;
 
+    @Getter
     List<EnemyNest> enemyNests;
 
     @Getter
@@ -319,10 +322,56 @@ public class MapScreen extends Screen implements InputProcessor {
         }
     }
 
-    public void createNests() {
-        double delayBeforeStart = 0;
-        Djikstra djikstra = new Djikstra(intersections);
+    public boolean isGoodLocationForNest(Node node) {
+        Point homePoint = getHome().getLocation();
+        Point nodePoint = new Point(node.getLat(), node.getLon());
+        if (nodePoint.getDistanceFrom(homePoint) < 0.005) {
+            return false;
+        }
 
+        Djikstra djikstra = new Djikstra(intersections);
+        if (djikstra.getBestPath(node, getNodeForLocation(homePoint)) == null) {
+            return false;
+        }
+
+        if (!isInsideMap(nodePoint)) {
+            Thread.dumpStack();
+            return false;
+        }
+        return true;
+    }
+
+    public Node findGoodPlaceForNest() {
+        // If it's too close, don't add the nest
+        Point homePoint = new Point(home.getLatitude(), home.getLongitude());
+
+        Intersection intersection = null;
+
+        int count = 0;
+
+        while (count<1000) {
+            count++;
+            intersection = intersections.get((int) (Math.random() * intersections.size()));
+            System.out.println("Testing intersection "+intersection);
+
+            if (!isGoodLocationForNest(intersection.getNode())) {
+                System.out.println(intersection+" is bad");
+                continue;
+            }
+
+            return intersection.getNode();
+        }
+
+        return null;
+    }
+
+    public void createNests() {
+        NestLayingNest nestLayingNest = new NestLayingNest(this);
+        addClockTickHandler(nestLayingNest);
+
+        double delayBeforeStart = 0;
+
+        Djikstra djikstra = new Djikstra(intersections);
         for (Nest nest : map.getNests()) {
 
             // If it's too close, don't add the nest
@@ -345,13 +394,15 @@ public class MapScreen extends Screen implements InputProcessor {
                 continue;
             }
 
-            if (djikstra.getBestPath(enemyNest.getNode(), homePoint.getLongitude(), homePoint.getLongitude()) == null) {
+            if (djikstra.getBestPath(enemyNest.getNode(), getNodeForLocation(homePoint)) == null) {
                 continue;
             }
 
             addClockTickHandler(enemyNest);
             enemyNests.add(enemyNest);
+
         }
+        enemyNests.add(nestLayingNest);
 
         /*EnemyGroup enemyGroup = EnemyGroup.builder()
                 .intersections(startingIntersections)
@@ -363,8 +414,40 @@ public class MapScreen extends Screen implements InputProcessor {
         addClockTickHandler(enemyGroup);*/
     }
 
+    public void dropNest(EnemyNest enemyNest) {
+        addClockTickHandler(enemyNest);
+        enemyNests.add(enemyNest);
+
+    }
+
+    public HashMap<String, Intersection> getIntersectionsAsHashmap() {
+        return intersections;
+    }
+
+    public List<Intersection> getIntersections() {
+        List<Intersection> retList = new ArrayList<>();
+        retList.addAll(intersections.values());
+        return retList;
+    }
+
     public Intersection getIntersectionForNode(Node node) {
         return intersections.get(node.getLat() + "_" + node.getLon());
+    }
+
+    public Node getNodeForLocation(Point location) {
+        double closestDistance = 99999;
+        Node closestNode = null;
+        for (Way way: map.getWays()) {
+            for (Node node: way.getNodes()) {
+                double distance = new Point(node.getLat(), node.getLon()).getDistanceFrom(location);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestNode = node;
+                }
+            }
+        }
+
+        return closestNode;
     }
 
     public void clockTick(float delta) {
@@ -428,7 +511,43 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public void setupSound() {
         Sound backgroundLoop = loadSound("background.mp3");
-        backgroundLoop.loop(0.5f);
+        backgroundLoop.loop(0.2f);
+    }
+
+    public boolean isInsideMap(Point point) {
+
+        if (map.getNorth() > map.getSouth()) {
+            if (point.getLatitude() > map.getNorth()) {
+                return false;
+            }
+            if (point.getLatitude() < map.getSouth()) {
+                return false;
+            }
+        } else {
+            if (point.getLatitude() > map.getSouth()) {
+                return false;
+            }
+            if (point.getLatitude() < map.getNorth()) {
+                return false;
+            }
+        }
+
+        if (map.getEast() > map.getWest()) {
+            if (point.getLongitude() > map.getEast()) {
+                return false;
+            }
+            if (point.getLongitude() < map.getWest()) {
+                return false;
+            }
+        } else {
+            if (point.getLongitude() < map.getEast()) {
+                return false;
+            }
+            if (point.getLongitude() > map.getWest()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public Sound loadSound(String fileName) {
@@ -465,13 +584,9 @@ public class MapScreen extends Screen implements InputProcessor {
 
         // render the nests
         for (EnemyNest enemyNest : enemyNests) {
-            Sprite sprite = new Sprite(enemyNest.getFrameTextureRegion());
-
-            sprite.setCenterX(convertLongToX(enemyNest.getLongitude()));
-            sprite.setCenterY(convertLatToY(enemyNest.getLatitude()));
-            sprite.setScale(64 / sprite.getWidth());
-            sprite.draw(batch);
-
+            if (!enemyNest.isKilled()) {
+                enemyNest.render(batch);
+            }
         }
 
         // render the enemies
@@ -485,7 +600,9 @@ public class MapScreen extends Screen implements InputProcessor {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
 
-                    //batch.draw(enemy.getFrameTextureRegion(), x, y);
+                    //if(enemy instanceof NestLayingEnemy) {
+                     //   System.out.println("Rendering nest layer at "+convertLatToY(latitude)+"x"+convertLongToX(longitude));
+                    //}
 
                     Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
 

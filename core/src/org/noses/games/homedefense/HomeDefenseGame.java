@@ -21,7 +21,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
     public static double ONE_PIXEL_IN_LATLON = 0;
 
     // This is how far you move in 1 second, going 1 mph, in terms of latitude and longitude, in Denver
-    public static double LATLON_MOVED_IN_1s_1mph = 0.000004901f;
+    public static double LATLON_MOVED_IN_1ms_1mph = 0.000004901f;
 
     SpriteBatch batch;
 

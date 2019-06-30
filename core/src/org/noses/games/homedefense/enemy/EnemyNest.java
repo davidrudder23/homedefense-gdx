@@ -1,5 +1,8 @@
 package org.noses.games.homedefense.enemy;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
 import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.client.Way;
@@ -56,19 +59,31 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
         if (timeSinceLastWave > delayBetweenWaves()) {
             timeSinceLastWave = 0;
 
-            EnemyGroup enemyGroup = getNewEnemyGroup();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // do something important here, asynchronously to the rendering thread
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
 
-            if (enemyGroup != null) {
-                enemyGroups.add(enemyGroup);
-            }
-        }
+                            EnemyGroup enemyGroup = getNewEnemyGroup();
 
-        synchronized (enemyGroups) {
-            for (int i = enemyGroups.size() - 1; i >= 0; i--) {
-                EnemyGroup enemyGroup = enemyGroups.get(i);
-                if (enemyGroup.isEmpty()) {
-                    enemyGroup.kill();
-                    enemyGroups.remove(enemyGroup);
+                            if (enemyGroup != null) {
+                                enemyGroups.add(enemyGroup);
+                            }
+                        }
+                    });
+                }
+            }).start();
+
+            synchronized (enemyGroups) {
+                for (int i = enemyGroups.size() - 1; i >= 0; i--) {
+                    EnemyGroup enemyGroup = enemyGroups.get(i);
+                    if (enemyGroup.isEmpty()) {
+                        enemyGroup.kill();
+                        enemyGroups.remove(enemyGroup);
+                    }
                 }
             }
         }
@@ -82,6 +97,15 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
     @Override
     public boolean isKilled() {
         return killed;
+    }
+
+    public void render(Batch batch) {
+        Sprite sprite = new Sprite(getFrameTextureRegion());
+
+        sprite.setCenterX(parent.convertLongToX(getLongitude()));
+        sprite.setCenterY(parent.convertLatToY(getLatitude()));
+        sprite.setScale(64 / sprite.getWidth());
+        sprite.draw(batch);
     }
 
     public Node getNode() {

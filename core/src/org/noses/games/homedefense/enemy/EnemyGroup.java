@@ -18,17 +18,14 @@ public class EnemyGroup implements ClockTickHandler {
 
     private int count;
 
-    int numEnemies;
-
-    EnemyGroup(int numEnemies, int delay) {
+    protected EnemyGroup(int delay) {
         enemies = new ArrayList<>();
         upcomingEnemies = new ArrayList<>();
 
-        this.numEnemies = numEnemies;
         this.delay = delay;
     }
 
-    void addEnemy(Enemy enemy) {
+    public void addEnemy(Enemy enemy) {
         upcomingEnemies.add(enemy);
     }
 

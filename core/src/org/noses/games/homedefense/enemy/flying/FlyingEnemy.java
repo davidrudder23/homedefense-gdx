@@ -4,6 +4,7 @@ import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.tower.Tower;
 
 public class FlyingEnemy extends Enemy {
     private final int DAMAGE = 20;
@@ -55,6 +56,16 @@ public class FlyingEnemy extends Enemy {
             System.out.println("Flying enemy outside bounds");
             kill();
         }
+    }
+
+    @Override
+    public boolean canBeHitBy(Tower tower) {
+        return false;
+    }
+
+    @Override
+    public boolean canBeHitByHome() {
+        return false;
     }
 
     @Override

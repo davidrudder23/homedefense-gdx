@@ -24,13 +24,18 @@ public class LaserTower extends Tower {
 
     @Override
     public double minDistanceFromOtherTower() {
-        return HomeDefenseGame.LATLON_MOVED_IN_1s_1mph*900;
+        return HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph *900;
     }
 
 
     @Override
     public int getCost() {
         return 75;
+    }
+
+    @Override
+    public int getStartingHealth() {
+        return 20;
     }
 
 }
