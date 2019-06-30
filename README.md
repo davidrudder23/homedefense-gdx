@@ -16,6 +16,7 @@ The, run it like:
 
 ```
 java -jar desktop-1.0.jar
+```
 
 ## Downloading the source and building
 
