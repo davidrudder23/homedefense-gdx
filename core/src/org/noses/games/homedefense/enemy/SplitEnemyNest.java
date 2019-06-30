@@ -55,7 +55,7 @@ public class SplitEnemyNest extends EnemyNest {
         EnemyGroup enemyGroup = new EnemyGroup(0);
 
         Node node = parent.getNodeForLocation(new Point(getLatitude(), getLongitude()));
-        Thread.dumpStack();
+        //Thread.dumpStack();
         for (Tower tower: towers) {
             Djikstra djikstra = new Djikstra(parent.getIntersectionsAsHashmap());
 
@@ -68,7 +68,7 @@ public class SplitEnemyNest extends EnemyNest {
 
             GroundEnemy armoredEnemy = new ArmoredGroundEnemy(parent, pathStep);
             enemyGroup.addEnemy(armoredEnemy);
-            
+
             GroundEnemy enemy = new GroundEnemy(parent, pathStep);
             enemyGroup.addEnemy(enemy);
         }

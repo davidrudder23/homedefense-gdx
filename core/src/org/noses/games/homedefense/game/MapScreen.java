@@ -324,13 +324,18 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public boolean isGoodLocationForNest(Node node) {
         Point homePoint = getHome().getLocation();
-        Point enemyPoint = new Point(node.getLat(), node.getLon());
-        if (enemyPoint.getDistanceFrom(homePoint) < 0.005) {
+        Point nodePoint = new Point(node.getLat(), node.getLon());
+        if (nodePoint.getDistanceFrom(homePoint) < 0.005) {
             return false;
         }
 
         Djikstra djikstra = new Djikstra(intersections);
         if (djikstra.getBestPath(node, getNodeForLocation(homePoint)) == null) {
+            return false;
+        }
+
+        if (!isInsideMap(nodePoint)) {
+            Thread.dumpStack();
             return false;
         }
         return true;
@@ -506,7 +511,43 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public void setupSound() {
         Sound backgroundLoop = loadSound("background.mp3");
-        backgroundLoop.loop(0.5f);
+        backgroundLoop.loop(0.2f);
+    }
+
+    public boolean isInsideMap(Point point) {
+
+        if (map.getNorth() > map.getSouth()) {
+            if (point.getLatitude() > map.getNorth()) {
+                return false;
+            }
+            if (point.getLatitude() < map.getSouth()) {
+                return false;
+            }
+        } else {
+            if (point.getLatitude() > map.getSouth()) {
+                return false;
+            }
+            if (point.getLatitude() < map.getNorth()) {
+                return false;
+            }
+        }
+
+        if (map.getEast() > map.getWest()) {
+            if (point.getLongitude() > map.getEast()) {
+                return false;
+            }
+            if (point.getLongitude() < map.getWest()) {
+                return false;
+            }
+        } else {
+            if (point.getLongitude() < map.getEast()) {
+                return false;
+            }
+            if (point.getLongitude() > map.getWest()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public Sound loadSound(String fileName) {
