@@ -9,6 +9,9 @@ import org.noses.games.homedefense.game.*;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.ui.MouseHandler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHandler {
     double bulletSpeed;
@@ -18,7 +21,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
 
     MapScreen parent;
     String towerName;
-    Animation animation;
+    List<Animation> animations;
 
     double timeSinceLastFired = 0;
 
@@ -31,14 +34,23 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
 
     int health;
 
+    int level;
+
     public Tower(MapScreen parent, String towerName, double longitude, double latitude, double scale, Shooter shooter) {
         this.towerName = towerName;
         this.parent = parent;
 
+        level = 0;
+
         killed = false;
 
-        animation = new Animation(parent, "tower/" + towerName + "_lvl_1.png", 199, 199, scale, true);
-        parent.addClockTickHandler(animation);
+        animations = new ArrayList<>();
+
+        for (int i = 1; i <= 4;i++) {
+            Animation animation = new Animation(parent, "tower/" + towerName + "_lvl_"+i+".png", 0, 0, scale, true);
+            animations.add(animation);
+            parent.addClockTickHandler(animation);
+        }
 
         location = new Point(latitude, longitude);
 
@@ -46,6 +58,11 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
         this.shooter = shooter;
 
         health = getStartingHealth();
+    }
+
+    public void upgradeTower() {
+        level++;
+        level %= animations.size();
     }
 
     public double getLatitude() {
@@ -64,7 +81,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
 
     public void render(Batch batch) {
         Sprite sprite = new Sprite(getFrameTextureRegion());
-        sprite.setScale(50/sprite.getWidth());
+        sprite.setScale(50 / sprite.getWidth());
         sprite.setCenterX(parent.convertLongToX(getLongitude()));
         sprite.setCenterY(parent.convertLatToY(getLatitude()));
         sprite.draw(batch);
@@ -81,7 +98,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
     public void damage(int points) {
         health -= points;
 
-        System.out.println(this+" was damaged with "+points+" now at "+health);
+        System.out.println(this + " was damaged with " + points + " now at " + health);
 
         if (health <= 0) {
             kill();
@@ -124,7 +141,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
     }
 
     public TextureRegion getFrameTextureRegion() {
-        return animation.getFrameTextureRegion();
+        return animations.get(level).getFrameTextureRegion();
     }
 
 }

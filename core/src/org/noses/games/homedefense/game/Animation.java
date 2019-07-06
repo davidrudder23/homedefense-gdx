@@ -28,6 +28,13 @@ public class Animation implements ClockTickHandler {
         this.scale = scale;
 
         Texture avatarAnimationSheet = new Texture(spriteFilename);
+        if (tileHeight <= 0) {
+            tileHeight = avatarAnimationSheet.getHeight();
+        }
+
+        if (tileWidth <= 0) {
+            tileWidth = avatarAnimationSheet.getWidth();
+        }
         animation = TextureRegion.split(avatarAnimationSheet, tileWidth, tileHeight);
     }
 

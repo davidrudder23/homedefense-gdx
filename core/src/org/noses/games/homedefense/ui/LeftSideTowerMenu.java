@@ -5,19 +5,18 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
 import org.noses.games.homedefense.game.MapScreen;
-import org.noses.games.homedefense.tower.NormalTowerUpgrader;
-import org.noses.games.homedefense.tower.RifleTower;
+import org.noses.games.homedefense.tower.*;
 
 import java.util.HashMap;
 
-public class LeftSideUpgradeMenu implements MouseHandler {
+public class LeftSideTowerMenu implements MouseHandler {
     private int clickX;
     private int clickY;
 
     private int currentX;
     private int currentY;
 
-    HashMap<String, LeftSideUpgradeMenuItem> menuItems; // normal, glow, grey, greyglow
+    HashMap<String, LeftSideTowerMenuItem> menuItems; // normal, glow, grey, greyglow
 
     MapScreen parent;
 
@@ -28,7 +27,7 @@ public class LeftSideUpgradeMenu implements MouseHandler {
     Sprite menuBackground;
 
 
-    public LeftSideUpgradeMenu(MapScreen parent) {
+    public LeftSideTowerMenu(MapScreen parent) {
         this.parent = parent;
 
         Texture backgroundTexture = new Texture("menuBackground.png");
@@ -40,19 +39,19 @@ public class LeftSideUpgradeMenu implements MouseHandler {
         int spiteWidth = 64;
         int spiteHeight = 64;
 
-        LeftSideUpgradeMenuItem menuItem = new LeftSideUpgradeMenuItem(parent, getX(0), getY(0), spiteWidth, spiteHeight, "tower/rifle", new NormalTowerUpgrader(25));
+        LeftSideTowerMenuItem menuItem = new LeftSideTowerMenuItem(parent, getX(0), getY(0), spiteWidth, spiteHeight, "tower/rifle", new RifleTower.RifleTowerFactor());
         menuItems.put(menuItem.getSpriteName(), menuItem);
 
-        menuItem = new LeftSideUpgradeMenuItem(parent, getX(1), getY(1), spiteWidth, spiteHeight, "tower/laser", new NormalTowerUpgrader(50));
+        menuItem = new LeftSideTowerMenuItem(parent, getX(1), getY(1), spiteWidth, spiteHeight, "tower/laser", new LaserTower.LaserTowerFactory());
         menuItems.put(menuItem.getSpriteName(), menuItem);
 
-        menuItem = new LeftSideUpgradeMenuItem(parent, getX(2), getY(2), spiteWidth, spiteHeight, "tower/bomber", new NormalTowerUpgrader(75));
+        menuItem = new LeftSideTowerMenuItem(parent, getX(2), getY(2), spiteWidth, spiteHeight, "tower/bomber", new BomberTower.BomberTowerFactory());
         menuItems.put(menuItem.getSpriteName(), menuItem);
 
-        menuItem = new LeftSideUpgradeMenuItem(parent, getX(3), getY(3), spiteWidth, spiteHeight, "tower/factory", new NormalTowerUpgrader(100));
+        menuItem = new LeftSideTowerMenuItem(parent, getX(3), getY(3), spiteWidth, spiteHeight, "tower/factory", new FactoryTower.FactoryTowerFactory());
         menuItems.put(menuItem.getSpriteName(), menuItem);
 
-        menuItem = new LeftSideUpgradeMenuItem(parent, getX(4), getY(4), spiteWidth, spiteHeight, "tower/broadcast", new NormalTowerUpgrader(250));
+        menuItem = new LeftSideTowerMenuItem(parent, getX(4), getY(4), spiteWidth, spiteHeight, "tower/broadcast", new BroadcastTower.BroadcastTowerFactory());
         menuItems.put(menuItem.getSpriteName(), menuItem);
     }
 
@@ -69,16 +68,20 @@ public class LeftSideUpgradeMenu implements MouseHandler {
 
     @Override
     public boolean onClick(int x, int y) {
-        clickX = x;
-        clickY = y;
 
-        hidden = !hidden;
-
-        for (LeftSideUpgradeMenuItem menuItem: menuItems.values()) {
-            if (menuItem.isMouseWithin()) {
-                //menuItem.upgradeTower(sfvc);
+        if (hidden) {
+            clickX = x;
+            clickY = y;
+        } else {
+            for (LeftSideTowerMenuItem menuItem : menuItems.values()) {
+                if (menuItem.isMouseWithin()) {
+                    parent.addTower(menuItem.getTower(parent.convertXToLong(clickX), parent.convertYToLat(parent.getScreenHeight() - clickY)));
+                }
             }
         }
+        
+        hidden = !hidden;
+
 
         return true;
     }
@@ -108,7 +111,7 @@ public class LeftSideUpgradeMenu implements MouseHandler {
 
     public void renderMenu(Batch batch) {
 
-        for (LeftSideUpgradeMenuItem menuItem : menuItems.values()) {
+        for (LeftSideTowerMenuItem menuItem : menuItems.values()) {
             Sprite sprite = menuItem.getSprite(menuItem.getX(), menuItem.getY());
             sprite.setScale((float)((parent.getScreenWidth()*0.08)/sprite.getWidth()));
             sprite.draw(batch);

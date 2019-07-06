@@ -21,10 +21,7 @@ import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.tower.Tower;
-import org.noses.games.homedefense.ui.LeftSideUpgradeMenu;
-import org.noses.games.homedefense.ui.MouseHandler;
-import org.noses.games.homedefense.ui.PieMenu;
-import org.noses.games.homedefense.ui.SpeedButton;
+import org.noses.games.homedefense.ui.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,7 +70,7 @@ public class MapScreen extends Screen implements InputProcessor {
     Timer.Task timer;
 
     @Getter
-    LeftSideUpgradeMenu towerChoiceMenu;
+    LeftSideTowerMenu towerChoiceMenu;
 
     public MapScreen(HomeDefenseGame parent, Point location) {
         this.parent = parent;
@@ -130,7 +127,7 @@ public class MapScreen extends Screen implements InputProcessor {
 
         Gdx.input.setInputProcessor(this);
 
-        towerChoiceMenu = new LeftSideUpgradeMenu(this);
+        towerChoiceMenu = new LeftSideTowerMenu(this);
         addClickHandler(towerChoiceMenu);
 
         timer = Timer.schedule(new Timer.Task() {

@@ -5,25 +5,22 @@ import lombok.Getter;
 import lombok.Setter;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.tower.Tower;
+import org.noses.games.homedefense.tower.TowerFactory;
 import org.noses.games.homedefense.tower.TowerUpgrader;
 
-public class LeftSideUpgradeMenuItem extends MenuItem {
+public class LeftSideTowerMenuItem extends MenuItem {
 
-    TowerUpgrader towerUpgrader;
+    TowerFactory towerFactory;
 
     @Getter
     @Setter
     boolean mouseWithin;
     boolean closeToOthers;
 
-    public LeftSideUpgradeMenuItem(MapScreen parent, int x, int y, int width, int height, String towerName, TowerUpgrader towerUpgrader) {
+    public LeftSideTowerMenuItem(MapScreen parent, int x, int y, int width, int height, String towerName, TowerFactory towerFactory) {
         super(parent, x, y, width, height, towerName);
-        this.towerUpgrader = towerUpgrader;
+        this.towerFactory = towerFactory;
         this.closeToOthers = false;
-    }
-
-    public void upgradeTower(Tower tower) {
-        towerUpgrader.upgradeTower(tower);
     }
 
     @Override
@@ -32,7 +29,7 @@ public class LeftSideUpgradeMenuItem extends MenuItem {
     }
 
     public boolean canAffordIt() {
-        return parent.getMoney() >= towerUpgrader.getCost();
+        return parent.getMoney() >= towerFactory.getCost();
     }
 
     @Override
@@ -45,6 +42,10 @@ public class LeftSideUpgradeMenuItem extends MenuItem {
             return true;
         }
         return false;
+    }
+
+    public Tower getTower(double longitude,double latitude) {
+        return towerFactory.createTower(parent, longitude, latitude);
     }
 
     @Override
