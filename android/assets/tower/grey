@@ -1,0 +1,1 @@
+convert $1 -fx '(r+g+b)/3' -colorspace Gray -blur 0x1 -brightness-contrast -30x10 $2
