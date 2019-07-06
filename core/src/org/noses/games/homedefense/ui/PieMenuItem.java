@@ -18,7 +18,7 @@ public class PieMenuItem extends MenuItem {
     boolean closeToOthers;
 
     public PieMenuItem(MapScreen parent, int x, int y, int width, int height, String towerName, TowerFactory towerFactory) {
-        super (parent, x, y, width, height, "tower/"+towerName);
+        super (parent, x, y, width, height, 1, "tower/"+towerName);
         this.towerFactory = towerFactory;
         this.closeToOthers = false;
     }

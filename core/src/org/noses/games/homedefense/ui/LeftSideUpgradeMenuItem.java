@@ -16,8 +16,8 @@ public class LeftSideUpgradeMenuItem extends MenuItem {
     boolean mouseWithin;
     boolean closeToOthers;
 
-    public LeftSideUpgradeMenuItem(MapScreen parent, int x, int y, int width, int height, String towerName, TowerUpgrader towerUpgrader) {
-        super(parent, x, y, width, height, towerName);
+    public LeftSideUpgradeMenuItem(MapScreen parent, int x, int y, int width, int height, int level, String towerName, TowerUpgrader towerUpgrader) {
+        super(parent, x, y, width, height, level, towerName);
         this.towerUpgrader = towerUpgrader;
         this.closeToOthers = false;
     }

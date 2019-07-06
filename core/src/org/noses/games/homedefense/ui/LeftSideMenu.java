@@ -12,8 +12,6 @@ public abstract class LeftSideMenu implements MouseHandler {
 
     protected MapScreen parent;
 
-    protected HashMap<String, LeftSideTowerMenuItem> menuItems; // normal, glow, grey, greyglow
-
     @Getter
     @Setter
     protected boolean hidden;
@@ -27,6 +25,8 @@ public abstract class LeftSideMenu implements MouseHandler {
         hidden = true;
     }
 
+    public abstract HashMap<String, MenuItem> getMenuItems();
+
     protected int getX(int menuNum) {
         return 50;
     }
@@ -39,8 +39,7 @@ public abstract class LeftSideMenu implements MouseHandler {
     }
 
     public void renderMenu(Batch batch) {
-
-        for (LeftSideTowerMenuItem menuItem : menuItems.values()) {
+        for (MenuItem menuItem : getMenuItems().values()) {
             Sprite sprite = menuItem.getSprite(menuItem.getX(), menuItem.getY());
             sprite.setScale((float) ((parent.getScreenWidth() * 0.08) / sprite.getWidth()));
             sprite.draw(batch);
@@ -64,7 +63,7 @@ public abstract class LeftSideMenu implements MouseHandler {
         currentX = x;
         currentY = y;
 
-        for (MenuItem menuItem : menuItems.values()) {
+        for (MenuItem menuItem : getMenuItems().values()) {
             menuItem.setMouseWithin(menuItem.mouseWithin(0, 0, x, y));
         }
         return true;

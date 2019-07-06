@@ -6,9 +6,8 @@ import lombok.Setter;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.tower.Tower;
 import org.noses.games.homedefense.tower.TowerFactory;
-import org.noses.games.homedefense.tower.TowerUpgrader;
 
-public class LeftSideTowerMenuItem extends MenuItem {
+public class LeftSideMenuItem extends MenuItem {
 
     TowerFactory towerFactory;
 
@@ -17,8 +16,8 @@ public class LeftSideTowerMenuItem extends MenuItem {
     boolean mouseWithin;
     boolean closeToOthers;
 
-    public LeftSideTowerMenuItem(MapScreen parent, int x, int y, int width, int height, String towerName, TowerFactory towerFactory) {
-        super(parent, x, y, width, height, 1, towerName);
+    public LeftSideMenuItem(MapScreen parent, int x, int y, int width, int height, int level, String towerName, TowerFactory towerFactory) {
+        super(parent, x, y, width, height, level, towerName);
         this.towerFactory = towerFactory;
         this.closeToOthers = false;
     }

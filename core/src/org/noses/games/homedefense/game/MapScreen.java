@@ -72,6 +72,9 @@ public class MapScreen extends Screen implements InputProcessor {
     @Getter
     LeftSideTowerMenu towerChoiceMenu;
 
+    @Getter
+    LeftSideUpgradeMenu upgradeMenu;
+
     public MapScreen(HomeDefenseGame parent, Point location) {
         this.parent = parent;
 
@@ -157,6 +160,12 @@ public class MapScreen extends Screen implements InputProcessor {
     public void addClickHandler(MouseHandler mouseHandler) {
         synchronized (mouseHandlers) {
             mouseHandlersToBeAdded.add(mouseHandler);
+        }
+    }
+
+    public void removeClickHandler(MouseHandler mouseHandler) {
+        synchronized (mouseHandlers) {
+            mouseHandlersToBeAdded.remove(mouseHandler);
         }
     }
 
@@ -646,15 +655,33 @@ public class MapScreen extends Screen implements InputProcessor {
             towerChoiceMenu.renderMenu(batch);
         }
 
+        if ((upgradeMenu != null) && (!upgradeMenu.isHidden())) {
+            upgradeMenu.renderMenu(batch);
+        }
+
         batch.end();
     }
 
     public void hideMenus() {
         towerChoiceMenu.setHidden(true);
+        hideUpgradeMenu();
     }
 
     public void showUpgradeMenu(Tower tower) {
 
+        upgradeMenu = new LeftSideUpgradeMenu(this, tower);
+        addClickHandler(upgradeMenu);
+        upgradeMenu.setHidden(false);
+    }
+
+    public void hideUpgradeMenu() {
+
+        if (upgradeMenu == null) {
+            return;
+        }
+
+        removeClickHandler(upgradeMenu);
+        upgradeMenu = null;
     }
 
     public double convertXToLong(int x) {

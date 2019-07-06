@@ -20,7 +20,7 @@ public abstract class MenuItem {
 
     boolean mouseWithin;
 
-    public MenuItem(MapScreen parent, int x, int y, int width, int height, String spriteName) {
+    public MenuItem(MapScreen parent, int x, int y, int width, int height, int level, String spriteName) {
         this.parent = parent;
         this.x = x;
         this.y = y;
@@ -29,10 +29,10 @@ public abstract class MenuItem {
         this.spriteName = spriteName;
         this.mouseWithin = false;
 
-        Texture textureNormal = new Texture(spriteName + "_lvl_1.png");
-        Texture textureGlow = new Texture(spriteName + "_glow_lvl_1.png");
-        Texture textureGrey = new Texture(spriteName + "_grey_lvl_1.png");
-        Texture textureGreyGlow = new Texture(spriteName + "_glow_grey_lvl_1.png");
+        Texture textureNormal = new Texture(spriteName + "_lvl_"+level+".png");
+        Texture textureGlow = new Texture(spriteName + "_glow_lvl_"+level+".png");
+        Texture textureGrey = new Texture(spriteName + "_grey_lvl_"+level+".png");
+        Texture textureGreyGlow = new Texture(spriteName + "_glow_grey_lvl_"+level+".png");
 
         itemSprites = new Sprite[4];
         itemSprites[0] = new Sprite(textureNormal);

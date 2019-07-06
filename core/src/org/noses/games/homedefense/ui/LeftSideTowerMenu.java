@@ -16,6 +16,8 @@ public class LeftSideTowerMenu extends LeftSideMenu {
 
     Sprite menuBackground;
 
+    HashMap<String, LeftSideTowerMenuItem> menuItems; // normal, glow, grey, greyglow
+
     public LeftSideTowerMenu(MapScreen parent) {
         super(parent);
 
@@ -41,9 +43,20 @@ public class LeftSideTowerMenu extends LeftSideMenu {
     }
 
     @Override
-    public boolean onClick(int x, int y) {
+    public HashMap<String, MenuItem> getMenuItems() {
 
+        HashMap<String, MenuItem> menuItems = new HashMap<>();
+        for (String name: this.menuItems.keySet()) {
+            menuItems.put(name, this.menuItems.get(name));
+        }
+        return menuItems;
+    }
+
+    @Override
+    public boolean onClick(int x, int y) {
         if (hidden) {
+            parent.hideMenus();
+
             clickX = x;
             clickY = y;
         } else {
