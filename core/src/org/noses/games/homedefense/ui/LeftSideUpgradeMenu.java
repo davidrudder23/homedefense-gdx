@@ -57,6 +57,7 @@ public class LeftSideUpgradeMenu extends LeftSideMenu {
         for (LeftSideUpgradeMenuItem menuItem: menuItems.values()) {
             if (menuItem.isMouseWithin()) {
                 menuItem.upgradeTower(towerBeingUpgraded);
+                return false;
             }
         }
 

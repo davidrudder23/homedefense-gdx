@@ -28,6 +28,11 @@ public class SpeedButton implements MouseHandler {
     }
 
     @Override
+    public int getZ() {
+        return 20;
+    }
+
+    @Override
     public boolean onClick(int x, int y) {
 
         if (isClicked(x, parent.getScreenHeight() - y)) {

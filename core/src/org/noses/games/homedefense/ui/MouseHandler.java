@@ -2,6 +2,8 @@ package org.noses.games.homedefense.ui;
 
 public interface MouseHandler {
 
+    public int getZ();
+
     public boolean onClick(int x, int y);
 
     public boolean onRightClick(int x, int y);

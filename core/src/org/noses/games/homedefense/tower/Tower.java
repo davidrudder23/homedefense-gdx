@@ -163,6 +163,11 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
     }
 
     @Override
+    public int getZ() {
+        return 5;
+    }
+
+    @Override
     public boolean onRightClick(int x, int y) {
         return false;
     }

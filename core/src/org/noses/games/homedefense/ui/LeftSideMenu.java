@@ -38,6 +38,16 @@ public abstract class LeftSideMenu implements MouseHandler {
         return offset + (sizeOfMenu + sizeOfPAdding) * menuNum;
     }
 
+    @Override
+    public int getZ() {
+        if (isHidden()) {
+            return 0;
+        } else {
+            return 10;
+        }
+    }
+
+
     public void renderMenu(Batch batch) {
         for (MenuItem menuItem : getMenuItems().values()) {
             Sprite sprite = menuItem.getSprite(menuItem.getX(), menuItem.getY());

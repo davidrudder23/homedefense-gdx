@@ -57,6 +57,11 @@ public class PieMenu implements MouseHandler {
     }
 
     @Override
+    public int getZ() {
+        return 10;
+    }
+
+    @Override
     public boolean onClick(int x, int y) {
         hidden = false;
         clickX = x;

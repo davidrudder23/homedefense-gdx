@@ -25,6 +25,7 @@ import org.noses.games.homedefense.ui.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -225,7 +226,16 @@ public class MapScreen extends Screen implements InputProcessor {
                 mouseHandlers.add(mouseHandler);
             }
             mouseHandlersToBeAdded.clear();
+
+            mouseHandlers.sort(new Comparator<MouseHandler>() {
+                @Override
+                public int compare(MouseHandler a, MouseHandler b) {
+                    return b.getZ()-a.getZ();
+                }
+            });
         }
+
+        System.out.println("Mouse handlers="+mouseHandlers);
 
         int x = Gdx.input.getX();
         int y = Gdx.input.getY();
