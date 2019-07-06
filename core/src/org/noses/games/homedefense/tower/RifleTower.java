@@ -36,5 +36,16 @@ public class RifleTower extends Tower {
         return 30;
     }
 
+    public static class RifleTowerUpgrader implements TowerUpgrader {
+        @Override
+        public void upgradeTower(Tower tower) {
+
+        }
+
+        @Override
+        public int getCost() {
+            return 0;
+        }
+    }
 
 }

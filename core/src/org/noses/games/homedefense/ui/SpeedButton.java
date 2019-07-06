@@ -57,6 +57,11 @@ public class SpeedButton implements MouseHandler {
                 (y >= this.y) && (y <= this.y + 32);
     }
 
+    @Override
+    public boolean mouseMoved(int x, int y) {
+        return false;
+    }
+
     public void render(Batch batch) {
         batch.draw(getIcon(parent.getSpeedMultiplier()), x, y);
     }

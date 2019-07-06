@@ -15,13 +15,13 @@ import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.*;
-import org.noses.games.homedefense.enemy.nestlaying.NestLayingEnemy;
 import org.noses.games.homedefense.enemy.nestlaying.NestLayingNest;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.tower.Tower;
+import org.noses.games.homedefense.ui.LeftSideUpgradeMenu;
 import org.noses.games.homedefense.ui.MouseHandler;
 import org.noses.games.homedefense.ui.PieMenu;
 import org.noses.games.homedefense.ui.SpeedButton;
@@ -73,7 +73,7 @@ public class MapScreen extends Screen implements InputProcessor {
     Timer.Task timer;
 
     @Getter
-    PieMenu towerChoiceMenu;
+    LeftSideUpgradeMenu towerChoiceMenu;
 
     public MapScreen(HomeDefenseGame parent, Point location) {
         this.parent = parent;
@@ -130,7 +130,7 @@ public class MapScreen extends Screen implements InputProcessor {
 
         Gdx.input.setInputProcessor(this);
 
-        towerChoiceMenu = new PieMenu(this);
+        towerChoiceMenu = new LeftSideUpgradeMenu(this);
         addClickHandler(towerChoiceMenu);
 
         timer = Timer.schedule(new Timer.Task() {
@@ -269,6 +269,9 @@ public class MapScreen extends Screen implements InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        for (MouseHandler mouseHandler : mouseHandlers) {
+            mouseHandler.mouseMoved(screenX, screenY);
+        }
         return false;
     }
 

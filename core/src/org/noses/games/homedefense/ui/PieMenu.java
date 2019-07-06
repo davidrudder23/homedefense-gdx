@@ -1,6 +1,5 @@
 package org.noses.games.homedefense.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
@@ -34,19 +33,19 @@ public class PieMenu implements MouseHandler {
         int spiteHeight = 64;
 
         PieMenuItem pieMenuItem = new PieMenuItem(parent, getX(Math.PI), getY(Math.PI), spiteWidth, spiteHeight, "rifle", new RifleTower.RifleTowerFactor());
-        pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
+        pieMenuItems.put(pieMenuItem.getSpriteName(), pieMenuItem);
 
         pieMenuItem = new PieMenuItem(parent, getX(Math.PI*.75), getY(Math.PI*.75), spiteWidth, spiteHeight, "laser", new LaserTower.LaserTowerFactory());
-        pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
+        pieMenuItems.put(pieMenuItem.getSpriteName(), pieMenuItem);
 
         pieMenuItem = new PieMenuItem(parent, getX(Math.PI/2), getY(Math.PI/2), spiteWidth, spiteHeight, "bomber", new BomberTower.BomberTowerFactory());
-        pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
+        pieMenuItems.put(pieMenuItem.getSpriteName(), pieMenuItem);
 
         pieMenuItem = new PieMenuItem(parent, getX(Math.PI*.25), getY(Math.PI*.25), spiteWidth, spiteHeight, "factory", new FactoryTower.FactoryTowerFactory());
-        pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
+        pieMenuItems.put(pieMenuItem.getSpriteName(), pieMenuItem);
 
         pieMenuItem = new PieMenuItem(parent, getX(0), getY(0), spiteWidth, spiteHeight, "broadcast", new BroadcastTower.BroadcastTowerFactory());
-        pieMenuItems.put(pieMenuItem.getTowerName(), pieMenuItem);
+        pieMenuItems.put(pieMenuItem.getSpriteName(), pieMenuItem);
     }
 
     private int getX(double radians) {
@@ -85,7 +84,7 @@ public class PieMenu implements MouseHandler {
         for (PieMenuItem pieMenuItem : pieMenuItems.values()) {
             if (pieMenuItem.mouseWithin(clickX, clickY, dragX, dragY)) {
 
-                if (pieMenuItem.isAllowedToBuild(clickX, clickY)) {
+                if (pieMenuItem.isAllowedToSelect(clickX, clickY)) {
                     parent.addTower(pieMenuItem.getTower(parent.convertXToLong(clickX), parent.convertYToLat(parent.getScreenHeight() - clickY)));
                 }
             }
@@ -93,9 +92,14 @@ public class PieMenu implements MouseHandler {
         return true;
     }
 
+    @Override
+    public boolean mouseMoved(int x, int y) {
+        return false;
+    }
+
     public void renderMenu(Batch batch) {
         for (PieMenuItem pieMenuItem : pieMenuItems.values()) {
-            Sprite sprite = pieMenuItem.getSprite(clickX, clickY, dragX, dragY);
+            Sprite sprite = pieMenuItem.getSprite(clickX, clickY);
             sprite.setScale((float)((parent.getScreenWidth()*0.08)/sprite.getWidth()));
             sprite.draw(batch);
         }

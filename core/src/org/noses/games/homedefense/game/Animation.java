@@ -50,6 +50,7 @@ public class Animation implements ClockTickHandler {
         }
 
         frameNumber++;
+
         if (frameNumber >= animation[0].length) {
             if (loop) {
                 frameNumber = 0;

@@ -2,13 +2,15 @@ package org.noses.games.homedefense.tower;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Data;
 import org.noses.games.homedefense.game.*;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.ui.MouseHandler;
 
 @Data
-public abstract class Tower implements ClockTickHandler, PhysicalObject {
+public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHandler {
     double bulletSpeed;
     double delayBetweenShots;
 
@@ -35,7 +37,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
 
         killed = false;
 
-        animation = new Animation(parent, "tower/" + towerName + ".png", 199, 199, scale, true);
+        animation = new Animation(parent, "tower/" + towerName + "_lvl_1.png", 199, 199, scale, true);
         parent.addClockTickHandler(animation);
 
         location = new Point(latitude, longitude);
@@ -94,6 +96,31 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
     @Override
     public boolean isKilled() {
         return killed;
+    }
+
+    @Override
+    public boolean onClick(int x, int y) {
+        return false;
+    }
+
+    @Override
+    public boolean onRightClick(int x, int y) {
+        return false;
+    }
+
+    @Override
+    public boolean onClickUp() {
+        return false;
+    }
+
+    @Override
+    public boolean onMouseDragged(int x, int y) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int x, int y) {
+        return false;
     }
 
     public TextureRegion getFrameTextureRegion() {
