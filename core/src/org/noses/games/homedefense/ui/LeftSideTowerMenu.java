@@ -4,35 +4,20 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
+import lombok.Setter;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.tower.*;
 
 import java.util.HashMap;
 
-public class LeftSideTowerMenu implements MouseHandler {
+public class LeftSideTowerMenu extends LeftSideMenu {
     private int clickX;
     private int clickY;
 
-    private int currentX;
-    private int currentY;
-
-    HashMap<String, LeftSideTowerMenuItem> menuItems; // normal, glow, grey, greyglow
-
-    MapScreen parent;
-
-
-    @Getter
-    boolean hidden;
-
     Sprite menuBackground;
 
-
     public LeftSideTowerMenu(MapScreen parent) {
-        this.parent = parent;
-
-        Texture backgroundTexture = new Texture("menuBackground.png");
-
-        menuBackground = new Sprite(backgroundTexture);
+        super(parent);
 
         menuItems = new HashMap<>();
 
@@ -55,17 +40,6 @@ public class LeftSideTowerMenu implements MouseHandler {
         menuItems.put(menuItem.getSpriteName(), menuItem);
     }
 
-    private int getX(int menuNum) {
-        return 50;
-    }
-
-    private int getY(int menuNum) {
-        int sizeOfMenu = parent.getScreenHeight()/10;
-        int sizeOfPAdding = parent.getScreenHeight()/50;
-        int offset = 100;
-        return offset + (sizeOfMenu+sizeOfPAdding)*menuNum;
-    }
-
     @Override
     public boolean onClick(int x, int y) {
 
@@ -75,51 +49,17 @@ public class LeftSideTowerMenu implements MouseHandler {
         } else {
             for (LeftSideTowerMenuItem menuItem : menuItems.values()) {
                 if (menuItem.isMouseWithin()) {
-                    parent.addTower(menuItem.getTower(parent.convertXToLong(clickX), parent.convertYToLat(parent.getScreenHeight() - clickY)));
+                    Tower tower = menuItem.getTower(parent.convertXToLong(clickX), parent.convertYToLat(parent.getScreenHeight() - clickY));
+                    parent.addClickHandler(tower);
+                    parent.addTower(tower);
                 }
             }
         }
-        
+
         hidden = !hidden;
 
-
         return true;
     }
 
-    @Override
-    public boolean onRightClick(int x, int y) {
-        hidden = false;
 
-        return true;
-    }
-
-    @Override
-    public boolean onClickUp() {
-        return true;
-    }
-
-    @Override
-    public boolean mouseMoved(int x, int y) {
-        currentX = x;
-        currentY = y;
-
-        for (MenuItem menuItem: menuItems.values()) {
-            menuItem.setMouseWithin(menuItem.mouseWithin(0,0, x, y));
-        }
-        return true;
-    }
-
-    public void renderMenu(Batch batch) {
-
-        for (LeftSideTowerMenuItem menuItem : menuItems.values()) {
-            Sprite sprite = menuItem.getSprite(menuItem.getX(), menuItem.getY());
-            sprite.setScale((float)((parent.getScreenWidth()*0.08)/sprite.getWidth()));
-            sprite.draw(batch);
-        }
-    }
-
-    @Override
-    public boolean onMouseDragged(int x, int y) {
-        return true;
-    }
 }

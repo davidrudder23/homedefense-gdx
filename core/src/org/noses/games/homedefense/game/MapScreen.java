@@ -516,37 +516,45 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public boolean isInsideMap(Point point) {
 
-        if (map.getNorth() > map.getSouth()) {
-            if (point.getLatitude() > map.getNorth()) {
+        return isPointWithinBounds(point, new Point (map.getNorth(), map.getWest()),
+                new Point (map.getSouth(), map.getEast()));
+    }
+
+    public boolean isPointWithinBounds (Point point, Point upperLeft, Point lowerRight) {
+
+        if (upperLeft.getLatitude() > lowerRight.getLatitude()) {
+            if (point.getLatitude() > upperLeft.getLatitude()) {
                 return false;
             }
-            if (point.getLatitude() < map.getSouth()) {
+            if (point.getLatitude() < lowerRight.getLatitude()) {
                 return false;
             }
         } else {
-            if (point.getLatitude() > map.getSouth()) {
+            if (point.getLatitude() > lowerRight.getLatitude()) {
                 return false;
             }
-            if (point.getLatitude() < map.getNorth()) {
+            if (point.getLatitude() < upperLeft.getLatitude()) {
                 return false;
             }
         }
 
-        if (map.getEast() > map.getWest()) {
-            if (point.getLongitude() > map.getEast()) {
+        if (upperLeft.getLongitude() > lowerRight.getLongitude()) {
+            if (point.getLongitude() > upperLeft.getLongitude()) {
                 return false;
             }
-            if (point.getLongitude() < map.getWest()) {
+            if (point.getLongitude() < lowerRight.getLongitude()) {
                 return false;
             }
         } else {
-            if (point.getLongitude() < map.getEast()) {
+            if (point.getLongitude() > lowerRight.getLongitude()) {
                 return false;
             }
-            if (point.getLongitude() > map.getWest()) {
+            if (point.getLongitude() < upperLeft.getLongitude()) {
                 return false;
             }
         }
+
+        System.out.println ("Is "+point+" within "+upperLeft+" and "+lowerRight+"? TRUE");
         return true;
     }
 
@@ -639,6 +647,14 @@ public class MapScreen extends Screen implements InputProcessor {
         }
 
         batch.end();
+    }
+
+    public void hideMenus() {
+        towerChoiceMenu.setHidden(true);
+    }
+
+    public void showUpgradeMenu(Tower tower) {
+
     }
 
     public double convertXToLong(int x) {

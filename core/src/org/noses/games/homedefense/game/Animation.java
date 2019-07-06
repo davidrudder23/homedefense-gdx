@@ -20,9 +20,6 @@ public class Animation implements ClockTickHandler {
     public Animation(MapScreen parent, String spriteFilename, int tileWidth, int tileHeight, double scale, boolean loop) {
         this.parent = parent;
 
-        this.tileWidth = tileWidth;
-        this.tileHeight = tileHeight;
-
         killed = false;
         this.loop = loop;
         this.scale = scale;
@@ -35,6 +32,10 @@ public class Animation implements ClockTickHandler {
         if (tileWidth <= 0) {
             tileWidth = avatarAnimationSheet.getWidth();
         }
+
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
+
         animation = TextureRegion.split(avatarAnimationSheet, tileWidth, tileHeight);
     }
 

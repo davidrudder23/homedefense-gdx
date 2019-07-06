@@ -7,10 +7,11 @@ import lombok.Getter;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.tower.NormalTowerUpgrader;
 import org.noses.games.homedefense.tower.RifleTower;
+import org.noses.games.homedefense.tower.Tower;
 
 import java.util.HashMap;
 
-public class LeftSideUpgradeMenu implements MouseHandler {
+public class LeftSideUpgradeMenu extends LeftSideMenu {
     private int clickX;
     private int clickY;
 
@@ -19,23 +20,12 @@ public class LeftSideUpgradeMenu implements MouseHandler {
 
     HashMap<String, LeftSideUpgradeMenuItem> menuItems; // normal, glow, grey, greyglow
 
-    MapScreen parent;
+    private Tower towerBeingUpgraded;
 
+    public LeftSideUpgradeMenu(MapScreen parent, Tower tower) {
+        super(parent);
 
-    @Getter
-    boolean hidden;
-
-    Sprite menuBackground;
-
-
-    public LeftSideUpgradeMenu(MapScreen parent) {
-        this.parent = parent;
-
-        Texture backgroundTexture = new Texture("menuBackground.png");
-
-        menuBackground = new Sprite(backgroundTexture);
-
-        menuItems = new HashMap<>();
+        this.towerBeingUpgraded = tower;
 
         int spiteWidth = 64;
         int spiteHeight = 64;
@@ -56,17 +46,6 @@ public class LeftSideUpgradeMenu implements MouseHandler {
         menuItems.put(menuItem.getSpriteName(), menuItem);
     }
 
-    private int getX(int menuNum) {
-        return 50;
-    }
-
-    private int getY(int menuNum) {
-        int sizeOfMenu = parent.getScreenHeight()/10;
-        int sizeOfPAdding = parent.getScreenHeight()/50;
-        int offset = 100;
-        return offset + (sizeOfMenu+sizeOfPAdding)*menuNum;
-    }
-
     @Override
     public boolean onClick(int x, int y) {
         clickX = x;
@@ -76,47 +55,11 @@ public class LeftSideUpgradeMenu implements MouseHandler {
 
         for (LeftSideUpgradeMenuItem menuItem: menuItems.values()) {
             if (menuItem.isMouseWithin()) {
-                //menuItem.upgradeTower(sfvc);
+                menuItem.upgradeTower(towerBeingUpgraded);
             }
         }
 
         return true;
     }
 
-    @Override
-    public boolean onRightClick(int x, int y) {
-        hidden = false;
-
-        return true;
-    }
-
-    @Override
-    public boolean onClickUp() {
-        return true;
-    }
-
-    @Override
-    public boolean mouseMoved(int x, int y) {
-        currentX = x;
-        currentY = y;
-
-        for (MenuItem menuItem: menuItems.values()) {
-            menuItem.setMouseWithin(menuItem.mouseWithin(0,0, x, y));
-        }
-        return true;
-    }
-
-    public void renderMenu(Batch batch) {
-
-        for (LeftSideUpgradeMenuItem menuItem : menuItems.values()) {
-            Sprite sprite = menuItem.getSprite(menuItem.getX(), menuItem.getY());
-            sprite.setScale((float)((parent.getScreenWidth()*0.08)/sprite.getWidth()));
-            sprite.draw(batch);
-        }
-    }
-
-    @Override
-    public boolean onMouseDragged(int x, int y) {
-        return true;
-    }
 }

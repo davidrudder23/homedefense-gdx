@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Data;
 import org.noses.games.homedefense.game.*;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.ui.LeftSideTowerMenu;
 import org.noses.games.homedefense.ui.MouseHandler;
 
 import java.util.ArrayList;
@@ -63,6 +64,8 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
     public void upgradeTower() {
         level++;
         level %= animations.size();
+
+        System.out.println("Tower "+getTowerName()+" is upgraded to "+level);
     }
 
     public double getLatitude() {
@@ -80,13 +83,19 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
     }
 
     public void render(Batch batch) {
+        Sprite sprite = getSprite();
+        sprite.draw(batch);
+
+        shooter.render(batch);
+    }
+
+    private Sprite getSprite() {
         Sprite sprite = new Sprite(getFrameTextureRegion());
         sprite.setScale(50 / sprite.getWidth());
         sprite.setCenterX(parent.convertLongToX(getLongitude()));
         sprite.setCenterY(parent.convertLatToY(getLatitude()));
-        sprite.draw(batch);
 
-        shooter.render(batch);
+        return sprite;
     }
 
     public abstract double minDistanceFromOtherTower();
@@ -115,8 +124,41 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
         return killed;
     }
 
+    private boolean isWithinBounds(int x, int y) {
+
+        Sprite sprite = getSprite();
+        int width = (int)(sprite.getWidth()*sprite.getScaleX());
+        int height = (int)(sprite.getHeight()*sprite.getScaleY());
+
+        int upperLeftX = parent.convertLongToX(getLongitude()) - (int)(width/2);
+        int upperLeftY = parent.convertLatToY(getLatitude()) - (int)(height/2);
+
+        int lowerRightX = upperLeftX+width;
+        int lowerRightY = upperLeftY+height;
+
+
+        if (parent.isPointWithinBounds(new Point(x, parent.getScreenHeight() - y),
+                new Point (upperLeftX, upperLeftY),
+                new Point(lowerRightX, lowerRightY))) {
+            return  true;
+        }
+
+        return false;
+    }
+
     @Override
     public boolean onClick(int x, int y) {
+
+        if (!isWithinBounds(x, y)) {
+            System.out.println(towerName+" not was clicked");
+            return true;
+        }
+
+        System.out.println(towerName+" was clicked");
+        parent.hideMenus();
+
+        parent.showUpgradeMenu(this);
+
         return false;
     }
 
