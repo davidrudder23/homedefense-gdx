@@ -36,5 +36,4 @@ public class RifleTower extends Tower {
         return 30;
     }
 
-
 }

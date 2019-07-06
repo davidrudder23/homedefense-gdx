@@ -15,19 +15,17 @@ import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.*;
-import org.noses.games.homedefense.enemy.nestlaying.NestLayingEnemy;
 import org.noses.games.homedefense.enemy.nestlaying.NestLayingNest;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.tower.Tower;
-import org.noses.games.homedefense.ui.MouseHandler;
-import org.noses.games.homedefense.ui.PieMenu;
-import org.noses.games.homedefense.ui.SpeedButton;
+import org.noses.games.homedefense.ui.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,7 +71,10 @@ public class MapScreen extends Screen implements InputProcessor {
     Timer.Task timer;
 
     @Getter
-    PieMenu towerChoiceMenu;
+    LeftSideTowerMenu towerChoiceMenu;
+
+    @Getter
+    LeftSideUpgradeMenu upgradeMenu;
 
     public MapScreen(HomeDefenseGame parent, Point location) {
         this.parent = parent;
@@ -130,7 +131,7 @@ public class MapScreen extends Screen implements InputProcessor {
 
         Gdx.input.setInputProcessor(this);
 
-        towerChoiceMenu = new PieMenu(this);
+        towerChoiceMenu = new LeftSideTowerMenu(this);
         addClickHandler(towerChoiceMenu);
 
         timer = Timer.schedule(new Timer.Task() {
@@ -160,6 +161,12 @@ public class MapScreen extends Screen implements InputProcessor {
     public void addClickHandler(MouseHandler mouseHandler) {
         synchronized (mouseHandlers) {
             mouseHandlersToBeAdded.add(mouseHandler);
+        }
+    }
+
+    public void removeClickHandler(MouseHandler mouseHandler) {
+        synchronized (mouseHandlers) {
+            mouseHandlersToBeAdded.remove(mouseHandler);
         }
     }
 
@@ -219,6 +226,13 @@ public class MapScreen extends Screen implements InputProcessor {
                 mouseHandlers.add(mouseHandler);
             }
             mouseHandlersToBeAdded.clear();
+
+            mouseHandlers.sort(new Comparator<MouseHandler>() {
+                @Override
+                public int compare(MouseHandler a, MouseHandler b) {
+                    return b.getZ()-a.getZ();
+                }
+            });
         }
 
         int x = Gdx.input.getX();
@@ -269,6 +283,9 @@ public class MapScreen extends Screen implements InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        for (MouseHandler mouseHandler : mouseHandlers) {
+            mouseHandler.mouseMoved(screenX, screenY);
+        }
         return false;
     }
 
@@ -516,37 +533,45 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public boolean isInsideMap(Point point) {
 
-        if (map.getNorth() > map.getSouth()) {
-            if (point.getLatitude() > map.getNorth()) {
+        return isPointWithinBounds(point, new Point (map.getNorth(), map.getWest()),
+                new Point (map.getSouth(), map.getEast()));
+    }
+
+    public boolean isPointWithinBounds (Point point, Point upperLeft, Point lowerRight) {
+
+        if (upperLeft.getLatitude() > lowerRight.getLatitude()) {
+            if (point.getLatitude() > upperLeft.getLatitude()) {
                 return false;
             }
-            if (point.getLatitude() < map.getSouth()) {
+            if (point.getLatitude() < lowerRight.getLatitude()) {
                 return false;
             }
         } else {
-            if (point.getLatitude() > map.getSouth()) {
+            if (point.getLatitude() > lowerRight.getLatitude()) {
                 return false;
             }
-            if (point.getLatitude() < map.getNorth()) {
+            if (point.getLatitude() < upperLeft.getLatitude()) {
                 return false;
             }
         }
 
-        if (map.getEast() > map.getWest()) {
-            if (point.getLongitude() > map.getEast()) {
+        if (upperLeft.getLongitude() > lowerRight.getLongitude()) {
+            if (point.getLongitude() > upperLeft.getLongitude()) {
                 return false;
             }
-            if (point.getLongitude() < map.getWest()) {
+            if (point.getLongitude() < lowerRight.getLongitude()) {
                 return false;
             }
         } else {
-            if (point.getLongitude() < map.getEast()) {
+            if (point.getLongitude() > lowerRight.getLongitude()) {
                 return false;
             }
-            if (point.getLongitude() > map.getWest()) {
+            if (point.getLongitude() < upperLeft.getLongitude()) {
                 return false;
             }
         }
+
+        System.out.println ("Is "+point+" within "+upperLeft+" and "+lowerRight+"? TRUE");
         return true;
     }
 
@@ -638,7 +663,33 @@ public class MapScreen extends Screen implements InputProcessor {
             towerChoiceMenu.renderMenu(batch);
         }
 
+        if ((upgradeMenu != null) && (!upgradeMenu.isHidden())) {
+            upgradeMenu.renderMenu(batch);
+        }
+
         batch.end();
+    }
+
+    public void hideMenus() {
+        towerChoiceMenu.setHidden(true);
+        hideUpgradeMenu();
+    }
+
+    public void showUpgradeMenu(Tower tower) {
+
+        upgradeMenu = new LeftSideUpgradeMenu(this, tower);
+        addClickHandler(upgradeMenu);
+        upgradeMenu.setHidden(false);
+    }
+
+    public void hideUpgradeMenu() {
+
+        if (upgradeMenu == null) {
+            return;
+        }
+
+        removeClickHandler(upgradeMenu);
+        upgradeMenu = null;
     }
 
     public double convertXToLong(int x) {

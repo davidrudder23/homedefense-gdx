@@ -2,13 +2,19 @@ package org.noses.games.homedefense.tower;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Data;
 import org.noses.games.homedefense.game.*;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.ui.LeftSideTowerMenu;
+import org.noses.games.homedefense.ui.MouseHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
-public abstract class Tower implements ClockTickHandler, PhysicalObject {
+public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHandler {
     double bulletSpeed;
     double delayBetweenShots;
 
@@ -16,7 +22,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
 
     MapScreen parent;
     String towerName;
-    Animation animation;
+    List<Animation> animations;
 
     double timeSinceLastFired = 0;
 
@@ -29,14 +35,23 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
 
     int health;
 
+    int level;
+
     public Tower(MapScreen parent, String towerName, double longitude, double latitude, double scale, Shooter shooter) {
         this.towerName = towerName;
         this.parent = parent;
 
+        level = 0;
+
         killed = false;
 
-        animation = new Animation(parent, "tower/" + towerName + ".png", 199, 199, scale, true);
-        parent.addClockTickHandler(animation);
+        animations = new ArrayList<>();
+
+        for (int i = 1; i <= 4;i++) {
+            Animation animation = new Animation(parent, "tower/" + towerName + "_lvl_"+i+".png", 0, 0, scale, true);
+            animations.add(animation);
+            parent.addClockTickHandler(animation);
+        }
 
         location = new Point(latitude, longitude);
 
@@ -44,6 +59,13 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
         this.shooter = shooter;
 
         health = getStartingHealth();
+    }
+
+    public void upgradeTower() {
+        level++;
+        level %= animations.size();
+
+        System.out.println("Tower "+getTowerName()+" is upgraded to "+level);
     }
 
     public double getLatitude() {
@@ -61,13 +83,19 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
     }
 
     public void render(Batch batch) {
-        Sprite sprite = new Sprite(getFrameTextureRegion());
-        sprite.setScale(50/sprite.getWidth());
-        sprite.setCenterX(parent.convertLongToX(getLongitude()));
-        sprite.setCenterY(parent.convertLatToY(getLatitude()));
+        Sprite sprite = getSprite();
         sprite.draw(batch);
 
         shooter.render(batch);
+    }
+
+    private Sprite getSprite() {
+        Sprite sprite = new Sprite(getFrameTextureRegion());
+        sprite.setScale(50 / sprite.getWidth());
+        sprite.setCenterX(parent.convertLongToX(getLongitude()));
+        sprite.setCenterY(parent.convertLatToY(getLatitude()));
+
+        return sprite;
     }
 
     public abstract double minDistanceFromOtherTower();
@@ -79,7 +107,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
     public void damage(int points) {
         health -= points;
 
-        System.out.println(this+" was damaged with "+points+" now at "+health);
+        System.out.println(this + " was damaged with " + points + " now at " + health);
 
         if (health <= 0) {
             kill();
@@ -96,8 +124,71 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject {
         return killed;
     }
 
+    private boolean isWithinBounds(int x, int y) {
+
+        Sprite sprite = getSprite();
+        int width = (int)(sprite.getWidth()*sprite.getScaleX());
+        int height = (int)(sprite.getHeight()*sprite.getScaleY());
+
+        int upperLeftX = parent.convertLongToX(getLongitude()) - (int)(width/2);
+        int upperLeftY = parent.convertLatToY(getLatitude()) - (int)(height/2);
+
+        int lowerRightX = upperLeftX+width;
+        int lowerRightY = upperLeftY+height;
+
+
+        if (parent.isPointWithinBounds(new Point(x, parent.getScreenHeight() - y),
+                new Point (upperLeftX, upperLeftY),
+                new Point(lowerRightX, lowerRightY))) {
+            return  true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onClick(int x, int y) {
+
+        if (!isWithinBounds(x, y)) {
+            System.out.println(towerName+" not was clicked");
+            return true;
+        }
+
+        System.out.println(towerName+" was clicked");
+        parent.hideMenus();
+
+        parent.showUpgradeMenu(this);
+
+        return false;
+    }
+
+    @Override
+    public int getZ() {
+        return 5;
+    }
+
+    @Override
+    public boolean onRightClick(int x, int y) {
+        return false;
+    }
+
+    @Override
+    public boolean onClickUp() {
+        return false;
+    }
+
+    @Override
+    public boolean onMouseDragged(int x, int y) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int x, int y) {
+        return false;
+    }
+
     public TextureRegion getFrameTextureRegion() {
-        return animation.getFrameTextureRegion();
+        return animations.get(level).getFrameTextureRegion();
     }
 
 }

@@ -28,6 +28,11 @@ public class SpeedButton implements MouseHandler {
     }
 
     @Override
+    public int getZ() {
+        return 20;
+    }
+
+    @Override
     public boolean onClick(int x, int y) {
 
         if (isClicked(x, parent.getScreenHeight() - y)) {
@@ -55,6 +60,11 @@ public class SpeedButton implements MouseHandler {
     public boolean isClicked(int x, int y) {
         return (x >= this.x) && (x <= this.x + 32) &&
                 (y >= this.y) && (y <= this.y + 32);
+    }
+
+    @Override
+    public boolean mouseMoved(int x, int y) {
+        return false;
     }
 
     public void render(Batch batch) {

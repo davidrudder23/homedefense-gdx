@@ -35,11 +35,11 @@ public class GroundEnemy extends Enemy {
     private double speedMultiplier;
 
     public GroundEnemy(MapScreen parent, PathStep pathStep) {
-        this(parent, pathStep, "line0.png", 10, 32, 32, 10);
+        this(parent, pathStep, "line0.png", 10, 96, 96, 10);
     }
 
     protected GroundEnemy(MapScreen parent, PathStep pathStep, String spriteFilename, double speedMultiplier, int tileWidth, int tileHeight, int startingHealth) {
-        super(parent, spriteFilename, parent.loadSound("normal_hit.mp3"), tileWidth, tileHeight, 0.02, startingHealth);
+        super(parent, spriteFilename, parent.loadSound("normal_hit.mp3"), tileWidth, tileHeight, 0.05, startingHealth);
 
         progressAlong = 0;
         direction = 1;
@@ -128,6 +128,7 @@ public class GroundEnemy extends Enemy {
     }
 
     public void clockTick(double delta) {
+        super.clockTick(delta);
         crossesIntersection(delta);
         checkForCollision();
 
