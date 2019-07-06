@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
 import lombok.Setter;
 import org.noses.games.homedefense.game.MapScreen;
+import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.tower.*;
 
 import java.util.HashMap;
@@ -53,13 +54,20 @@ public class LeftSideTowerMenu extends LeftSideMenu {
     }
 
     @Override
+    public int getZ() {
+        return 1;
+    }
+
+    @Override
     public boolean onClick(int x, int y) {
+        System.out.println("Left tower menu Onclick="+new Point(x,y));
         if (hidden) {
             parent.hideMenus();
 
             clickX = x;
             clickY = y;
         } else {
+            mouseMoved(x,y);
             for (LeftSideTowerMenuItem menuItem : menuItems.values()) {
                 if (menuItem.isMouseWithin()) {
                     Tower tower = menuItem.getTower(parent.convertXToLong(clickX), parent.convertYToLat(parent.getScreenHeight() - clickY));

@@ -55,6 +55,7 @@ public class LeftSideUpgradeMenu extends LeftSideMenu {
         hidden = !hidden;
 
         for (LeftSideUpgradeMenuItem menuItem: menuItems.values()) {
+            mouseMoved(x,y);
             if (menuItem.isMouseWithin()) {
                 menuItem.upgradeTower(towerBeingUpgraded);
                 return false;

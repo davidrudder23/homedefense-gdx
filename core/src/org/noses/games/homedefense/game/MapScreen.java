@@ -235,8 +235,6 @@ public class MapScreen extends Screen implements InputProcessor {
             });
         }
 
-        System.out.println("Mouse handlers="+mouseHandlers);
-
         int x = Gdx.input.getX();
         int y = Gdx.input.getY();
 
