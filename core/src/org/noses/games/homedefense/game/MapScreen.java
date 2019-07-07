@@ -240,8 +240,6 @@ public class MapScreen extends Screen implements InputProcessor {
 
         if (Gdx.input.isButtonPressed(0)) {
 
-            System.out.println ("Mouse handlers="+mouseHandlers);
-
             for (MouseHandler mouseHandler : mouseHandlers) {
                 if (!mouseHandler.onClick(x, y)) {
                     break;

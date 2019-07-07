@@ -49,15 +49,6 @@ public class LeftSideUpgradeMenu extends LeftSideMenu {
 
     @Override
     public boolean onClick(int x, int y) {
-        for (LeftSideUpgradeMenuItem menuItem: menuItems.values()) {
-            mouseMoved(x,y);
-            if (menuItem.isMouseWithin()) {
-                parent.hideMenus();
-
-                return false;
-            }
-        }
-
         return true;
     }
 

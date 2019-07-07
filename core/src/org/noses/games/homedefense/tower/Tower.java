@@ -155,6 +155,21 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
     @Override
     public boolean onClick(int x, int y) {
 
+        return true;
+    }
+
+    @Override
+    public int getZ() {
+        return 5;
+    }
+
+    @Override
+    public boolean onRightClick(int x, int y) {
+        return false;
+    }
+
+    @Override
+    public boolean onClickUp(int x, int y) {
         if (!isWithinBounds(x, y)) {
             System.out.println(towerName + " not was clicked");
             return true;
@@ -170,21 +185,6 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
         parent.showUpgradeMenu(this);
 
         return false;
-    }
-
-    @Override
-    public int getZ() {
-        return 5;
-    }
-
-    @Override
-    public boolean onRightClick(int x, int y) {
-        return false;
-    }
-
-    @Override
-    public boolean onClickUp(int x, int y) {
-        return onClick(x, y);
     }
 
     @Override

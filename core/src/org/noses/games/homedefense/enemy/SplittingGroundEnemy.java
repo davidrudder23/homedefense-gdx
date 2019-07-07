@@ -12,7 +12,7 @@ import java.util.Optional;
 public class SplittingGroundEnemy extends GroundEnemy {
 
     public SplittingGroundEnemy(MapScreen parent, PathStep pathStep) {
-        super(parent, pathStep, "line128.png", 10, 32, 32, 20);
+        super(parent, pathStep, "enemy/splitting.png", 10, 96, 96, 20);
     }
 
     @Override

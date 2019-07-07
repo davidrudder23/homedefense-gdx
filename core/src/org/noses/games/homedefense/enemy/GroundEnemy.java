@@ -35,7 +35,7 @@ public class GroundEnemy extends Enemy {
     private double speedMultiplier;
 
     public GroundEnemy(MapScreen parent, PathStep pathStep) {
-        this(parent, pathStep, "line0.png", 10, 96, 96, 10);
+        this(parent, pathStep, "enemy/ground.png", 10, 96, 96, 10);
     }
 
     protected GroundEnemy(MapScreen parent, PathStep pathStep, String spriteFilename, double speedMultiplier, int tileWidth, int tileHeight, int startingHealth) {

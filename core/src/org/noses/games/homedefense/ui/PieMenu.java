@@ -63,17 +63,6 @@ public class PieMenu implements MouseHandler {
 
     @Override
     public boolean onClick(int x, int y) {
-        hidden = false;
-        clickX = x;
-        clickY = y;
-
-        dragX = x;
-        dragY = y;
-
-        for (PieMenuItem pieMenuItem: pieMenuItems.values()) {
-            pieMenuItem.setCloseToOthers(pieMenuItem.closeToOtherTowers(x, y));
-        }
-
         return true;
     }
 
@@ -85,6 +74,10 @@ public class PieMenu implements MouseHandler {
     @Override
     public boolean onClickUp(int x, int y) {
         hidden = true;
+
+        for (PieMenuItem pieMenuItem: pieMenuItems.values()) {
+            pieMenuItem.setCloseToOthers(pieMenuItem.closeToOtherTowers(x, y));
+        }
 
         for (PieMenuItem pieMenuItem : pieMenuItems.values()) {
             if (pieMenuItem.mouseWithin(clickX, clickY, dragX, dragY)) {

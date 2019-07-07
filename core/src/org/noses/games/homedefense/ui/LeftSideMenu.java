@@ -65,7 +65,7 @@ public abstract class LeftSideMenu implements MouseHandler {
 
     @Override
     public boolean onClickUp(int x, int y) {
-        return onClick(x,y);
+        return true;
     }
 
     @Override
