@@ -2,8 +2,10 @@ package org.noses.games.homedefense.ui;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import org.noses.games.homedefense.game.MapScreen;
+import org.noses.games.homedefense.geometry.Point;
 
 public class SpeedButton implements MouseHandler {
 
@@ -34,11 +36,6 @@ public class SpeedButton implements MouseHandler {
 
     @Override
     public boolean onClick(int x, int y) {
-
-        if (isClicked(x, parent.getScreenHeight() - y)) {
-            parent.speedUp();
-            return false;
-        }
         return true;
     }
 
@@ -48,7 +45,11 @@ public class SpeedButton implements MouseHandler {
     }
 
     @Override
-    public boolean onClickUp() {
+    public boolean onClickUp(int x, int y) {
+        if (isWithinBounds(x, parent.getScreenHeight() - y)) {
+            parent.speedUp();
+            return false;
+        }
         return true;
     }
 
@@ -57,9 +58,29 @@ public class SpeedButton implements MouseHandler {
         return true;
     }
 
-    public boolean isClicked(int x, int y) {
-        return (x >= this.x) && (x <= this.x + 32) &&
-                (y >= this.y) && (y <= this.y + 32);
+    private boolean isWithinBounds(int clickX, int clickY) {
+
+        Sprite sprite = getSprite();
+        int width = (int) (sprite.getWidth() * sprite.getScaleX());
+        int height = (int) (sprite.getHeight() * sprite.getScaleY());
+
+        int upperLeftX = x- (width / 2);
+        int upperLeftY = y - (height / 2);
+
+        int lowerRightX = upperLeftX + width;
+        int lowerRightY = upperLeftY + height;
+
+        if (parent.isPointWithinBounds(new Point(clickX, clickY),
+                new Point(upperLeftX, upperLeftY),
+                new Point(lowerRightX, lowerRightY))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public double getScale() {
+        return 0.03;
     }
 
     @Override
@@ -68,6 +89,15 @@ public class SpeedButton implements MouseHandler {
     }
 
     public void render(Batch batch) {
-        batch.draw(getIcon(parent.getSpeedMultiplier()), x, y);
+        Sprite sprite = getSprite();
+        sprite.draw(batch);
+    }
+
+    private Sprite getSprite() {
+        Sprite sprite = new Sprite(getIcon(parent.getSpeedMultiplier()));
+        sprite.setCenterX(x);
+        sprite.setCenterY(y);
+        sprite.setScale((float)((parent.getScreenWidth()*getScale())/sprite.getWidth()));
+        return sprite;
     }
 }

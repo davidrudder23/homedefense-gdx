@@ -7,7 +7,7 @@ public class SplittingEnemyNest extends EnemyNest {
     SplittingGroundEnemy.SplittingGroundEnemyBuilder builder;
 
     public SplittingEnemyNest(MapScreen parent, double delayBeforeStart, double longitude, double latitude) {
-        super (parent, "mind_probe", delayBeforeStart, longitude, latitude);
+        super (parent, "splitting", delayBeforeStart, longitude, latitude);
     }
 
     @Override

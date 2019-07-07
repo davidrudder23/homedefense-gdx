@@ -45,6 +45,7 @@ public class LeftSideTowerMenuItem extends MenuItem {
     }
 
     public Tower getTower(double longitude,double latitude) {
+        parent.subtractMoney(towerFactory.getCost());
         return towerFactory.createTower(parent, longitude, latitude);
     }
 

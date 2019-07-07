@@ -7,7 +7,7 @@ import org.noses.games.homedefense.game.MapScreen;
 public class ArmoredEnemyNest extends EnemyNest {
 
     public ArmoredEnemyNest(MapScreen parent, double delayBeforeStart, double longitude, double latitude) {
-        super (parent, "hataak", delayBeforeStart, longitude, latitude);
+        super (parent, "armored", delayBeforeStart, longitude, latitude);
     }
 
     @Override

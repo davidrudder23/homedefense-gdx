@@ -8,7 +8,7 @@ public interface MouseHandler {
 
     public boolean onRightClick(int x, int y);
 
-    public boolean onClickUp();
+    public boolean onClickUp(int x, int y);
 
     public boolean onMouseDragged(int x, int y);
 

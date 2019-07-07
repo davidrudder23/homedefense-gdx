@@ -5,10 +5,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.noses.games.homedefense.HomeDefenseGame;
@@ -63,7 +65,7 @@ public class MainScreen extends Screen {
 
         startButton = new TextButton("Start", skin);
 
-        startButton.setX((float)(stage.getWidth()*.6));
+        startButton.setX((float)(stage.getWidth()*.8));
         startButton.setY((float)(stage.getHeight()*.1));
         startButton.setScale((float)(parent.getScreenWidth()*.5)/startButton.getWidth());
         stage.addActor(startButton);
@@ -75,15 +77,16 @@ public class MainScreen extends Screen {
             }
         });
 
-        destinationSelect = new SelectBox<String>(skin);
+        SelectBox.SelectBoxStyle selectBoxStyle = skin.get(SelectBox.SelectBoxStyle.class);
+        selectBoxStyle.font.getData().setScale(3f,3f);
+
+        destinationSelect = new SelectBox<String>(selectBoxStyle);
 
         Array<String> destinationNameArray = new Array<>();
         Point currentLocation = parent.getGeolocation();
         if (currentLocation != null) {
             destinations.add(new Destination("C", currentLocation.getLatitude(), currentLocation.getLongitude(), "Current Location", "Current Location"));
         }
-
-        System.out.println("PPCY="+Gdx.graphics.getPpcY());
 
         for (Destination destination: destinations) {
             System.out.println(destination.getName()+" "+destination.getLat()+","+destination.getLon());
@@ -97,13 +100,18 @@ public class MainScreen extends Screen {
             destinationSelect.setSelectedIndex(0);
         }
 
-        destinationSelect.setX((float)(stage.getWidth()*.3));
+        destinationSelect.setX((float)(stage.getWidth()*.05));
         destinationSelect.setY((float)(stage.getHeight()*.1));
-        destinationSelect.setWidth((float)(stage.getWidth() * .3));
+        destinationSelect.setWidth((float)(stage.getWidth() * .7));
         stage.addActor(destinationSelect);
 
-        destinationLabel = new Label("Choose where to defend", skin);
-        destinationLabel.setFontScale(1.8f);
+        skin = new Skin(Gdx.files.internal("skin/comic/skin/comic-ui.json"));
+
+        Label.LabelStyle labelStyle = skin.get(Label.LabelStyle.class);
+        labelStyle.font.getData().scale(2);
+        labelStyle.fontColor = Color.WHITE;
+
+        destinationLabel = new Label("Choose where to defend", labelStyle);
         destinationLabel.setX((float)(stage.getWidth()*.3));
         destinationLabel.setY((float)(stage.getHeight()*.1)+destinationSelect.getHeight());
         destinationLabel.setWidth(destinationSelect.getWidth());

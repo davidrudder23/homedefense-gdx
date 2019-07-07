@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class ArmoredGroundEnemy extends GroundEnemy {
 
     public ArmoredGroundEnemy(MapScreen parent, PathStep pathStep) {
-        super(parent, pathStep, "line96.png", 2, 32, 32, 20);
+        super(parent, pathStep, "enemy/armored.png", 3, 96, 96, 20);
 
     }
 

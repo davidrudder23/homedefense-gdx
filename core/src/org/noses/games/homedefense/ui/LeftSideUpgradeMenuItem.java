@@ -23,6 +23,7 @@ public class LeftSideUpgradeMenuItem extends MenuItem {
     }
 
     public void upgradeTower(Tower tower) {
+        parent.subtractMoney(towerUpgrader.getCost());
         towerUpgrader.upgradeTower(tower);
     }
 
