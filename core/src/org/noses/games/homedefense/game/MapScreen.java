@@ -587,10 +587,10 @@ public class MapScreen extends Screen implements InputProcessor {
         sr.setColor(Color.WHITE);
 
         for (Way way : getMap().getWays()) {
-            Gdx.gl.glLineWidth(way.getMaxSpeed() - 24);
+            Gdx.gl.glLineWidth(way.getMaxSpeed() - 14);
 
             sr.setColor(Color.WHITE);
-            sr.setColor(way.getColor());
+            //sr.setColor(way.getColor());
 
             sr.begin(ShapeRenderer.ShapeType.Line);
             Node prevNode = null;

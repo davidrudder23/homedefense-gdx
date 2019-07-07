@@ -72,7 +72,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0.2f, 0.25f, 0.95f, 1);
+        Gdx.gl.glClearColor(0.803f, 0.690f, 0.323f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         currentScreen.render(batch);
