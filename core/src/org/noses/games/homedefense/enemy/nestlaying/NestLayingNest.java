@@ -22,12 +22,12 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
 
     int enemyType;
 
-    public static int ENEMY_TYPE_GROUND=1;
-    public static int ENEMY_TYPE_ARMORED=2;
+    public static int ENEMY_TYPE_GROUND=2;
+    public static int ENEMY_TYPE_ARMORED=1;
     public static int ENEMY_TYPE_SPLITTING=0;
 
     public NestLayingNest(MapScreen parent) {
-        super(parent, "hataak", 0, 0, 0);
+        super(parent, "splitting", 0, 0, 0);
         this.parent = parent;
         makingNest = false;
         NestLayingEnemyGroup enemyGroup = new NestLayingEnemyGroup();

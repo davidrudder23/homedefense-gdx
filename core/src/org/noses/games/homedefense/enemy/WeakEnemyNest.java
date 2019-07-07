@@ -7,7 +7,7 @@ public class WeakEnemyNest extends EnemyNest {
     GroundEnemy.GroundEnemyBuilder builder;
 
     public WeakEnemyNest(MapScreen parent, double delayBeforeStart, double longitude, double latitude) {
-        super (parent, "cell_tower", delayBeforeStart, longitude, latitude);
+        super (parent, "ground", delayBeforeStart, longitude, latitude);
     }
 
     @Override
