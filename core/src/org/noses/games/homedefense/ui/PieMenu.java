@@ -83,7 +83,7 @@ public class PieMenu implements MouseHandler {
     }
 
     @Override
-    public boolean onClickUp() {
+    public boolean onClickUp(int x, int y) {
         hidden = true;
 
         for (PieMenuItem pieMenuItem : pieMenuItems.values()) {

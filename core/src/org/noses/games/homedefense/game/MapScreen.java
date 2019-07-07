@@ -240,6 +240,8 @@ public class MapScreen extends Screen implements InputProcessor {
 
         if (Gdx.input.isButtonPressed(0)) {
 
+            System.out.println ("Mouse handlers="+mouseHandlers);
+
             for (MouseHandler mouseHandler : mouseHandlers) {
                 if (!mouseHandler.onClick(x, y)) {
                     break;
@@ -267,7 +269,9 @@ public class MapScreen extends Screen implements InputProcessor {
         }
 
         for (MouseHandler mouseHandler : mouseHandlers) {
-            mouseHandler.onClickUp();
+            if (!mouseHandler.onClickUp(screenX, screenY)) {
+                return false;
+            }
         }
 
         return false;
@@ -352,7 +356,6 @@ public class MapScreen extends Screen implements InputProcessor {
         }
 
         if (!isInsideMap(nodePoint)) {
-            Thread.dumpStack();
             return false;
         }
         return true;

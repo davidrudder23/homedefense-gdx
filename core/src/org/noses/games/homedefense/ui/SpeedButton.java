@@ -48,7 +48,10 @@ public class SpeedButton implements MouseHandler {
     }
 
     @Override
-    public boolean onClickUp() {
+    public boolean onClickUp(int x, int y) {
+        if (isClicked(x, parent.getScreenHeight() - y)) {
+            return false;
+        }
         return true;
     }
 

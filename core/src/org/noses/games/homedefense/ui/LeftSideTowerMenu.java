@@ -59,7 +59,7 @@ public class LeftSideTowerMenu extends LeftSideMenu {
     }
 
     @Override
-    public boolean onClick(int x, int y) {
+    public boolean onClickUp(int x, int y) {
         System.out.println("Left tower menu Onclick="+new Point(x,y));
         if (hidden) {
             parent.hideMenus();

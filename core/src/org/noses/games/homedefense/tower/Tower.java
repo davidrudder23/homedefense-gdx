@@ -15,6 +15,7 @@ import java.util.List;
 
 @Data
 public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHandler {
+    public static final double DEFAULT_SCALE=0.15;
     double bulletSpeed;
     double delayBetweenShots;
 
@@ -37,9 +38,12 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
 
     int level;
 
+    double scale;
+
     public Tower(MapScreen parent, String towerName, double longitude, double latitude, double scale, Shooter shooter) {
         this.towerName = towerName;
         this.parent = parent;
+        this.scale = scale;
 
         level = 0;
 
@@ -47,8 +51,8 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
 
         animations = new ArrayList<>();
 
-        for (int i = 1; i <= 4;i++) {
-            Animation animation = new Animation(parent, "tower/" + towerName + "_lvl_"+i+".png", 0, 0, scale, true);
+        for (int i = 1; i <= 4; i++) {
+            Animation animation = new Animation(parent, "tower/" + towerName + "_lvl_" + i + ".png", 0, 0, scale, true);
             animations.add(animation);
             parent.addClockTickHandler(animation);
         }
@@ -63,9 +67,12 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
 
     public void upgradeTower() {
         level++;
-        level %= animations.size();
 
-        System.out.println("Tower "+getTowerName()+" is upgraded to "+level);
+        if (level >= animations.size()) {
+            level = animations.size() - 1;
+        }
+
+        System.out.println("Tower " + getTowerName() + " is upgraded to " + level);
     }
 
     public double getLatitude() {
@@ -91,7 +98,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
 
     private Sprite getSprite() {
         Sprite sprite = new Sprite(getFrameTextureRegion());
-        sprite.setScale(50 / sprite.getWidth());
+        sprite.setScale((float)scale);
         sprite.setCenterX(parent.convertLongToX(getLongitude()));
         sprite.setCenterY(parent.convertLatToY(getLatitude()));
 
@@ -127,20 +134,19 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
     private boolean isWithinBounds(int x, int y) {
 
         Sprite sprite = getSprite();
-        int width = (int)(sprite.getWidth()*sprite.getScaleX());
-        int height = (int)(sprite.getHeight()*sprite.getScaleY());
+        int width = (int) (sprite.getWidth() * sprite.getScaleX());
+        int height = (int) (sprite.getHeight() * sprite.getScaleY());
 
-        int upperLeftX = parent.convertLongToX(getLongitude()) - (int)(width/2);
-        int upperLeftY = parent.convertLatToY(getLatitude()) - (int)(height/2);
+        int upperLeftX = parent.convertLongToX(getLongitude()) - (int) (width / 2);
+        int upperLeftY = parent.convertLatToY(getLatitude()) - (int) (height / 2);
 
-        int lowerRightX = upperLeftX+width;
-        int lowerRightY = upperLeftY+height;
-
+        int lowerRightX = upperLeftX + width;
+        int lowerRightY = upperLeftY + height;
 
         if (parent.isPointWithinBounds(new Point(x, parent.getScreenHeight() - y),
-                new Point (upperLeftX, upperLeftY),
+                new Point(upperLeftX, upperLeftY),
                 new Point(lowerRightX, lowerRightY))) {
-            return  true;
+            return true;
         }
 
         return false;
@@ -150,11 +156,15 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
     public boolean onClick(int x, int y) {
 
         if (!isWithinBounds(x, y)) {
-            System.out.println(towerName+" not was clicked");
+            System.out.println(towerName + " not was clicked");
             return true;
         }
 
-        System.out.println(towerName+" was clicked");
+        if (level >= (animations.size()-1)) {
+            return false;
+        }
+
+        System.out.println(towerName + " was clicked");
         parent.hideMenus();
 
         parent.showUpgradeMenu(this);
@@ -173,8 +183,8 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
     }
 
     @Override
-    public boolean onClickUp() {
-        return false;
+    public boolean onClickUp(int x, int y) {
+        return onClick(x, y);
     }
 
     @Override

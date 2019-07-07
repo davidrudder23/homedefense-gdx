@@ -8,7 +8,7 @@ import org.noses.games.homedefense.geometry.Point;
 public class BroadcastTower extends Tower {
 
     public BroadcastTower(MapScreen parent, double longitude, double latitude) {
-        super(parent, "broadcast", longitude, latitude,0.03,
+        super(parent, "broadcast", longitude, latitude,DEFAULT_SCALE,
                 new NormalBulletShooter(parent, 0.8, new Point(latitude, longitude), 4));
     }
 
