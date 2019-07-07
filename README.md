@@ -1,3 +1,5 @@
+[![Build Status](https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiVk1IVTBkcVViNEVUcWxQTnI2VlhEQTg4NjFHMnRDUk1MMENzM0c3Zm1QV1BrTTdCcmR1M3hJNW5ScmN6bHYyVnptaUFFTlBPdTdMSnhKMzE5MVpTeUg0PSIsIml2UGFyYW1ldGVyU3BlYyI6IlhyRmE3ajNWOVdTWmN3Nk0iLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)](https://us-east-1.console.aws.amazon.com/codesuite/codebuild/projects/HomeDefenseGDX/history)
+
 # HomeDefense - The Runup to War
 
 This is the Github repo for `HomeDefense - The Runup to War`.  This is an early alpha release.  I primarily built it to make it easier to share with people.
