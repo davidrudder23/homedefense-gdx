@@ -16,7 +16,7 @@ public class NestLayingEnemy extends Enemy {
     int enemyType;
 
     public NestLayingEnemy(MapScreen parent, Point targetNestLocation, int enemyType) {
-        super(parent, "line64.png", parent.loadSound("normal_hit.mp3"), 32, 32, 0.02, 200);
+        super(parent, "line64.png", parent.loadSound("normal_hit.mp3"), 32, 32, 0.06, 200);
         this.enemyType = enemyType;
 
         this.targetNestLocation = targetNestLocation;

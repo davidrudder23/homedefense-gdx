@@ -29,7 +29,7 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
     double timeSinceLastWave;
 
     public EnemyNest(MapScreen parent, String nestName, double delayBeforeStart, double longitude, double latitude) {
-        super(parent, "nest/" + nestName + ".png", 199, 199, 0.03, true);
+        super(parent, "nest/" + nestName + ".png", 199, 199, 0.08, true);
         this.longitude = longitude;
         this.latitude = latitude;
         killed = false;
@@ -104,7 +104,7 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
 
         sprite.setCenterX(parent.convertLongToX(getLongitude()));
         sprite.setCenterY(parent.convertLatToY(getLatitude()));
-        sprite.setScale(64 / sprite.getWidth());
+        sprite.setScale((float)parent.getSpriteScale(sprite, getScale()));
         sprite.draw(batch);
     }
 

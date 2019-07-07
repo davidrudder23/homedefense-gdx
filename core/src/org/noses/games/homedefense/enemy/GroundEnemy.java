@@ -39,7 +39,7 @@ public class GroundEnemy extends Enemy {
     }
 
     protected GroundEnemy(MapScreen parent, PathStep pathStep, String spriteFilename, double speedMultiplier, int tileWidth, int tileHeight, int startingHealth) {
-        super(parent, spriteFilename, parent.loadSound("normal_hit.mp3"), tileWidth, tileHeight, 0.05, startingHealth);
+        super(parent, spriteFilename, parent.loadSound("normal_hit.mp3"), tileWidth, tileHeight, 0.06, startingHealth);
 
         progressAlong = 0;
         direction = 1;

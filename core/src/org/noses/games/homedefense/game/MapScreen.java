@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
 import lombok.Getter;
@@ -95,8 +96,13 @@ public class MapScreen extends Screen implements InputProcessor {
 
         money = 0;
 
-        font = new BitmapFont();
-        font.setColor(Color.WHITE);
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/score.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 22;
+        font = generator.generateFont(parameter); // font size 12 pixels
+        generator.dispose(); // don't forget to dispose to avoid memory leaks!
+
+        font.setColor(Color.BLACK);
 
         initializeMap(location);
 
@@ -632,7 +638,7 @@ public class MapScreen extends Screen implements InputProcessor {
 
                     Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
 
-                    sprite.setScale((float)((parent.getScreenWidth()*enemy.getScale())/sprite.getWidth()));
+                    sprite.setScale((float)getSpriteScale(sprite, enemy.getScale()));
 
                     sprite.setCenterY(convertLatToY(latitude));
                     sprite.setCenterX(convertLongToX(longitude));
@@ -645,11 +651,11 @@ public class MapScreen extends Screen implements InputProcessor {
         getHome().render(batch);
 
         // render the score and other text
-        font.draw(batch, "Health: " + getHome().getHealth(), 10, Gdx.graphics.getHeight() - 30);
+        font.draw(batch, "Health: " + getHome().getHealth(), 10, Gdx.graphics.getHeight() - (int)(Gdx.graphics.getHeight()*.1));
 
-        font.draw(batch, "Money: " + getMoney(), 10, Gdx.graphics.getHeight() - (35 + font.getCapHeight()));
+        font.draw(batch, "Money: " + getMoney(), 10, Gdx.graphics.getHeight() - (int)((Gdx.graphics.getHeight()*.1) + (font.getCapHeight()*2)));
 
-        font.draw(batch, "Speed: " + getSpeedMultiplier() + "x", 10, Gdx.graphics.getHeight() - (40 + (font.getCapHeight() * 2)));
+        font.draw(batch, "Speed: " + getSpeedMultiplier() + "x", 10, Gdx.graphics.getHeight() - (int)((Gdx.graphics.getHeight()*.1) + (font.getCapHeight()*4)));
 
         speedButton.render(batch);
 
@@ -669,6 +675,10 @@ public class MapScreen extends Screen implements InputProcessor {
         }
 
         batch.end();
+    }
+
+    public double getSpriteScale(Sprite sprite, double scale) {
+        return (parent.getScreenWidth()*scale)/sprite.getWidth();
     }
 
     public void hideMenus() {

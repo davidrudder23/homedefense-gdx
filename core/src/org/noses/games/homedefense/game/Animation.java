@@ -3,6 +3,7 @@ package org.noses.games.homedefense.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 public class Animation implements ClockTickHandler {
@@ -15,6 +16,8 @@ public class Animation implements ClockTickHandler {
 
     boolean killed;
     boolean loop;
+
+    @Getter
     double scale;
 
     public Animation(MapScreen parent, String spriteFilename, int tileWidth, int tileHeight, double scale, boolean loop) {

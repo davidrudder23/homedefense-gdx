@@ -98,7 +98,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
 
     private Sprite getSprite() {
         Sprite sprite = new Sprite(getFrameTextureRegion());
-        sprite.setScale((float)scale);
+        sprite.setScale((float)parent.getSpriteScale(sprite, scale));
         sprite.setCenterX(parent.convertLongToX(getLongitude()));
         sprite.setCenterY(parent.convertLatToY(getLatitude()));
 
