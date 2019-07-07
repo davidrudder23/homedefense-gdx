@@ -15,7 +15,7 @@ import java.util.List;
 
 @Data
 public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHandler {
-    public static final double DEFAULT_SCALE=0.15;
+    public static final double DEFAULT_SCALE=0.08;
     double bulletSpeed;
     double delayBetweenShots;
 
