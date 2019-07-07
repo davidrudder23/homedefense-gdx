@@ -535,7 +535,8 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public void setupSound() {
         Sound backgroundLoop = loadSound("background.mp3");
-        backgroundLoop.loop(0.2f);
+        backgroundLoop.loop();//0.2f);
+        backgroundLoop.play();
     }
 
     public boolean isInsideMap(Point point) {

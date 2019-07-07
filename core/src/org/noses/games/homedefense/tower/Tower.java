@@ -171,7 +171,6 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
     @Override
     public boolean onClickUp(int x, int y) {
         if (!isWithinBounds(x, y)) {
-            System.out.println(towerName + " not was clicked");
             return true;
         }
 
@@ -179,7 +178,6 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
             return false;
         }
 
-        System.out.println(towerName + " was clicked");
         parent.hideMenus();
 
         parent.showUpgradeMenu(this);
