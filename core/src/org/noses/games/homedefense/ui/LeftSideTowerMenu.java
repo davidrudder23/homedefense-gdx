@@ -1,8 +1,12 @@
 package org.noses.games.homedefense.ui;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import lombok.Getter;
 import lombok.Setter;
 import org.noses.games.homedefense.game.MapScreen;
@@ -56,6 +60,24 @@ public class LeftSideTowerMenu extends LeftSideMenu {
     @Override
     public int getZ() {
         return 1;
+    }
+
+    @Override
+    public void renderMenu(Batch batch) {
+        super.renderMenu(batch);
+
+        batch.end();
+
+        ShapeRenderer sr = new ShapeRenderer();
+        sr.setColor(new Color(1, 1, 0, 0.5f));
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        sr.circle(clickX, parent.getScreenHeight() - clickY, 10);
+        sr.end();
+
+        batch.begin();
+
     }
 
     @Override
