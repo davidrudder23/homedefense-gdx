@@ -1,0 +1,5 @@
+convert $1 -crop 280x556+1998+3726 ${2}_lvl_1.png
+convert $1 -crop 280x556+1998+4282 ${2}_lvl_2.png
+convert $1 -crop 280x556+1998+4992 ${2}_lvl_3.png
+convert $1 -crop 280x556+1998+5776 ${2}_lvl_4.png
+

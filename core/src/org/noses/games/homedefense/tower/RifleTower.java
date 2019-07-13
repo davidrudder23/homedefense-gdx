@@ -8,7 +8,7 @@ import org.noses.games.homedefense.geometry.Point;
 public class RifleTower extends Tower {
 
     public RifleTower(MapScreen parent, double longitude, double latitude) {
-        super(parent, "rifle", longitude, latitude,0.03,
+        super(parent, "rifle", longitude, latitude,DEFAULT_SCALE,
                 new NormalBulletShooter(parent, 0.8, new Point(latitude, longitude), 4));
     }
 
@@ -23,12 +23,17 @@ public class RifleTower extends Tower {
 
     @Override
     public double minDistanceFromOtherTower() {
-        return HomeDefenseGame.LATLON_MOVED_IN_1s_1mph*500;
+        return HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph *500;
     }
 
     @Override
     public int getCost() {
         return 25;
+    }
+
+    @Override
+    public int getStartingHealth() {
+        return 30;
     }
 
 }

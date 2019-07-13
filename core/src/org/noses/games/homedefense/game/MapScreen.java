@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
 import lombok.Getter;
@@ -15,18 +16,18 @@ import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.*;
+import org.noses.games.homedefense.enemy.nestlaying.NestLayingNest;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.hero.Hero;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.tower.Tower;
-import org.noses.games.homedefense.ui.MouseHandler;
-import org.noses.games.homedefense.ui.PieMenu;
-import org.noses.games.homedefense.ui.SpeedButton;
+import org.noses.games.homedefense.ui.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -61,6 +62,7 @@ public class MapScreen extends Screen implements InputProcessor {
     @Getter
     private List<Tower> towers;
 
+    @Getter
     List<EnemyNest> enemyNests;
 
     @Getter
@@ -71,7 +73,10 @@ public class MapScreen extends Screen implements InputProcessor {
     Timer.Task timer;
 
     @Getter
-    PieMenu towerChoiceMenu;
+    LeftSideTowerMenu towerChoiceMenu;
+
+    @Getter
+    LeftSideUpgradeMenu upgradeMenu;
 
     @Getter
     Hero hero;
@@ -95,8 +100,13 @@ public class MapScreen extends Screen implements InputProcessor {
 
         money = 0;
 
-        font = new BitmapFont();
-        font.setColor(Color.WHITE);
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/score.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 22;
+        font = generator.generateFont(parameter); // font size 12 pixels
+        generator.dispose(); // don't forget to dispose to avoid memory leaks!
+
+        font.setColor(Color.BLACK);
 
         initializeMap(location);
 
@@ -133,7 +143,7 @@ public class MapScreen extends Screen implements InputProcessor {
 
         Gdx.input.setInputProcessor(this);
 
-        towerChoiceMenu = new PieMenu(this);
+        towerChoiceMenu = new LeftSideTowerMenu(this);
         addClickHandler(towerChoiceMenu);
 
         timer = Timer.schedule(new Timer.Task() {
@@ -173,6 +183,12 @@ public class MapScreen extends Screen implements InputProcessor {
     public void addClickHandler(MouseHandler mouseHandler) {
         synchronized (mouseHandlers) {
             mouseHandlersToBeAdded.add(mouseHandler);
+        }
+    }
+
+    public void removeClickHandler(MouseHandler mouseHandler) {
+        synchronized (mouseHandlers) {
+            mouseHandlersToBeAdded.remove(mouseHandler);
         }
     }
 
@@ -234,6 +250,13 @@ public class MapScreen extends Screen implements InputProcessor {
                 mouseHandlers.add(mouseHandler);
             }
             mouseHandlersToBeAdded.clear();
+
+            mouseHandlers.sort(new Comparator<MouseHandler>() {
+                @Override
+                public int compare(MouseHandler a, MouseHandler b) {
+                    return b.getZ()-a.getZ();
+                }
+            });
         }
 
         int x = Gdx.input.getX();
@@ -268,7 +291,9 @@ public class MapScreen extends Screen implements InputProcessor {
         }
 
         for (MouseHandler mouseHandler : mouseHandlers) {
-            mouseHandler.onClickUp();
+            if (!mouseHandler.onClickUp(screenX, screenY)) {
+                return false;
+            }
         }
 
         return false;
@@ -284,6 +309,9 @@ public class MapScreen extends Screen implements InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        for (MouseHandler mouseHandler : mouseHandlers) {
+            mouseHandler.mouseMoved(screenX, screenY);
+        }
         return false;
     }
 
@@ -337,10 +365,55 @@ public class MapScreen extends Screen implements InputProcessor {
         }
     }
 
-    public void createNests() {
-        double delayBeforeStart = 0;
-        Djikstra djikstra = new Djikstra(intersections);
+    public boolean isGoodLocationForNest(Node node) {
+        Point homePoint = getHome().getLocation();
+        Point nodePoint = new Point(node.getLat(), node.getLon());
+        if (nodePoint.getDistanceFrom(homePoint) < 0.005) {
+            return false;
+        }
 
+        Djikstra djikstra = new Djikstra(intersections);
+        if (djikstra.getBestPath(node, getNodeForLocation(homePoint)) == null) {
+            return false;
+        }
+
+        if (!isInsideMap(nodePoint)) {
+            return false;
+        }
+        return true;
+    }
+
+    public Node findGoodPlaceForNest() {
+        // If it's too close, don't add the nest
+        Point homePoint = new Point(home.getLatitude(), home.getLongitude());
+
+        Intersection intersection = null;
+
+        int count = 0;
+
+        while (count<1000) {
+            count++;
+            intersection = intersections.get((int) (Math.random() * intersections.size()));
+            System.out.println("Testing intersection "+intersection);
+
+            if (!isGoodLocationForNest(intersection.getNode())) {
+                System.out.println(intersection+" is bad");
+                continue;
+            }
+
+            return intersection.getNode();
+        }
+
+        return null;
+    }
+
+    public void createNests() {
+        NestLayingNest nestLayingNest = new NestLayingNest(this);
+        addClockTickHandler(nestLayingNest);
+
+        double delayBeforeStart = 0;
+
+        Djikstra djikstra = new Djikstra(intersections);
         for (Nest nest : map.getNests()) {
 
             // If it's too close, don't add the nest
@@ -363,13 +436,15 @@ public class MapScreen extends Screen implements InputProcessor {
                 continue;
             }
 
-            if (djikstra.getBestPath(enemyNest.getNode(), homePoint.getLongitude(), homePoint.getLongitude()) == null) {
+            if (djikstra.getBestPath(enemyNest.getNode(), getNodeForLocation(homePoint)) == null) {
                 continue;
             }
 
             addClockTickHandler(enemyNest);
             enemyNests.add(enemyNest);
+
         }
+        enemyNests.add(nestLayingNest);
 
         /*EnemyGroup enemyGroup = EnemyGroup.builder()
                 .intersections(startingIntersections)
@@ -381,12 +456,43 @@ public class MapScreen extends Screen implements InputProcessor {
         addClockTickHandler(enemyGroup);*/
     }
 
+    public void dropNest(EnemyNest enemyNest) {
+        addClockTickHandler(enemyNest);
+        enemyNests.add(enemyNest);
+
+    }
+
+    public HashMap<String, Intersection> getIntersectionsAsHashmap() {
+        return intersections;
+    }
+
+    public List<Intersection> getIntersections() {
+        List<Intersection> retList = new ArrayList<>();
+        retList.addAll(intersections.values());
+        return retList;
+    }
+
     public Intersection getIntersectionForNode(Node node) {
         return intersections.get(node.getLat() + "_" + node.getLon());
     }
 
+    public Node getNodeForLocation(Point location) {
+        double closestDistance = 99999;
+        Node closestNode = null;
+        for (Way way: map.getWays()) {
+            for (Node node: way.getNodes()) {
+                double distance = new Point(node.getLat(), node.getLon()).getDistanceFrom(location);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestNode = node;
+                }
+            }
+        }
+
+        return closestNode;
+    }
+
     public void clockTick(float delta) {
-        System.out.println(delta+" vs "+(speedMultiplier/10));
         synchronized (clockTickHandlersToBeAdded) {
             for (ClockTickHandler clockTickHandler : clockTickHandlersToBeAdded) {
                 clockTickHandlers.add(clockTickHandler);
@@ -447,7 +553,52 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public void setupSound() {
         Sound backgroundLoop = loadSound("background.mp3");
-        backgroundLoop.loop(0.5f);
+        backgroundLoop.loop();//0.2f);
+        backgroundLoop.play();
+    }
+
+    public boolean isInsideMap(Point point) {
+
+        return isPointWithinBounds(point, new Point (map.getNorth(), map.getWest()),
+                new Point (map.getSouth(), map.getEast()));
+    }
+
+    public boolean isPointWithinBounds (Point point, Point upperLeft, Point lowerRight) {
+
+        if (upperLeft.getLatitude() > lowerRight.getLatitude()) {
+            if (point.getLatitude() > upperLeft.getLatitude()) {
+                return false;
+            }
+            if (point.getLatitude() < lowerRight.getLatitude()) {
+                return false;
+            }
+        } else {
+            if (point.getLatitude() > lowerRight.getLatitude()) {
+                return false;
+            }
+            if (point.getLatitude() < upperLeft.getLatitude()) {
+                return false;
+            }
+        }
+
+        if (upperLeft.getLongitude() > lowerRight.getLongitude()) {
+            if (point.getLongitude() > upperLeft.getLongitude()) {
+                return false;
+            }
+            if (point.getLongitude() < lowerRight.getLongitude()) {
+                return false;
+            }
+        } else {
+            if (point.getLongitude() > lowerRight.getLongitude()) {
+                return false;
+            }
+            if (point.getLongitude() < upperLeft.getLongitude()) {
+                return false;
+            }
+        }
+
+        System.out.println ("Is "+point+" within "+upperLeft+" and "+lowerRight+"? TRUE");
+        return true;
     }
 
     public Sound loadSound(String fileName) {
@@ -461,10 +612,10 @@ public class MapScreen extends Screen implements InputProcessor {
         sr.setColor(Color.WHITE);
 
         for (Way way : getMap().getWays()) {
-            Gdx.gl.glLineWidth(way.getMaxSpeed() - 24);
+            Gdx.gl.glLineWidth(way.getMaxSpeed() - 14);
 
             sr.setColor(Color.WHITE);
-            sr.setColor(way.getColor());
+            //sr.setColor(way.getColor());
 
             sr.begin(ShapeRenderer.ShapeType.Line);
             Node prevNode = null;
@@ -484,13 +635,9 @@ public class MapScreen extends Screen implements InputProcessor {
 
         // render the nests
         for (EnemyNest enemyNest : enemyNests) {
-            Sprite sprite = new Sprite(enemyNest.getFrameTextureRegion());
-
-            sprite.setCenterX(convertLongToX(enemyNest.getLongitude()));
-            sprite.setCenterY(convertLatToY(enemyNest.getLatitude()));
-            sprite.setScale(64 / sprite.getWidth());
-            sprite.draw(batch);
-
+            if (!enemyNest.isKilled()) {
+                enemyNest.render(batch);
+            }
         }
 
         // render the enemies
@@ -504,11 +651,13 @@ public class MapScreen extends Screen implements InputProcessor {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
 
-                    //batch.draw(enemy.getFrameTextureRegion(), x, y);
+                    //if(enemy instanceof NestLayingEnemy) {
+                     //   System.out.println("Rendering nest layer at "+convertLatToY(latitude)+"x"+convertLongToX(longitude));
+                    //}
 
                     Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
 
-                    sprite.setScale((float)((parent.getScreenWidth()*enemy.getScale())/sprite.getWidth()));
+                    sprite.setScale((float)getSpriteScale(sprite, enemy.getScale()));
 
                     sprite.setCenterY(convertLatToY(latitude));
                     sprite.setCenterX(convertLongToX(longitude));
@@ -521,11 +670,11 @@ public class MapScreen extends Screen implements InputProcessor {
         getHome().render(batch);
 
         // render the score and other text
-        font.draw(batch, "Health: " + getHome().getHealth(), 10, Gdx.graphics.getHeight() - 30);
+        font.draw(batch, "Health: " + getHome().getHealth(), 10, Gdx.graphics.getHeight() - (int)(Gdx.graphics.getHeight()*.1));
 
-        font.draw(batch, "Money: " + getMoney(), 10, Gdx.graphics.getHeight() - (35 + font.getCapHeight()));
+        font.draw(batch, "Money: " + getMoney(), 10, Gdx.graphics.getHeight() - (int)((Gdx.graphics.getHeight()*.1) + (font.getCapHeight()*2)));
 
-        font.draw(batch, "Speed: " + getSpeedMultiplier() + "x", 10, Gdx.graphics.getHeight() - (40 + (font.getCapHeight() * 2)));
+        font.draw(batch, "Speed: " + getSpeedMultiplier() + "x", 10, Gdx.graphics.getHeight() - (int)((Gdx.graphics.getHeight()*.1) + (font.getCapHeight()*4)));
 
         speedButton.render(batch);
 
@@ -548,7 +697,37 @@ public class MapScreen extends Screen implements InputProcessor {
             heroSprite.draw(batch);
         }
 
+        if ((upgradeMenu != null) && (!upgradeMenu.isHidden())) {
+            upgradeMenu.renderMenu(batch);
+        }
+
         batch.end();
+    }
+
+    public double getSpriteScale(Sprite sprite, double scale) {
+        return (parent.getScreenWidth()*scale)/sprite.getWidth();
+    }
+
+    public void hideMenus() {
+        towerChoiceMenu.setHidden(true);
+        hideUpgradeMenu();
+    }
+
+    public void showUpgradeMenu(Tower tower) {
+
+        upgradeMenu = new LeftSideUpgradeMenu(this, tower);
+        addClickHandler(upgradeMenu);
+        upgradeMenu.setHidden(false);
+    }
+
+    public void hideUpgradeMenu() {
+
+        if (upgradeMenu == null) {
+            return;
+        }
+
+        removeClickHandler(upgradeMenu);
+        upgradeMenu = null;
     }
 
     public double convertXToLong(int x) {

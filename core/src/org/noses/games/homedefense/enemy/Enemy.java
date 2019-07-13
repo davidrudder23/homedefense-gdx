@@ -9,6 +9,7 @@ import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.game.PhysicalObject;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.geometry.Rectangle;
+import org.noses.games.homedefense.tower.Tower;
 
 public abstract class Enemy extends Animation implements ClockTickHandler, PhysicalObject {
 
@@ -19,10 +20,13 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
 
     Sound hitSound;
 
+    double upgradePercentage;
+
     protected Enemy(MapScreen parent, String spriteFilename, Sound hitSound, int tileWidth, int tileHeight, double scale, int startingHealth) {
         super(parent, spriteFilename, tileWidth, tileHeight, scale, true);
         this.health = startingHealth;
         this.hitSound = hitSound;
+        this.upgradePercentage = 0;
     }
 
     public void hit(int damage) {
@@ -32,6 +36,14 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
         }
 
         hitSound.play();
+    }
+
+    public double getUpgradePercentage() {
+        return upgradePercentage;
+    }
+
+    public void upgrade(double percentageToBeAdded) {
+        this.upgradePercentage += percentageToBeAdded;
     }
 
     public void kill() {
@@ -47,9 +59,11 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
 
     public abstract int getValue();
 
-    public abstract void clockTick(double delta);
-
     public abstract Point getLocation();
+
+    public abstract boolean canBeHitBy(Tower tower);
+
+    public abstract boolean canBeHitByHome();
 
     public Rectangle getBoundingBox() {
         double halfWidth = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileWidth / 2;

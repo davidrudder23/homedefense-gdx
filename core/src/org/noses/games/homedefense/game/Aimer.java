@@ -7,6 +7,7 @@ import org.noses.games.homedefense.geometry.Point;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class Aimer {
@@ -44,6 +45,11 @@ public class Aimer {
             return null;
         }
 
+        enemies = enemies.stream().filter(enemy -> enemy.canBeHitByHome()).collect(Collectors.toList());
+
+        if ((enemies == null) || (enemies.size() == 0)) {
+            return null;
+        }
 
         Collections.sort(enemies, new Comparator<Enemy>() {
             @Override

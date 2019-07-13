@@ -8,7 +8,7 @@ import org.noses.games.homedefense.geometry.Point;
 public class FactoryTower extends Tower {
 
     public FactoryTower(MapScreen parent, double longitude, double latitude) {
-        super(parent, "factory", longitude, latitude, 0.03,
+        super(parent, "factory", longitude, latitude, DEFAULT_SCALE,
                 new NormalBulletShooter(parent, 0.8, new Point(latitude, longitude), 12));
     }
 
@@ -23,7 +23,7 @@ public class FactoryTower extends Tower {
 
     @Override
     public double minDistanceFromOtherTower() {
-        return HomeDefenseGame.LATLON_MOVED_IN_1s_1mph*1500;
+        return HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph *1500;
     }
 
     @Override
@@ -31,4 +31,8 @@ public class FactoryTower extends Tower {
         return 100;
     }
 
+    @Override
+    public int getStartingHealth() {
+        return 50;
+    }
 }

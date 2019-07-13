@@ -31,7 +31,7 @@ public class EnemyGroupBuilder {
     }
 
     public EnemyGroup build() {
-        EnemyGroup enemyGroup = new EnemyGroup(numEnemies, delay);
+        EnemyGroup enemyGroup = new EnemyGroup(delay);
 
         for (int i = 0; i < numEnemies; i++) {
 

@@ -8,7 +8,7 @@ import org.noses.games.homedefense.geometry.Point;
 public class BomberTower extends Tower {
 
     public BomberTower(MapScreen parent, double longitude, double latitude) {
-        super(parent, "bomber", longitude, latitude, 0.03,
+        super(parent, "bomber", longitude, latitude, DEFAULT_SCALE,
                 new BombBulletShooter(parent, 0.8, new Point(latitude, longitude)));
     }
 
@@ -24,11 +24,17 @@ public class BomberTower extends Tower {
 
     @Override
     public double minDistanceFromOtherTower() {
-        return HomeDefenseGame.LATLON_MOVED_IN_1s_1mph*500;
+        return HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph *500;
     }
 
     @Override
     public int getCost() {
         return 50;
     }
+
+    @Override
+    public int getStartingHealth() {
+        return 60;
+    }
+
 }

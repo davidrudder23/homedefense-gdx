@@ -24,7 +24,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
     public static double ONE_PIXEL_IN_LATLON = 0;
 
     // This is how far you move in 1 second, going 1 mph, in terms of latitude and longitude, in Denver
-    public static double LATLON_MOVED_IN_1s_1mph = 0.000004901f;
+    public static double LATLON_MOVED_IN_1ms_1mph = 0.000004901f;
 
     SpriteBatch batch;
 
@@ -87,7 +87,7 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0.2f, 0.25f, 0.95f, 1);
+        Gdx.gl.glClearColor(0.803f, 0.690f, 0.323f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         currentScreen.render(batch);

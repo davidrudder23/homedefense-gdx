@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+  install:
+   runtime-versions:
+     java: openjdk8
+   commands:
+     - echo Entering install phase...
+  build:
+    commands:
+     - echo Build started on `date`
+     - ./gradlew desktop:dist android:build
+artifacts:
+  type: zip
+  files:
+    - 'desktop/build/libs/*.jar'
+    - 'android/build/outputs/apk/debug/*apk'
