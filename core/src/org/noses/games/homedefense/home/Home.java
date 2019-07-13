@@ -163,7 +163,7 @@ public class Home extends Enemy implements PhysicalObject {
 
         Sprite sprite = new Sprite(frame);
 
-        sprite.setRotation((float) angle);
+        sprite.setRotation(180-(float) angle);
 
         return sprite;
     }
