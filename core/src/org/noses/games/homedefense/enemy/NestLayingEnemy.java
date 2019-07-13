@@ -1,9 +1,11 @@
-package org.noses.games.homedefense.enemy.nestlaying;
+package org.noses.games.homedefense.enemy;
 
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.enemy.*;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.nest.EnemyNest;
+import org.noses.games.homedefense.nest.NestFactory;
 import org.noses.games.homedefense.tower.Tower;
 
 public class NestLayingEnemy extends Enemy {
@@ -13,12 +15,12 @@ public class NestLayingEnemy extends Enemy {
 
     boolean killed;
 
-    int enemyType;
+    NestFactory nestFactory;
 
-    public NestLayingEnemy(MapScreen parent, Point targetNestLocation, int enemyType) {
+    public NestLayingEnemy(MapScreen parent, Point targetNestLocation, NestFactory nestFactory) {
         super(parent, "line64.png", parent.loadSound("normal_hit.mp3"), 32, 32, 0.06, 200);
-        this.enemyType = enemyType;
 
+        this.nestFactory = nestFactory;
         this.targetNestLocation = targetNestLocation;
 
         progressAlong = 0;
@@ -70,19 +72,9 @@ public class NestLayingEnemy extends Enemy {
         progressAlong += HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * delta * 10000;
 
         if (isCloseToTarget()) {
-            System.out.println("Dropping a nest, type="+enemyType+" splitting="+NestLayingNest.ENEMY_TYPE_SPLITTING);
             EnemyNest enemyNest = null;
 
-            if (enemyType == NestLayingNest.ENEMY_TYPE_ARMORED) {
-                enemyNest = new ArmoredEnemyNest(parent, 1, targetNestLocation.getLongitude(), targetNestLocation.getLatitude());
-            } else if (enemyType == NestLayingNest.ENEMY_TYPE_GROUND) {
-                enemyNest = new WeakEnemyNest(parent, 1, targetNestLocation.getLongitude(), targetNestLocation.getLatitude());
-            } else if (enemyType == NestLayingNest.ENEMY_TYPE_SPLITTING) {
-                enemyNest = new SplittingEnemyNest(parent, 1, targetNestLocation.getLongitude(), targetNestLocation.getLatitude());
-                System.out.println ("New splitting nest="+enemyNest);
-            }
-
-            enemyType++;
+            enemyNest = nestFactory.build();
 
             parent.dropNest(enemyNest);
             killed = true;

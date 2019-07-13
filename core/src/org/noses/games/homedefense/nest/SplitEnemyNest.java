@@ -1,7 +1,9 @@
-package org.noses.games.homedefense.enemy;
+package org.noses.games.homedefense.nest;
 
 import org.noses.games.homedefense.client.Node;
-import org.noses.games.homedefense.client.Way;
+import org.noses.games.homedefense.enemy.ArmoredGroundEnemy;
+import org.noses.games.homedefense.enemy.EnemyGroup;
+import org.noses.games.homedefense.enemy.GroundEnemy;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.pathfinding.Djikstra;

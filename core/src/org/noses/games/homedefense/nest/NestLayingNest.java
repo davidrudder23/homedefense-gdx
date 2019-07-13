@@ -1,8 +1,11 @@
-package org.noses.games.homedefense.enemy.nestlaying;
+package org.noses.games.homedefense.nest;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import org.noses.games.homedefense.enemy.EnemyGroup;
-import org.noses.games.homedefense.enemy.EnemyNest;
+import org.noses.games.homedefense.enemy.NestLayingEnemy;
+import org.noses.games.homedefense.enemy.NestLayingEnemyGroup;
+import org.noses.games.homedefense.nest.EnemyNest;
+import org.noses.games.homedefense.nest.NestFactory;
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
@@ -20,21 +23,21 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
 
     List<EnemyGroup> enemyGroups;
 
-    int enemyType;
+    int nestNumber;
 
-    public static int ENEMY_TYPE_GROUND=2;
-    public static int ENEMY_TYPE_ARMORED=1;
-    public static int ENEMY_TYPE_SPLITTING=0;
+    List<NestFactory> nestFactories;
 
-    public NestLayingNest(MapScreen parent) {
+    public NestLayingNest(MapScreen parent, List<NestFactory> nestFactories) {
         super(parent, "splitting", 0, 0, 0);
         this.parent = parent;
+        this.nestFactories = nestFactories;
+
         makingNest = false;
-        NestLayingEnemyGroup enemyGroup = new NestLayingEnemyGroup();
+        org.noses.games.homedefense.enemy.NestLayingEnemyGroup enemyGroup = new NestLayingEnemyGroup();
         enemyGroups = new ArrayList<>();
         enemyGroups.add(enemyGroup);
         //parent.addClockTickHandler(enemyGroups.get(0));
-        enemyType = 0;
+        nestNumber = 0;
 
     }
 
@@ -60,6 +63,10 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
 
     @Override
     public void clockTick(double delta) {
+        if (nestNumber > nestFactories.size()) {
+            return;
+        }
+
         if (makingNest) {
             if (enemyGroups.size() <= 0) {
                 return;
@@ -106,11 +113,10 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
             }
 
             //System.out.println("Targetting nest at "+intersection);
-            NestLayingEnemy nestLayingEnemy = new NestLayingEnemy(parent, new Point(intersection.getLatitude(), intersection.getLongitude()), enemyType);
+            org.noses.games.homedefense.enemy.NestLayingEnemy nestLayingEnemy = new NestLayingEnemy(parent, new Point(intersection.getLatitude(), intersection.getLongitude()), nestFactories.get(nestNumber));
             parent.addClockTickHandler(nestLayingEnemy);
             enemyGroups.get(0).addEnemy(nestLayingEnemy);
-            enemyType++;
-            enemyType %= 2;
+            nestNumber++;
         }
     }
 

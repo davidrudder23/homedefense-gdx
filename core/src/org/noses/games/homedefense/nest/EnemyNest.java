@@ -1,4 +1,4 @@
-package org.noses.games.homedefense.enemy;
+package org.noses.games.homedefense.nest;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
 import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.client.Way;
+import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.game.Animation;
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.MapScreen;

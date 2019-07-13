@@ -1,6 +1,8 @@
-package org.noses.games.homedefense.enemy;
+package org.noses.games.homedefense.nest;
 
 import org.noses.games.homedefense.client.Node;
+import org.noses.games.homedefense.enemy.EnemyGroup;
+import org.noses.games.homedefense.enemy.SplittingGroundEnemy;
 import org.noses.games.homedefense.game.MapScreen;
 
 public class SplittingEnemyNest extends EnemyNest {

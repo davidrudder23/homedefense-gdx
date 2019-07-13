@@ -1,13 +1,15 @@
-package org.noses.games.homedefense.enemy;
+package org.noses.games.homedefense.nest;
 
 import org.noses.games.homedefense.client.Node;
+import org.noses.games.homedefense.enemy.EnemyGroup;
+import org.noses.games.homedefense.enemy.GroundEnemy;
 import org.noses.games.homedefense.game.MapScreen;
 
-public class WeakEnemyNest extends EnemyNest {
+public class GroundEnemyNest extends EnemyNest {
     GroundEnemy.GroundEnemyBuilder builder;
 
-    public WeakEnemyNest(MapScreen parent, double delayBeforeStart, double longitude, double latitude) {
-        super (parent, "ground", delayBeforeStart, longitude, latitude);
+    public GroundEnemyNest(MapScreen parent, double delayBeforeStart, double longitude, double latitude) {
+        super(parent, "ground", delayBeforeStart, longitude, latitude);
     }
 
     @Override
@@ -37,5 +39,17 @@ public class WeakEnemyNest extends EnemyNest {
         return enemyGroup;
     }
 
+    public static class GroundEnemyNestFactory implements NestFactory {
+        MapScreen parent;
+
+        public GroundEnemyNestFactory(MapScreen parent) {
+            this.parent = parent;
+        }
+
+        @Override
+        public GroundEnemyNest build(double delayBeforeStart, double longitude, double latitude) {
+            return new GroundEnemyNest(parent, delayBeforeStart, longitude, latitude);
+        }
+    }
 
 }

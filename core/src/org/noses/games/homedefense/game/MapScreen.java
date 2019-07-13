@@ -16,9 +16,11 @@ import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.*;
-import org.noses.games.homedefense.enemy.nestlaying.NestLayingNest;
+import org.noses.games.homedefense.nest.NestLayingNest;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
+import org.noses.games.homedefense.nest.EnemyNest;
+import org.noses.games.homedefense.nest.GroundEnemyNest;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.tower.Tower;
@@ -62,7 +64,7 @@ public class MapScreen extends Screen implements InputProcessor {
     private List<Tower> towers;
 
     @Getter
-    List<EnemyNest> enemyNests;
+    List<org.noses.games.homedefense.nest.EnemyNest> enemyNests;
 
     @Getter
     int speedMultiplier;
@@ -405,12 +407,12 @@ public class MapScreen extends Screen implements InputProcessor {
                 continue;
             }
 
-            EnemyNest enemyNest = null;
+            org.noses.games.homedefense.nest.EnemyNest enemyNest = null;
             if (nest.getType().equalsIgnoreCase("standard")) {
-                enemyNest = new WeakEnemyNest(this, delayBeforeStart, nest.getLon(), nest.getLat());
+                enemyNest = new GroundEnemyNest(this, delayBeforeStart, nest.getLon(), nest.getLat());
                 delayBeforeStart += 3;
             } else if (nest.getType().equalsIgnoreCase("armored")) {
-                enemyNest = new ArmoredEnemyNest(this, delayBeforeStart, nest.getLon(), nest.getLat());
+                enemyNest = new org.noses.games.homedefense.nest.ArmoredEnemyNest(this, delayBeforeStart, nest.getLon(), nest.getLat());
                 delayBeforeStart += 3;
             }
 
@@ -438,7 +440,7 @@ public class MapScreen extends Screen implements InputProcessor {
         addClockTickHandler(enemyGroup);*/
     }
 
-    public void dropNest(EnemyNest enemyNest) {
+    public void dropNest(org.noses.games.homedefense.nest.EnemyNest enemyNest) {
         addClockTickHandler(enemyNest);
         enemyNests.add(enemyNest);
 
@@ -524,7 +526,7 @@ public class MapScreen extends Screen implements InputProcessor {
     public List<Enemy> getEnemies() {
         List<Enemy> enemies = new ArrayList<>();
 
-        for (EnemyNest enemyNest : enemyNests) {
+        for (org.noses.games.homedefense.nest.EnemyNest enemyNest : enemyNests) {
             for (EnemyGroup enemyGroup : enemyNest.getEnemyGroups()) {
                 enemies.addAll(enemyGroup.getEnemies());
             }
@@ -616,7 +618,7 @@ public class MapScreen extends Screen implements InputProcessor {
         batch.begin();
 
         // render the nests
-        for (EnemyNest enemyNest : enemyNests) {
+        for (org.noses.games.homedefense.nest.EnemyNest enemyNest : enemyNests) {
             if (!enemyNest.isKilled()) {
                 enemyNest.render(batch);
             }
