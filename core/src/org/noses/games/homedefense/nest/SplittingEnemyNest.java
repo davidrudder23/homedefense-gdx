@@ -39,5 +39,18 @@ public class SplittingEnemyNest extends EnemyNest {
         return enemyGroup;
     }
 
+    public static class SplittingEnemyNestFactory implements NestFactory {
+        MapScreen parent;
+
+        public SplittingEnemyNestFactory(MapScreen parent) {
+            this.parent = parent;
+        }
+
+        @Override
+        public SplittingEnemyNest build(double delayBeforeStart, double longitude, double latitude) {
+            return new SplittingEnemyNest(parent, delayBeforeStart, longitude, latitude);
+        }
+    }
+
 
 }

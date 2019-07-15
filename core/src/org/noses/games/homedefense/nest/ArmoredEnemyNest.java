@@ -46,4 +46,17 @@ public class ArmoredEnemyNest extends EnemyNest {
         parent.addClockTickHandler(enemyGroup);
         return enemyGroup;
     }
+
+    public static class ArmoredEnemyNestFactory implements NestFactory {
+        MapScreen parent;
+
+        public ArmoredEnemyNestFactory(MapScreen parent) {
+            this.parent = parent;
+        }
+
+        @Override
+        public ArmoredEnemyNest build(double delayBeforeStart, double longitude, double latitude) {
+            return new ArmoredEnemyNest(parent, delayBeforeStart, longitude, latitude);
+        }
+    }
 }
