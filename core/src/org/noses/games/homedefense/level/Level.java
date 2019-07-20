@@ -69,7 +69,7 @@ public class Level implements ClockTickHandler {
 
     @Override
     public void clockTick(double delta) {
-        if (isKilled()) {
+        if (isLevelDone()) {
             kill();
         }
 
@@ -85,7 +85,9 @@ public class Level implements ClockTickHandler {
     public void clockTickIntro(double delta) {
 
         if (clockTick>10) {
+            clockTick = 0;
             state = STATE_LEVEL_GAMEPLAY;
+            return;
         }
 
         clockTick+= delta;
@@ -111,6 +113,14 @@ public class Level implements ClockTickHandler {
     }
 
     public void clockTickOutro(double delta) {
+        if (clockTick>10) {
+            isKilled = true;
+            //parent.clockTick(0);
+            parent.startNewLevel();
+        }
+
+        clockTick += delta;
+        System.out.println("Clock tick="+clockTick);
 
     }
 
@@ -139,18 +149,22 @@ public class Level implements ClockTickHandler {
     }
 
     public void renderOuttro(Batch batch) {
-        isKilled = true;
-        parent.clockTick(0);
-        parent.startNewLevel();
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 128;
+        parameter.color = Color.BLACK;
+        BitmapFont font = generator.generateFont(parameter); // font size 12 pixels
+        //font.getData().scale((float)clockTick/10);
+
+        font.draw(batch, "Success", 100, 300);
     }
 
 
 
     @Override
     public void kill() {
-        if (isKilled) {
+        /*if (isKilled) {
             return;
-        }
+        }*/
 
         state = STATE_LEVEL_OUTRO;
 
@@ -158,6 +172,10 @@ public class Level implements ClockTickHandler {
 
     @Override
     public boolean isKilled() {
+        return false;
+    }
+
+    public boolean isLevelDone() {
         for (NestFactory nestFactory : nestFactories) {
             if (!nestFactory.isKilled()) {
                 //System.out.println("Level not killed because " + nestFactory);

@@ -150,6 +150,10 @@ public class GroundEnemy extends Enemy {
 
     protected void checkForCollision() {
         Point location = getLocation();
+        if (location == null) {
+            return;
+        }
+
         for (Tower tower : parent.getTowers()) {
             if (tower == null) {
                 continue;
