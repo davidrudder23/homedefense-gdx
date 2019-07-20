@@ -26,7 +26,7 @@ public class SplittingGroundEnemy extends GroundEnemy {
             return;
         }
 
-        org.noses.games.homedefense.nest.SplitEnemyNest splitEnemyNest = new SplitEnemyNest(parent, parent.getTowers(), getLocation());
+        SplitEnemyNest splitEnemyNest = new SplitEnemyNest(parent, parent.getTowers(), getLocation());
         parent.addClockTickHandler(splitEnemyNest);
 
         parent.getEnemyNests().add(splitEnemyNest);

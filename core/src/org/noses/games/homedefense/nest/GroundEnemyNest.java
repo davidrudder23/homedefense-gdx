@@ -4,12 +4,13 @@ import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.GroundEnemy;
 import org.noses.games.homedefense.game.MapScreen;
+import org.noses.games.homedefense.geometry.Point;
 
 public class GroundEnemyNest extends EnemyNest {
     GroundEnemy.GroundEnemyBuilder builder;
 
-    public GroundEnemyNest(MapScreen parent, double delayBeforeStart, double longitude, double latitude) {
-        super(parent, "ground", delayBeforeStart, longitude, latitude);
+    public GroundEnemyNest(MapScreen parent, double delayBeforeStart, int numWaves, double longitude, double latitude) {
+        super(parent, "ground", delayBeforeStart, numWaves, longitude, latitude);
     }
 
     @Override
@@ -41,14 +42,27 @@ public class GroundEnemyNest extends EnemyNest {
 
     public static class GroundEnemyNestFactory implements NestFactory {
         MapScreen parent;
+        int numWaves;
 
-        public GroundEnemyNestFactory(MapScreen parent) {
+        GroundEnemyNest enemyNest;
+
+        public GroundEnemyNestFactory(MapScreen parent, int numWaves) {
             this.parent = parent;
+            this.numWaves = numWaves;
         }
 
         @Override
-        public GroundEnemyNest build(double delayBeforeStart, double longitude, double latitude) {
-            return new GroundEnemyNest(parent, delayBeforeStart, longitude, latitude);
+        public GroundEnemyNest build(double delayBeforeStart, Point location) {
+            enemyNest = new GroundEnemyNest(parent, delayBeforeStart, numWaves, location.getLongitude(), location.getLatitude());
+            return enemyNest;
+        }
+
+        @Override
+        public boolean isKilled() {
+            if (enemyNest == null) {
+                return false;
+            }
+            return enemyNest.isKilled();
         }
     }
 

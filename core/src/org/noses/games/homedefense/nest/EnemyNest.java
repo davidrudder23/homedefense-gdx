@@ -29,11 +29,17 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
 
     double timeSinceLastWave;
 
-    public EnemyNest(MapScreen parent, String nestName, double delayBeforeStart, double longitude, double latitude) {
+    int numWaves;
+    int waveNum;
+
+    public EnemyNest(MapScreen parent, String nestName, double delayBeforeStart, int numWaves, double longitude, double latitude) {
         super(parent, "nest/" + nestName + ".png", 199, 199, 0.08, true);
         this.longitude = longitude;
         this.latitude = latitude;
         killed = false;
+
+        this.numWaves = numWaves;
+        waveNum = 0;
 
         timeSinceLastWave = delayBetweenWaves() - delayBeforeStart;
 
@@ -56,6 +62,11 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
 
     @Override
     public void clockTick(double delta) {
+
+        if (waveNum >= numWaves) {
+            return;
+        }
+
         timeSinceLastWave += delta;
         if (timeSinceLastWave > delayBetweenWaves()) {
             timeSinceLastWave = 0;
@@ -87,6 +98,8 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
                     }
                 }
             }
+
+            waveNum++;
         }
     }
 
@@ -97,7 +110,20 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
 
     @Override
     public boolean isKilled() {
-        return killed;
+        if (waveNum < numWaves) {
+            //System.out.println("EnemyNest not killed because waveNum<numWaves, "+waveNum+"<"+numWaves);
+            return false;
+        }
+
+        for (EnemyGroup enemyGroup: enemyGroups) {
+            if (!enemyGroup.isKilled()) {
+                //System.out.println("EnemyNest not killed because "+enemyGroup+" is not killed");
+                return false;
+            }
+        }
+
+        kill();
+        return true;
     }
 
     public void render(Batch batch) {
@@ -105,7 +131,7 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
 
         sprite.setCenterX(parent.convertLongToX(getLongitude()));
         sprite.setCenterY(parent.convertLatToY(getLatitude()));
-        sprite.setScale((float)parent.getSpriteScale(sprite, getScale()));
+        sprite.setScale((float) parent.getSpriteScale(sprite, getScale()));
         sprite.draw(batch);
     }
 

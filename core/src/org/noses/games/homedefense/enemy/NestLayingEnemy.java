@@ -74,7 +74,7 @@ public class NestLayingEnemy extends Enemy {
         if (isCloseToTarget()) {
             EnemyNest enemyNest = null;
 
-            enemyNest = nestFactory.build();
+            enemyNest = nestFactory.build(0, targetNestLocation);
 
             parent.dropNest(enemyNest);
             killed = true;

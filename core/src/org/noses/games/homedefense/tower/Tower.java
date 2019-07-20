@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Data;
+import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.game.*;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.ui.LeftSideTowerMenu;
@@ -84,7 +85,13 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
     }
 
     public void clockTick(double delta) {
-        shooter.setAngle(aimer.aim(aimer.findClosestEnemy(parent.getEnemies())));
+        Enemy target = aimer.findClosestEnemy(parent.getEnemies());
+        if (target == null) {
+            shooter.pause();
+        } else {
+            shooter.setAngle(aimer.aim(target));
+            shooter.unpause();
+        }
 
         shooter.clockTick(delta);
     }

@@ -16,6 +16,7 @@ import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.*;
+import org.noses.games.homedefense.level.Level;
 import org.noses.games.homedefense.nest.NestLayingNest;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
@@ -79,6 +80,8 @@ public class MapScreen extends Screen implements InputProcessor {
     @Getter
     LeftSideUpgradeMenu upgradeMenu;
 
+    Level level;
+
     public MapScreen(HomeDefenseGame parent, Point location) {
         this.parent = parent;
 
@@ -133,7 +136,7 @@ public class MapScreen extends Screen implements InputProcessor {
         speedButton = new SpeedButton(this, getScreenWidth() - 40, getScreenHeight() - 40);
         addClickHandler(speedButton);
 
-        createNests();
+        startNewLevel();
 
         setupSound();
 
@@ -165,6 +168,7 @@ public class MapScreen extends Screen implements InputProcessor {
             clockTickHandlersToBeAdded.add(clockTickHandler);
         }
     }
+
 
     public void addClickHandler(MouseHandler mouseHandler) {
         synchronized (mouseHandlers) {
@@ -391,59 +395,18 @@ public class MapScreen extends Screen implements InputProcessor {
         return null;
     }
 
-    public void createNests() {
-        NestLayingNest nestLayingNest = new NestLayingNest(this);
-        addClockTickHandler(nestLayingNest);
-
-        double delayBeforeStart = 0;
-
-        Djikstra djikstra = new Djikstra(intersections);
-        for (Nest nest : map.getNests()) {
-
-            // If it's too close, don't add the nest
-            Point nestPoint = new Point(nest.getLat(), nest.getLon());
-            Point homePoint = new Point(home.getLatitude(), home.getLongitude());
-            if (nestPoint.getDistanceFrom(homePoint) < 0.005) {
-                continue;
-            }
-
-            org.noses.games.homedefense.nest.EnemyNest enemyNest = null;
-            if (nest.getType().equalsIgnoreCase("standard")) {
-                enemyNest = new GroundEnemyNest(this, delayBeforeStart, nest.getLon(), nest.getLat());
-                delayBeforeStart += 3;
-            } else if (nest.getType().equalsIgnoreCase("armored")) {
-                enemyNest = new org.noses.games.homedefense.nest.ArmoredEnemyNest(this, delayBeforeStart, nest.getLon(), nest.getLat());
-                delayBeforeStart += 3;
-            }
-
-            if (enemyNest == null) {
-                continue;
-            }
-
-            if (djikstra.getBestPath(enemyNest.getNode(), getNodeForLocation(homePoint)) == null) {
-                continue;
-            }
-
-            addClockTickHandler(enemyNest);
-            enemyNests.add(enemyNest);
-
+    public void startNewLevel() {
+        System.out.println("Starting a new level");
+        if (level == null) {
+            level = new Level(this, 10);
+            addClockTickHandler(level);
         }
-        enemyNests.add(nestLayingNest);
-
-        /*EnemyGroup enemyGroup = EnemyGroup.builder()
-                .intersections(startingIntersections)
-                .delay(20)
-                .numEnemies(10)
-                .enemyBuilder(new ArmoredGroundEnemy.ArmoredGroundEnemyBuilder(this, intersections))
-                .build();
-        enemyGroups.add(enemyGroup);
-        addClockTickHandler(enemyGroup);*/
+        level.reset();
     }
 
     public void dropNest(org.noses.games.homedefense.nest.EnemyNest enemyNest) {
         addClockTickHandler(enemyNest);
         enemyNests.add(enemyNest);
-
     }
 
     public HashMap<String, Intersection> getIntersectionsAsHashmap() {
@@ -630,6 +593,9 @@ public class MapScreen extends Screen implements InputProcessor {
             for (EnemyGroup enemyGroup : enemyNest.getEnemyGroups()) {
                 List<Enemy> enemies = enemyGroup.getEnemies();
                 for (Enemy enemy : enemies) {
+                    if (enemy.isKilled()) {
+                        continue;
+                    }
                     Point location = enemy.getLocation();
 
                     double latitude = location.getLatitude();

@@ -18,7 +18,7 @@ public class SplitEnemyNest extends EnemyNest {
     boolean servedOne;
 
     public SplitEnemyNest(MapScreen parent, List<Tower> towers, Point nestLocation) {
-        super(parent, "splitting", 0, nestLocation.getLongitude(), nestLocation.getLatitude());
+        super(parent, "splitting", 0, 1, nestLocation.getLongitude(), nestLocation.getLatitude());
         this.towers = towers;
         servedOne = false;
     }

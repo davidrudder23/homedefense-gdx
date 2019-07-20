@@ -23,22 +23,23 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
 
     List<EnemyGroup> enemyGroups;
 
-    int nestNumber;
+    boolean killed;
 
-    List<NestFactory> nestFactories;
+    NestFactory nestFactory;
 
-    public NestLayingNest(MapScreen parent, List<NestFactory> nestFactories) {
-        super(parent, "splitting", 0, 0, 0);
+    public NestLayingNest(MapScreen parent, NestFactory nestFactory) {
+        super(parent, "splitting", 0, 1, 0, 0);
         this.parent = parent;
-        this.nestFactories = nestFactories;
+        this.nestFactory = nestFactory;
 
         makingNest = false;
         org.noses.games.homedefense.enemy.NestLayingEnemyGroup enemyGroup = new NestLayingEnemyGroup();
         enemyGroups = new ArrayList<>();
         enemyGroups.add(enemyGroup);
         //parent.addClockTickHandler(enemyGroups.get(0));
-        nestNumber = 0;
+        killed = false;
 
+        makeNest();
     }
 
     @Override
@@ -63,71 +64,47 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
 
     @Override
     public void clockTick(double delta) {
-        if (nestNumber > nestFactories.size()) {
-            return;
+    }
+
+    public void makeNest() {
+        double latitude = 0;
+        double longitude = 0;
+
+        List<Intersection> intersections = parent.getIntersections();
+        Home home = parent.getHome();
+
+        // If it's too close, don't add the nest
+        Point homePoint = new Point(home.getLatitude(), home.getLongitude());
+
+        boolean foundIntersection = false;
+
+        Intersection intersection = null;
+
+        while (!foundIntersection) {
+            intersection = intersections.get((int) (Math.random() * intersections.size()));
+            System.out.println("Testing intersection " + intersection);
+
+            if (!parent.isGoodLocationForNest(intersection.getNode())) {
+                continue;
+            }
+
+            foundIntersection = true;
         }
 
-        if (makingNest) {
-            if (enemyGroups.size() <= 0) {
-                return;
-            }
-
-            if (enemyGroups.get(0).getEnemies().size() <= 0) {
-                return;
-            }
-
-            if (enemyGroups.get(0).getEnemies().get(0).isKilled()) {
-                enemyGroups.get(0).getEnemies().clear();
-                makingNest = false;
-            } else {
-                return;
-            }
-        }
-
-        makingNest = true;
-        System.out.println("Parent has "+parent.getEnemyNests().size()+" enemy nests");
-        if (parent.getEnemyNests().size() < 4) {
-            System.out.println("Making a new nest layer");
-            double latitude = 0;
-            double longitude = 0;
-
-            List<Intersection> intersections = parent.getIntersections();
-            Home home = parent.getHome();
-
-            // If it's too close, don't add the nest
-            Point homePoint = new Point(home.getLatitude(), home.getLongitude());
-
-            boolean foundIntersection = false;
-
-            Intersection intersection = null;
-
-            while (!foundIntersection) {
-                intersection = intersections.get((int) (Math.random() * intersections.size()));
-                System.out.println("Testing intersection "+intersection);
-
-                if (!parent.isGoodLocationForNest(intersection.getNode())) {
-                    continue;
-                }
-
-                foundIntersection = true;
-            }
-
-            //System.out.println("Targetting nest at "+intersection);
-            org.noses.games.homedefense.enemy.NestLayingEnemy nestLayingEnemy = new NestLayingEnemy(parent, new Point(intersection.getLatitude(), intersection.getLongitude()), nestFactories.get(nestNumber));
-            parent.addClockTickHandler(nestLayingEnemy);
-            enemyGroups.get(0).addEnemy(nestLayingEnemy);
-            nestNumber++;
-        }
+        //System.out.println("Targetting nest at "+intersection);
+        NestLayingEnemy nestLayingEnemy = new NestLayingEnemy(parent, new Point(intersection.getLatitude(), intersection.getLongitude()), nestFactory);
+        parent.addClockTickHandler(nestLayingEnemy);
+        enemyGroups.get(0).addEnemy(nestLayingEnemy);
     }
 
     @Override
     public void kill() {
-
+        killed = true;
     }
 
     @Override
     public boolean isKilled() {
-        return false;
+        return killed;
     }
 
     @Override
