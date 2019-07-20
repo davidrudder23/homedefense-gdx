@@ -580,6 +580,8 @@ public class MapScreen extends Screen implements InputProcessor {
 
         batch.begin();
 
+        level.render(batch);
+
         // render the nests
         for (org.noses.games.homedefense.nest.EnemyNest enemyNest : enemyNests) {
             if (!enemyNest.isKilled()) {

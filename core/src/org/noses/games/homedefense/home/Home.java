@@ -42,11 +42,14 @@ public class Home extends Enemy implements PhysicalObject {
 
     Aimer aimer;
 
+    boolean paused;
+
     public Home(MapScreen parent, double latitude, double longitude) {
         super(parent, "home.png", parent.loadSound("home_hit.mp3"), 64, 64, .08, 100);
         this.latitude = latitude;
         this.longitude = longitude;
         angle = 0;
+        paused = false;
 
         bullets = new ArrayList<>();
 
@@ -102,13 +105,21 @@ public class Home extends Enemy implements PhysicalObject {
         Enemy closestEnemy = aimer.findClosestEnemy(parent.getEnemies());
 
         if (closestEnemy == null) {
+            paused = true;
             return 0;
         }
+
+        paused = false;
 
         return aimer.aim(closestEnemy);
     }
 
     private void shoot() {
+
+        if (paused) {
+            return;
+        }
+
         if (parent.getEnemies().size() == 0) {
             return;
         }
