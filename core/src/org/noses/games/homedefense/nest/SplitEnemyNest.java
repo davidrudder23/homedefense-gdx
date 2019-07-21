@@ -1,7 +1,9 @@
-package org.noses.games.homedefense.enemy;
+package org.noses.games.homedefense.nest;
 
 import org.noses.games.homedefense.client.Node;
-import org.noses.games.homedefense.client.Way;
+import org.noses.games.homedefense.enemy.ArmoredGroundEnemy;
+import org.noses.games.homedefense.enemy.EnemyGroup;
+import org.noses.games.homedefense.enemy.GroundEnemy;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.pathfinding.Djikstra;
@@ -16,7 +18,7 @@ public class SplitEnemyNest extends EnemyNest {
     boolean servedOne;
 
     public SplitEnemyNest(MapScreen parent, List<Tower> towers, Point nestLocation) {
-        super(parent, "splitting", 0, nestLocation.getLongitude(), nestLocation.getLatitude());
+        super(parent, "splitting", 0, 1, nestLocation.getLongitude(), nestLocation.getLatitude());
         this.towers = towers;
         servedOne = false;
     }

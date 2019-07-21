@@ -1,4 +1,4 @@
-package org.noses.games.homedefense.enemy.nestlaying;
+package org.noses.games.homedefense.enemy;
 
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;

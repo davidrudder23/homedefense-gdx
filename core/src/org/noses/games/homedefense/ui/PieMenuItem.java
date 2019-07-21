@@ -3,6 +3,7 @@ package org.noses.games.homedefense.ui;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.tower.Tower;
 import org.noses.games.homedefense.tower.TowerFactory;
@@ -10,6 +11,7 @@ import org.noses.games.homedefense.tower.TowerFactory;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class PieMenuItem extends MenuItem {
 
     TowerFactory towerFactory;

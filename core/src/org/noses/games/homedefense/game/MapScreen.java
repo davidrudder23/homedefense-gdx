@@ -16,10 +16,11 @@ import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.*;
-import org.noses.games.homedefense.enemy.nestlaying.NestLayingNest;
+import org.noses.games.homedefense.level.LevelEngine;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.hero.Hero;
 import org.noses.games.homedefense.home.Home;
+import org.noses.games.homedefense.nest.EnemyNest;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.tower.Tower;
@@ -63,7 +64,7 @@ public class MapScreen extends Screen implements InputProcessor {
     private List<Tower> towers;
 
     @Getter
-    List<EnemyNest> enemyNests;
+    List<org.noses.games.homedefense.nest.EnemyNest> enemyNests;
 
     @Getter
     int speedMultiplier;
@@ -77,6 +78,8 @@ public class MapScreen extends Screen implements InputProcessor {
 
     @Getter
     LeftSideUpgradeMenu upgradeMenu;
+
+    LevelEngine levelEngine;
 
     @Getter
     Hero hero;
@@ -135,7 +138,7 @@ public class MapScreen extends Screen implements InputProcessor {
         speedButton = new SpeedButton(this, getScreenWidth() - 40, getScreenHeight() - 40);
         addClickHandler(speedButton);
 
-        createNests();
+        startNewLevel();
 
         setupSound();
 
@@ -179,6 +182,7 @@ public class MapScreen extends Screen implements InputProcessor {
             clockTickHandlersToBeAdded.add(clockTickHandler);
         }
     }
+
 
     public void addClickHandler(MouseHandler mouseHandler) {
         synchronized (mouseHandlers) {
@@ -407,59 +411,21 @@ public class MapScreen extends Screen implements InputProcessor {
         return null;
     }
 
-    public void createNests() {
-        NestLayingNest nestLayingNest = new NestLayingNest(this);
-        addClockTickHandler(nestLayingNest);
-
-        double delayBeforeStart = 0;
-
-        Djikstra djikstra = new Djikstra(intersections);
-        for (Nest nest : map.getNests()) {
-
-            // If it's too close, don't add the nest
-            Point nestPoint = new Point(nest.getLat(), nest.getLon());
-            Point homePoint = new Point(home.getLatitude(), home.getLongitude());
-            if (nestPoint.getDistanceFrom(homePoint) < 0.005) {
-                continue;
-            }
-
-            EnemyNest enemyNest = null;
-            if (nest.getType().equalsIgnoreCase("standard")) {
-                enemyNest = new WeakEnemyNest(this, delayBeforeStart, nest.getLon(), nest.getLat());
-                delayBeforeStart += 3;
-            } else if (nest.getType().equalsIgnoreCase("armored")) {
-                enemyNest = new ArmoredEnemyNest(this, delayBeforeStart, nest.getLon(), nest.getLat());
-                delayBeforeStart += 3;
-            }
-
-            if (enemyNest == null) {
-                continue;
-            }
-
-            if (djikstra.getBestPath(enemyNest.getNode(), getNodeForLocation(homePoint)) == null) {
-                continue;
-            }
-
-            addClockTickHandler(enemyNest);
-            enemyNests.add(enemyNest);
-
+    public void startNewLevel() {
+        System.out.println("Starting a new levelEngine");
+        if (levelEngine == null) {
+            levelEngine = new LevelEngine(this, 10);
+            addClockTickHandler(levelEngine);
         }
-        enemyNests.add(nestLayingNest);
-
-        /*EnemyGroup enemyGroup = EnemyGroup.builder()
-                .intersections(startingIntersections)
-                .delay(20)
-                .numEnemies(10)
-                .enemyBuilder(new ArmoredGroundEnemy.ArmoredGroundEnemyBuilder(this, intersections))
-                .build();
-        enemyGroups.add(enemyGroup);
-        addClockTickHandler(enemyGroup);*/
+        if (!levelEngine.reset()) {
+            System.out.println("You won!!!");
+            win();
+        }
     }
 
-    public void dropNest(EnemyNest enemyNest) {
+    public void dropNest(org.noses.games.homedefense.nest.EnemyNest enemyNest) {
         addClockTickHandler(enemyNest);
         enemyNests.add(enemyNest);
-
     }
 
     public HashMap<String, Intersection> getIntersectionsAsHashmap() {
@@ -531,6 +497,11 @@ public class MapScreen extends Screen implements InputProcessor {
         parent.die();
     }
 
+    private void win() {
+        timer.cancel();
+        parent.win();
+    }
+
     public void addMoney(int money) {
         this.money += money;
     }
@@ -542,7 +513,7 @@ public class MapScreen extends Screen implements InputProcessor {
     public List<Enemy> getEnemies() {
         List<Enemy> enemies = new ArrayList<>();
 
-        for (EnemyNest enemyNest : enemyNests) {
+        for (org.noses.games.homedefense.nest.EnemyNest enemyNest : enemyNests) {
             for (EnemyGroup enemyGroup : enemyNest.getEnemyGroups()) {
                 enemies.addAll(enemyGroup.getEnemies());
             }
@@ -633,8 +604,10 @@ public class MapScreen extends Screen implements InputProcessor {
 
         batch.begin();
 
+        levelEngine.render(batch);
+
         // render the nests
-        for (EnemyNest enemyNest : enemyNests) {
+        for (org.noses.games.homedefense.nest.EnemyNest enemyNest : enemyNests) {
             if (!enemyNest.isKilled()) {
                 enemyNest.render(batch);
             }
@@ -646,6 +619,9 @@ public class MapScreen extends Screen implements InputProcessor {
             for (EnemyGroup enemyGroup : enemyNest.getEnemyGroups()) {
                 List<Enemy> enemies = enemyGroup.getEnemies();
                 for (Enemy enemy : enemies) {
+                    if (enemy.isKilled()) {
+                        continue;
+                    }
                     Point location = enemy.getLocation();
 
                     double latitude = location.getLatitude();

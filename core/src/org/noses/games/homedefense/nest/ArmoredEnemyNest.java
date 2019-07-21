@@ -1,13 +1,16 @@
-package org.noses.games.homedefense.enemy;
+package org.noses.games.homedefense.nest;
 
 import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.client.Way;
+import org.noses.games.homedefense.enemy.ArmoredGroundEnemy;
+import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.game.MapScreen;
+import org.noses.games.homedefense.geometry.Point;
 
 public class ArmoredEnemyNest extends EnemyNest {
 
-    public ArmoredEnemyNest(MapScreen parent, double delayBeforeStart, double longitude, double latitude) {
-        super (parent, "armored", delayBeforeStart, longitude, latitude);
+    public ArmoredEnemyNest(MapScreen parent, double delayBeforeStart, int numWaves, double longitude, double latitude) {
+        super (parent, "armored", delayBeforeStart, numWaves, longitude, latitude);
     }
 
     @Override
@@ -43,5 +46,31 @@ public class ArmoredEnemyNest extends EnemyNest {
                 .build();
         parent.addClockTickHandler(enemyGroup);
         return enemyGroup;
+    }
+
+    public static class ArmoredEnemyNestFactory implements NestFactory {
+        MapScreen parent;
+        int numWaves;
+        ArmoredEnemyNest enemyNest;
+
+        public ArmoredEnemyNestFactory(MapScreen parent, Integer numWaves) {
+            this.parent = parent;
+            this.numWaves = numWaves;
+        }
+
+        @Override
+        public ArmoredEnemyNest build(double delayBeforeStart, Point location) {
+            enemyNest = new ArmoredEnemyNest(parent, delayBeforeStart, numWaves, location.getLongitude(), location.getLatitude());
+            return  enemyNest;
+        }
+
+        @Override
+        public boolean isKilled() {
+            if (enemyNest == null) {
+                return false;
+            }
+
+            return enemyNest.isKilled();
+        }
     }
 }

@@ -1,10 +1,9 @@
 package org.noses.games.homedefense.enemy;
 
-import lombok.Setter;
 import org.noses.games.homedefense.client.Node;
-import org.noses.games.homedefense.client.Way;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.nest.SplitEnemyNest;
 import org.noses.games.homedefense.pathfinding.PathStep;
 
 import java.util.Optional;

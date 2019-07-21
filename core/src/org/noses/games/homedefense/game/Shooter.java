@@ -34,12 +34,15 @@ public abstract class Shooter implements PhysicalObject, ClockTickHandler {
 
     boolean killed;
 
+    boolean paused;
+
     public Shooter(MapScreen parent, double timeBetweenShots, String shotSoundFilename, Point location) {
         this.parent = parent;
         this.timeBetweenShots = timeBetweenShots;
         this.location = location;
 
         killed = false;
+        paused = true;
 
         shotSound = parent.loadSound(shotSoundFilename);
         bullets = new ArrayList<>();
@@ -78,6 +81,10 @@ public abstract class Shooter implements PhysicalObject, ClockTickHandler {
     public abstract Bullet createBullet();
 
     public void shoot() {
+        if (paused) {
+            return;
+        }
+
         if (parent.getEnemies().size() == 0) {
             return;
         }
@@ -102,6 +109,14 @@ public abstract class Shooter implements PhysicalObject, ClockTickHandler {
         bullets.add(bullet);
 
         parent.addClockTickHandler(bullet);
+    }
+
+    public void pause() {
+        paused = true;
+    }
+
+    public void unpause() {
+        paused = false;
     }
 
     public void render(Batch batch) {

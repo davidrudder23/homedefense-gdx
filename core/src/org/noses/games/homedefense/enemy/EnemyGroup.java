@@ -18,7 +18,7 @@ public class EnemyGroup implements ClockTickHandler {
 
     private int count;
 
-    protected EnemyGroup(int delay) {
+    public EnemyGroup(int delay) {
         enemies = new ArrayList<>();
         upcomingEnemies = new ArrayList<>();
 
