@@ -66,6 +66,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
         currentScreen = new DeathScreen(this);
     }
 
+    public void win() {
+        currentScreen = new WinScreen(this);
+    }
+
     public void endGame() {
         Gdx.app.exit();
     }

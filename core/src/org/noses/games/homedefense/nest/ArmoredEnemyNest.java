@@ -53,7 +53,7 @@ public class ArmoredEnemyNest extends EnemyNest {
         int numWaves;
         ArmoredEnemyNest enemyNest;
 
-        public ArmoredEnemyNestFactory(MapScreen parent, int numWaves) {
+        public ArmoredEnemyNestFactory(MapScreen parent, Integer numWaves) {
             this.parent = parent;
             this.numWaves = numWaves;
         }

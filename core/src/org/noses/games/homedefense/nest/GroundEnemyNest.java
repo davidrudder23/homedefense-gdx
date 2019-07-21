@@ -46,7 +46,7 @@ public class GroundEnemyNest extends EnemyNest {
 
         GroundEnemyNest enemyNest;
 
-        public GroundEnemyNestFactory(MapScreen parent, int numWaves) {
+        public GroundEnemyNestFactory(MapScreen parent, Integer numWaves) {
             this.parent = parent;
             this.numWaves = numWaves;
         }

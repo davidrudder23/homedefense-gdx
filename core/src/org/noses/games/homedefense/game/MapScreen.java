@@ -16,12 +16,10 @@ import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.*;
-import org.noses.games.homedefense.level.Level;
-import org.noses.games.homedefense.nest.NestLayingNest;
+import org.noses.games.homedefense.level.LevelEngine;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.nest.EnemyNest;
-import org.noses.games.homedefense.nest.GroundEnemyNest;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.tower.Tower;
@@ -80,7 +78,7 @@ public class MapScreen extends Screen implements InputProcessor {
     @Getter
     LeftSideUpgradeMenu upgradeMenu;
 
-    Level level;
+    LevelEngine levelEngine;
 
     public MapScreen(HomeDefenseGame parent, Point location) {
         this.parent = parent;
@@ -396,12 +394,15 @@ public class MapScreen extends Screen implements InputProcessor {
     }
 
     public void startNewLevel() {
-        System.out.println("Starting a new level");
-        if (level == null) {
-            level = new Level(this, 10);
-            addClockTickHandler(level);
+        System.out.println("Starting a new levelEngine");
+        if (levelEngine == null) {
+            levelEngine = new LevelEngine(this, 10);
+            addClockTickHandler(levelEngine);
         }
-        level.reset();
+        if (!levelEngine.reset()) {
+            System.out.println("You won!!!");
+            win();
+        }
     }
 
     public void dropNest(org.noses.games.homedefense.nest.EnemyNest enemyNest) {
@@ -476,6 +477,11 @@ public class MapScreen extends Screen implements InputProcessor {
     private void die() {
         timer.cancel();
         parent.die();
+    }
+
+    private void win() {
+        timer.cancel();
+        parent.win();
     }
 
     public void addMoney(int money) {
@@ -580,7 +586,7 @@ public class MapScreen extends Screen implements InputProcessor {
 
         batch.begin();
 
-        level.render(batch);
+        levelEngine.render(batch);
 
         // render the nests
         for (org.noses.games.homedefense.nest.EnemyNest enemyNest : enemyNests) {

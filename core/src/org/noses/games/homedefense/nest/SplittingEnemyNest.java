@@ -48,7 +48,7 @@ public class SplittingEnemyNest extends EnemyNest {
 
         boolean started;
 
-        public SplittingEnemyNestFactory(MapScreen parent, int numWaves) {
+        public SplittingEnemyNestFactory(MapScreen parent, Integer numWaves) {
             this.parent = parent;
             this.numWaves = numWaves;
 
