@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.tower.Tower;
 import org.noses.games.homedefense.tower.TowerFactory;
-import org.noses.games.homedefense.tower.TowerUpgrader;
 
 public class LeftSideTowerMenuItem extends MenuItem {
 

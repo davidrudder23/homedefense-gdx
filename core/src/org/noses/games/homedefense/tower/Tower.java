@@ -2,13 +2,11 @@ package org.noses.games.homedefense.tower;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Data;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.game.*;
 import org.noses.games.homedefense.geometry.Point;
-import org.noses.games.homedefense.ui.LeftSideTowerMenu;
 import org.noses.games.homedefense.ui.MouseHandler;
 
 import java.util.ArrayList;

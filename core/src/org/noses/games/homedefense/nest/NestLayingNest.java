@@ -4,8 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.NestLayingEnemy;
 import org.noses.games.homedefense.enemy.NestLayingEnemyGroup;
-import org.noses.games.homedefense.nest.EnemyNest;
-import org.noses.games.homedefense.nest.NestFactory;
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;

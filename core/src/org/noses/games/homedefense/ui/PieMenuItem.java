@@ -1,7 +1,5 @@
 package org.noses.games.homedefense.ui;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.noses.games.homedefense.game.MapScreen;
