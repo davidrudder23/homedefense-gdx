@@ -18,6 +18,7 @@ import org.noses.games.homedefense.client.*;
 import org.noses.games.homedefense.enemy.*;
 import org.noses.games.homedefense.level.LevelEngine;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.hero.Hero;
 import org.noses.games.homedefense.home.Home;
 import org.noses.games.homedefense.nest.EnemyNest;
 import org.noses.games.homedefense.pathfinding.Djikstra;
@@ -80,6 +81,9 @@ public class MapScreen extends Screen implements InputProcessor {
 
     LevelEngine levelEngine;
 
+    @Getter
+    Hero hero;
+
     public MapScreen(HomeDefenseGame parent, Point location) {
         this.parent = parent;
 
@@ -138,6 +142,8 @@ public class MapScreen extends Screen implements InputProcessor {
 
         setupSound();
 
+        setupHero();
+
         Gdx.input.setInputProcessor(this);
 
         towerChoiceMenu = new LeftSideTowerMenu(this);
@@ -152,6 +158,16 @@ public class MapScreen extends Screen implements InputProcessor {
                 , 0f, 1 / (10.0f * speedMultiplier));
 
     }
+
+    public void setupHero() {
+
+        if (parent.hasLiveGeolocation()) {
+            hero = new Hero(this);
+            addClockTickHandler(hero);
+            parent.addGeolocationListener(hero);
+        }
+    }
+
 
     public int getScreenWidth() {
         return Gdx.graphics.getWidth();
@@ -197,13 +213,13 @@ public class MapScreen extends Screen implements InputProcessor {
     public void speedUp() {
         speedMultiplier += 1;
 
-        if ((speedMultiplier > 5) || (speedMultiplier < 1)) {
+        if ((speedMultiplier > 3) || (speedMultiplier < 1)) {
             speedMultiplier = 1;
         }
 
         System.out.println("Speed multiplier=" + speedMultiplier);
 
-        timer.cancel();
+        /*timer.cancel();
         timer = Timer.schedule(new Timer.Task() {
                                    @Override
                                    public void run() {
@@ -211,6 +227,8 @@ public class MapScreen extends Screen implements InputProcessor {
                                    }
                                }
                 , 0f, 1 / (10.0f * speedMultiplier));
+
+         */
 
     }
 
@@ -460,7 +478,7 @@ public class MapScreen extends Screen implements InputProcessor {
         for (ClockTickHandler clockTickHandler : clockTickHandlers) {
             //System.out.println ("Clock ticking "+clockTickHandler+" iskilled="+clockTickHandler.isKilled());
             if (!clockTickHandler.isKilled()) {
-                clockTickHandler.clockTick(delta);
+                clockTickHandler.clockTick((float)(1+(speedMultiplier/2))/10);
             }
         }
 
@@ -645,6 +663,14 @@ public class MapScreen extends Screen implements InputProcessor {
 
         if (!towerChoiceMenu.isHidden()) {
             towerChoiceMenu.renderMenu(batch);
+        }
+
+        if (parent.hasLiveGeolocation()) {
+            Sprite heroSprite = new Sprite(hero.getFrameTextureRegion());
+            heroSprite.setScale((float) ((parent.getScreenWidth() * hero.getScale()) / heroSprite.getWidth()));
+            heroSprite.setCenterX(convertLongToX(hero.getLongitude()));
+            heroSprite.setCenterY(convertLatToY(hero.getLatitude()));
+            heroSprite.draw(batch);
         }
 
         if ((upgradeMenu != null) && (!upgradeMenu.isHidden())) {

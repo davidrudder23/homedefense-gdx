@@ -66,8 +66,9 @@ public class MainScreen extends Screen {
         startButton = new TextButton("Start", skin);
 
         startButton.setX((float)(stage.getWidth()*.8));
+
         startButton.setY((float)(stage.getHeight()*.1));
-        startButton.setScale((float)(parent.getScreenWidth()*.5)/startButton.getWidth());
+        startButton.setScale((float)(parent.getScreenWidth()*.6)/startButton.getWidth());
         stage.addActor(startButton);
 
         startButton.addListener(new ChangeListener() {
@@ -103,6 +104,7 @@ public class MainScreen extends Screen {
         destinationSelect.setX((float)(stage.getWidth()*.05));
         destinationSelect.setY((float)(stage.getHeight()*.1));
         destinationSelect.setWidth((float)(stage.getWidth() * .7));
+
         stage.addActor(destinationSelect);
 
         skin = new Skin(Gdx.files.internal("skin/comic/skin/comic-ui.json"));
@@ -126,6 +128,12 @@ public class MainScreen extends Screen {
         for (Destination destination: destinations) {
             if (destination.getName().equals(destinationSelect.getSelected())) {
                 location = new Point(destination.getLat(), destination.getLon());
+            }
+
+            if (destination.getName().equals("Current Location")) {
+                parent.setUsingCurrentAddress(true);
+            } else {
+                parent.setUsingCurrentAddress(false);
             }
         }
 

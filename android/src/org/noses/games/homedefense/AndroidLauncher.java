@@ -53,7 +53,9 @@ public class AndroidLauncher extends AndroidApplication {
 
         try {
             Location location = service.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            androidGeolocator.setGeoLocation(new Point(location.getLatitude(), location.getLongitude()));
+            if (location != null) {
+                androidGeolocator.setGeoLocation(new Point(location.getLatitude(), location.getLongitude()));
+            }
         } catch (SecurityException exc) {
             exc.printStackTrace();
         }
