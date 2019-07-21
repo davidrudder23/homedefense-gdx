@@ -80,7 +80,6 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
 
         while (!foundIntersection) {
             intersection = intersections.get((int) (Math.random() * intersections.size()));
-            System.out.println("Testing intersection " + intersection);
 
             if (!parent.isGoodLocationForNest(intersection.getNode())) {
                 continue;
@@ -89,7 +88,6 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
             foundIntersection = true;
         }
 
-        //System.out.println("Targetting nest at "+intersection);
         NestLayingEnemy nestLayingEnemy = new NestLayingEnemy(parent, new Point(intersection.getLatitude(), intersection.getLongitude()), nestFactory);
         parent.addClockTickHandler(nestLayingEnemy);
         enemyGroups.get(0).addEnemy(nestLayingEnemy);

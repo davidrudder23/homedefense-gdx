@@ -111,13 +111,11 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
     @Override
     public boolean isKilled() {
         if (waveNum < numWaves) {
-            //System.out.println("EnemyNest not killed because waveNum<numWaves, "+waveNum+"<"+numWaves);
             return false;
         }
 
         for (EnemyGroup enemyGroup: enemyGroups) {
             if (!enemyGroup.isKilled()) {
-                //System.out.println("EnemyNest not killed because "+enemyGroup+" is not killed");
                 return false;
             }
         }
@@ -150,8 +148,6 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
                 }
             }
         }
-
-        System.out.println("bestNode=" + bestNode);
 
         if (bestNode == null) {
             return null;

@@ -34,8 +34,6 @@ public class MapClient {
         register.setEmail(email);
         String jsonPost = objectMapper.writeValueAsString(register);
 
-        System.out.println("Registering with "+jsonPost);
-
         Request request = new Request.Builder()
                 .url(registerURL)
                 .post(RequestBody.create(MediaType.parse("application/json"), jsonPost))
@@ -52,8 +50,6 @@ public class MapClient {
     }
 
     private void setHomeLocation(float latitude, float longitude, String updateURL, Account account) throws IOException {
-        System.out.println("Register Response="+ account.getToken());
-
         account.setHomeLatitude(latitude);
         account.setHomeLongitude(longitude);
         String jsonPost = objectMapper.writeValueAsString(account);
@@ -68,7 +64,6 @@ public class MapClient {
 
         // Update is a write operation, just throw away the response
         String responseJSON = response.body().string();
-        System.out.println("Set Home Response="+responseJSON);
 
         // TODO
         objectMapper.readValue(responseJSON, Account.class);
@@ -82,8 +77,6 @@ public class MapClient {
         login.setPassword(password);
         String jsonPost = objectMapper.writeValueAsString(login);
 
-        System.out.println("Logging in with "+jsonPost);
-
         Request request = new Request.Builder()
                 .url(url)
                 .post(RequestBody.create(MediaType.parse("application/json"), jsonPost))
@@ -91,7 +84,6 @@ public class MapClient {
 
         Response response = client.newCall(request).execute();
         Account account = objectMapper.readValue(response.body().string(), Account.class);
-        System.out.println("Login Response="+ account.getToken());
         return account;
     }
 
@@ -106,7 +98,6 @@ public class MapClient {
         Response response = client.newCall(request).execute();
 
         String mapJSON = response.body().string();
-        //System.out.println(mapJSON);
         Map map = objectMapper.readValue(mapJSON, Map.class);
         return map;
     }
@@ -121,7 +112,6 @@ public class MapClient {
         Response response = client.newCall(request).execute();
 
         String destinationsJSON = response.body().string();
-        System.out.println(destinationsJSON);
         List<Destination> destinations = new ArrayList<>(Arrays.asList(objectMapper.readValue(destinationsJSON, Destination[].class)));
         return destinations;
     }

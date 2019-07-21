@@ -65,7 +65,6 @@ public class SplittingEnemyNest extends EnemyNest {
         @Override
         public boolean isKilled() {
             if (!started) {
-                //System.out.println("Splitting enemy nest is not started");
                 return false;
             }
             return enemyNest.isKilled();

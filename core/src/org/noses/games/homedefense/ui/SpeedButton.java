@@ -70,13 +70,9 @@ public class SpeedButton implements MouseHandler {
         int lowerRightX = upperLeftX + width;
         int lowerRightY = upperLeftY + height;
 
-        if (parent.isPointWithinBounds(new Point(clickX, clickY),
+        return parent.isPointWithinBounds(new Point(clickX, clickY),
                 new Point(upperLeftX, upperLeftY),
-                new Point(lowerRightX, lowerRightY))) {
-            return true;
-        }
-
-        return false;
+                new Point(lowerRightX, lowerRightY));
     }
 
     public double getScale() {

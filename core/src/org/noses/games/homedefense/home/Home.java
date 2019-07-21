@@ -142,7 +142,6 @@ public class Home extends Enemy implements PhysicalObject {
         normalBullet.shoot();
         bullets.add(normalBullet);
 
-        //System.out.println("Adding bullet to clock tick handlers");
         parent.addClockTickHandler(normalBullet);
     }
 

@@ -105,10 +105,7 @@ public class NestLayingEnemy extends Enemy {
     private boolean isCloseToTarget() {
         Point location = getLocation();
 
-        if (location.getDistanceFrom(targetNestLocation) <= (HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * 10)) {
-            return true;
-        }
-        return false;
+        return location.getDistanceFrom(targetNestLocation) <= (HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * 10);
     }
 
     @Override
