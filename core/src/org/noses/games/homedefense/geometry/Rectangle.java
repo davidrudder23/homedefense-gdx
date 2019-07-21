@@ -20,13 +20,10 @@ public class Rectangle {
     }
 
     public boolean isInBoundingBox(Point point) {
-        if ((point.getLatitude() >= upperLeft.getLatitude()) &&
+        return (point.getLatitude() >= upperLeft.getLatitude()) &&
                 (point.getLongitude() >= upperLeft.getLongitude()) &&
                 (point.getLatitude() <= lowerRight.getLatitude()) &&
-                (point.getLongitude() <= lowerRight.getLongitude())) {
-            return true;
-        }
-        return false;
+                (point.getLongitude() <= lowerRight.getLongitude());
     }
 
     public double getDiagonalSize() {

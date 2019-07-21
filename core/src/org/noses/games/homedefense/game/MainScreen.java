@@ -86,7 +86,6 @@ public class MainScreen extends Screen {
         }
 
         for (Destination destination: destinations) {
-            System.out.println(destination.getName()+" "+destination.getLat()+","+destination.getLon());
             destinationNameArray.add(destination.getName());
         }
         destinationSelect.setItems(destinationNameArray);
@@ -114,7 +113,6 @@ public class MainScreen extends Screen {
         destinationLabel.setY((float)(stage.getHeight()*.1)+destinationSelect.getHeight());
         destinationLabel.setWidth(destinationSelect.getWidth());
         destinationLabel.setHeight(destinationSelect.getHeight());
-        System.out.println(destinationLabel.getX()+","+destinationLabel.getY()+" +"+destinationLabel.getWidth()+"+"+destinationLabel.getHeight());
         stage.addActor(destinationLabel);
     }
 

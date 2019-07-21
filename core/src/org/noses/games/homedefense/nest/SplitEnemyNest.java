@@ -64,7 +64,6 @@ public class SplitEnemyNest extends EnemyNest {
             PathStep pathStep = djikstra.getBestPath(node, parent.getNodeForLocation(tower.getLocation()));
 
             if (pathStep == null) {
-                System.out.println("Couldn't find pathstep for tower at "+tower.getLocation());
                 continue;
             }
 

@@ -36,11 +36,8 @@ public class LeftSideTowerMenuItem extends MenuItem {
 
         int adjustedY = parent.getScreenHeight() - moveY;
 
-        if ((moveX >= x) && (moveX <= (x + width)) &&
-                (adjustedY >= y) && (adjustedY <= (y + height))) {
-            return true;
-        }
-        return false;
+        return (moveX >= x) && (moveX <= (x + width)) &&
+                (adjustedY >= y) && (adjustedY <= (y + height));
     }
 
     public Tower getTower(double longitude,double latitude) {

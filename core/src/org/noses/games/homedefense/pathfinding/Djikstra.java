@@ -91,10 +91,6 @@ public class Djikstra {
                     seen.put(intersection.getLatitude()+"_"+intersection.getLongitude(), Boolean.TRUE);
                 }
             }
-
-            /*System.out.println("Unvisited intersections has " + unvisitedIntersections.size());
-            System.out.println("Visited intersections has " + visitedIntersections.size());
-            System.out.println("Current PathStep=" + pathStep);*/
         }
 
         if ((destination == null) || (destination.getPathStep() == null)){

@@ -33,8 +33,6 @@ public class ArmoredEnemyNest extends EnemyNest {
             }
         }
 
-        System.out.println("bestNode="+bestNode);
-
         if (bestNode == null) {
             return null;
         }

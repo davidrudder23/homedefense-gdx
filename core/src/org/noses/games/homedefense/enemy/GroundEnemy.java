@@ -159,8 +159,6 @@ public class GroundEnemy extends Enemy {
                 continue;
             }
             if (location.getDistanceFrom(tower.getLocation()) < HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * 100) {
-                System.out.println("Enemy hit tower " + tower);
-
                 tower.damage(getDamage());
                 kill();
             }
@@ -192,7 +190,6 @@ public class GroundEnemy extends Enemy {
         }
 
         if (pathSteps.size() < 2) {
-            System.out.println(getWay().getName() + " has only " + pathSteps.size() + " paths");
             return;
         }
 
@@ -201,7 +198,6 @@ public class GroundEnemy extends Enemy {
 
         Node node = pathSteps.get(currentPathStep).getEndingNode();
         while ((node == null) && (currentPathStep < (pathSteps.size() - 1))) {
-            System.out.println("NODE IS NULL");
             currentPathStep++;
             node = pathSteps.get(currentPathStep).getEndingNode();
         }
@@ -258,7 +254,6 @@ public class GroundEnemy extends Enemy {
                 Intersection intersection = djikstra.getIntersectionForNode(intersections, startingNode);
 
                 pathStep = djikstra.getBestPath(intersection, target);
-                System.out.println("Enemy's path - " + pathStep);
             }
         }
 

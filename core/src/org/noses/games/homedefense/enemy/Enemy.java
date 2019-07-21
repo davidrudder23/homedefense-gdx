@@ -73,7 +73,6 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
                 getLocation().getLongitude()-halfHeight,
                 getLocation().getLatitude()+halfWidth,
                 getLocation().getLongitude()+halfHeight);
-        //System.out.println ("boundingBox="+boundingBox+" height="+tileHeight);
         return boundingBox;
     }
 }
