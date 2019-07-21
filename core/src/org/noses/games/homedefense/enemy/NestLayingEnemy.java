@@ -1,7 +1,6 @@
 package org.noses.games.homedefense.enemy;
 
 import org.noses.games.homedefense.HomeDefenseGame;
-import org.noses.games.homedefense.enemy.*;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.nest.EnemyNest;

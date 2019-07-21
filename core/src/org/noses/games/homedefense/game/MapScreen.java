@@ -15,16 +15,20 @@ import lombok.Getter;
 import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.*;
-import org.noses.games.homedefense.enemy.*;
-import org.noses.games.homedefense.level.LevelEngine;
+import org.noses.games.homedefense.enemy.Enemy;
+import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.hero.Hero;
 import org.noses.games.homedefense.home.Home;
+import org.noses.games.homedefense.level.LevelEngine;
 import org.noses.games.homedefense.nest.EnemyNest;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.tower.Tower;
-import org.noses.games.homedefense.ui.*;
+import org.noses.games.homedefense.ui.LeftSideTowerMenu;
+import org.noses.games.homedefense.ui.LeftSideUpgradeMenu;
+import org.noses.games.homedefense.ui.MouseHandler;
+import org.noses.games.homedefense.ui.SpeedButton;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -213,7 +217,7 @@ public class MapScreen extends Screen implements InputProcessor {
     public void speedUp() {
         speedMultiplier += 1;
 
-        if ((speedMultiplier > 3) || (speedMultiplier < 1)) {
+        if ((speedMultiplier > 5) || (speedMultiplier < 1)) {
             speedMultiplier = 1;
         }
 

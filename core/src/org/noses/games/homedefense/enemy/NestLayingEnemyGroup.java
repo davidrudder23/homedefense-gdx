@@ -1,8 +1,5 @@
 package org.noses.games.homedefense.enemy;
 
-import org.noses.games.homedefense.enemy.Enemy;
-import org.noses.games.homedefense.enemy.EnemyGroup;
-
 import java.util.ArrayList;
 import java.util.List;
 

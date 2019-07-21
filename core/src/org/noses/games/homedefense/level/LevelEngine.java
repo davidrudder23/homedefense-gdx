@@ -8,12 +8,10 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.MapScreen;
-import org.noses.games.homedefense.geometry.Point;
-import org.noses.games.homedefense.nest.*;
+import org.noses.games.homedefense.nest.NestFactory;
+import org.noses.games.homedefense.nest.NestLayingNest;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LevelEngine implements ClockTickHandler {
 

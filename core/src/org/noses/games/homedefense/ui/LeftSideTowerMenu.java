@@ -3,14 +3,10 @@ package org.noses.games.homedefense.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import lombok.Getter;
-import lombok.Setter;
 import org.noses.games.homedefense.game.MapScreen;
-import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.tower.*;
 
 import java.util.HashMap;
@@ -82,7 +78,6 @@ public class LeftSideTowerMenu extends LeftSideMenu {
 
     @Override
     public boolean onClickUp(int x, int y) {
-        System.out.println("Left tower menu Onclick="+new Point(x,y));
         if (hidden) {
             parent.hideMenus();
 
