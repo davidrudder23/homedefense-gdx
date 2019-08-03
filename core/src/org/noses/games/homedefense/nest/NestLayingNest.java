@@ -8,6 +8,7 @@ import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
+import org.noses.games.homedefense.level.NestConfig;
 import org.noses.games.homedefense.pathfinding.Intersection;
 
 import java.util.ArrayList;
@@ -26,7 +27,15 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
     NestFactory nestFactory;
 
     public NestLayingNest(MapScreen parent, NestFactory nestFactory) {
-        super(parent, "splitting", 0, 1, 0, 0);
+        super(parent, NestConfig.builder()
+                        .className("Splitting")
+                        .delayBeforeStart(0)
+                        .numWaves(1)
+                        .numEnemiesPerWave(10)
+                        .delayBetweenWaves(0)
+                        .build(),
+                new Point(0, 0)
+        );
         this.parent = parent;
         this.nestFactory = nestFactory;
 
