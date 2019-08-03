@@ -7,7 +7,7 @@ import java.util.HashMap;
 public class EnemyGroupBuilder {
     HashMap<String, Intersection> intersections;
     int numEnemies;
-    int delay;
+    double delay;
     EnemyBuilder enemyBuilder;
 
     public EnemyGroupBuilder intersections(HashMap<String, Intersection> intersections) {
@@ -20,7 +20,7 @@ public class EnemyGroupBuilder {
         return this;
     }
 
-    public EnemyGroupBuilder delay(int delay) {
+    public EnemyGroupBuilder delay(double delay) {
         this.delay = delay;
         return this;
     }

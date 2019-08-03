@@ -57,7 +57,7 @@ public class SplitEnemyNest extends EnemyNest {
     }
 
     @Override
-    public EnemyGroup getNewEnemyGroup() {
+    public EnemyGroup getNewEnemyGroup(NestConfig nestConfig) {
         if (servedOne) {
             return null;
         }
@@ -76,10 +76,10 @@ public class SplitEnemyNest extends EnemyNest {
                 continue;
             }
 
-            GroundEnemy armoredEnemy = new ArmoredGroundEnemy(parent, pathStep);
+            GroundEnemy armoredEnemy = new ArmoredGroundEnemy(parent, nestConfig.getEnemyConfig(), pathStep);
             enemyGroup.addEnemy(armoredEnemy);
 
-            GroundEnemy enemy = new GroundEnemy(parent, pathStep);
+            GroundEnemy enemy = new GroundEnemy(parent, nestConfig.getEnemyConfig(), pathStep);
             enemyGroup.addEnemy(enemy);
         }
         parent.addClockTickHandler(enemyGroup);

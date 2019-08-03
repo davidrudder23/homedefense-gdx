@@ -9,7 +9,7 @@ import java.util.List;
 public class EnemyGroup implements ClockTickHandler {
 
     @Getter
-    int delay;
+    double delay;
 
     @Getter
     List<Enemy> enemies;
@@ -18,7 +18,7 @@ public class EnemyGroup implements ClockTickHandler {
 
     private int count;
 
-    public EnemyGroup(int delay) {
+    public EnemyGroup(double delay) {
         enemies = new ArrayList<>();
         upcomingEnemies = new ArrayList<>();
 

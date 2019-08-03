@@ -12,6 +12,7 @@ import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.game.PhysicalObject;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.level.EnemyConfig;
 import org.noses.games.homedefense.level.NestConfig;
 
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
         return location.getLongitude();
     }
 
-    public abstract EnemyGroup getNewEnemyGroup();
+    public abstract EnemyGroup getNewEnemyGroup(NestConfig nestConfig);
 
     @Override
     public void clockTick(double delta) {
@@ -82,7 +83,7 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
                         @Override
                         public void run() {
 
-                            EnemyGroup enemyGroup = getNewEnemyGroup();
+                            EnemyGroup enemyGroup = getNewEnemyGroup(nestConfig);
 
                             if (enemyGroup != null) {
                                 enemyGroups.add(enemyGroup);

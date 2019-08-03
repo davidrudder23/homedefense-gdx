@@ -144,7 +144,7 @@ public class LevelEngine implements ClockTickHandler {
 
             NestFactory nestFactory = getNestFactory(nestConfig);
             nestConfig.setNestFactory(nestFactory);
-            NestLayingNest nestLayingNest = new NestLayingNest(parent, nestFactory);
+            NestLayingNest nestLayingNest = new NestLayingNest(parent, nestConfig, nestFactory);
             nestConfig.setUsed(true);
 
             nestFactoryNumber++;

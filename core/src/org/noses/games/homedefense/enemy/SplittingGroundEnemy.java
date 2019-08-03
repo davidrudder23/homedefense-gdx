@@ -3,6 +3,7 @@ package org.noses.games.homedefense.enemy;
 import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.level.EnemyConfig;
 import org.noses.games.homedefense.nest.SplitEnemyNest;
 import org.noses.games.homedefense.pathfinding.PathStep;
 
@@ -10,8 +11,8 @@ import java.util.Optional;
 
 public class SplittingGroundEnemy extends GroundEnemy {
 
-    public SplittingGroundEnemy(MapScreen parent, PathStep pathStep) {
-        super(parent, pathStep, "enemy/splitting.png", 10, 96, 96, 20);
+    public SplittingGroundEnemy(MapScreen parent, EnemyConfig enemyConfig, PathStep pathStep) {
+        super(parent, enemyConfig, pathStep, "enemy/splitting.png", 96, 96, 20);
     }
 
     @Override
@@ -33,13 +34,13 @@ public class SplittingGroundEnemy extends GroundEnemy {
     }
 
     public static class SplittingGroundEnemyBuilder extends GroundEnemyBuilder {
-        public SplittingGroundEnemyBuilder(MapScreen parent, Node startingNode) {
-            super(parent, startingNode);
+        public SplittingGroundEnemyBuilder(MapScreen parent, EnemyConfig enemyConfig, Node startingNode) {
+            super(parent, enemyConfig, startingNode);
         }
 
         @Override
         public Enemy build() {
-            SplittingGroundEnemy enemy = new SplittingGroundEnemy(game, pathStep);
+            SplittingGroundEnemy enemy = new SplittingGroundEnemy(parent, enemyConfig, pathStep);
 
             return enemy;
         }

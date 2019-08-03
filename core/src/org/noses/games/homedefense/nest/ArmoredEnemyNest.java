@@ -15,7 +15,7 @@ public class ArmoredEnemyNest extends EnemyNest {
     }
 
     @Override
-    public EnemyGroup getNewEnemyGroup() {
+    public EnemyGroup getNewEnemyGroup(NestConfig nestConfig) {
 
         Node bestNode = null;
         double distanceToBest = 99999999;
@@ -34,9 +34,9 @@ public class ArmoredEnemyNest extends EnemyNest {
         }
 
         EnemyGroup enemyGroup = EnemyGroup.builder()
-                .delay(10)
-                .numEnemies(10)
-                .enemyBuilder(new ArmoredGroundEnemy.ArmoredGroundEnemyBuilder(parent, bestNode))
+                .delay(nestConfig.getDelayBetweenEnemies())
+                .numEnemies(nestConfig.getNumEnemiesPerWave())
+                .enemyBuilder(new ArmoredGroundEnemy.ArmoredGroundEnemyBuilder(parent, nestConfig.getEnemyConfig(), bestNode))
                 .build();
         parent.addClockTickHandler(enemyGroup);
         return enemyGroup;

@@ -20,11 +20,11 @@ public class GroundEnemyNest extends EnemyNest {
     }
 
     @Override
-    public EnemyGroup getNewEnemyGroup() {
+    public EnemyGroup getNewEnemyGroup(NestConfig nestConfig) {
         if (builder == null) {
             Node bestNode = getNode();
             if (bestNode != null) {
-                builder = new GroundEnemy.GroundEnemyBuilder(parent, bestNode);
+                builder = new GroundEnemy.GroundEnemyBuilder(parent, nestConfig.getEnemyConfig(), bestNode);
             }
         }
 
@@ -33,8 +33,8 @@ public class GroundEnemyNest extends EnemyNest {
         }
 
         EnemyGroup enemyGroup = EnemyGroup.builder()
-                .delay(10)
-                .numEnemies(10)
+                .delay(nestConfig.getDelayBetweenEnemies())
+                .numEnemies(nestConfig.getNumEnemiesPerWave())
                 .enemyBuilder(builder)
                 .build();
         parent.addClockTickHandler(enemyGroup);

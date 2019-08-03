@@ -5,6 +5,7 @@ import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.SplittingGroundEnemy;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.level.EnemyConfig;
 import org.noses.games.homedefense.level.NestConfig;
 
 public class SplittingEnemyNest extends EnemyNest {
@@ -20,11 +21,11 @@ public class SplittingEnemyNest extends EnemyNest {
     }
 
     @Override
-    public EnemyGroup getNewEnemyGroup() {
+    public EnemyGroup getNewEnemyGroup(NestConfig nestConfig) {
         if (builder == null) {
             Node bestNode = getNode();
             if (bestNode != null) {
-                builder = new SplittingGroundEnemy.SplittingGroundEnemyBuilder(parent, bestNode);
+                builder = new SplittingGroundEnemy.SplittingGroundEnemyBuilder(parent, nestConfig.getEnemyConfig(), bestNode);
             }
         }
 
@@ -33,8 +34,8 @@ public class SplittingEnemyNest extends EnemyNest {
         }
 
         EnemyGroup enemyGroup = EnemyGroup.builder()
-                .delay(30)
-                .numEnemies(3)
+                .delay(nestConfig.getDelayBetweenEnemies())
+                .numEnemies(nestConfig.getNumEnemiesPerWave())
                 .enemyBuilder(builder)
                 .build();
         parent.addClockTickHandler(enemyGroup);
