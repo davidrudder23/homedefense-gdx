@@ -3,6 +3,7 @@ package org.noses.games.homedefense.enemy;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.level.NestConfig;
 import org.noses.games.homedefense.nest.EnemyNest;
 import org.noses.games.homedefense.nest.NestFactory;
 import org.noses.games.homedefense.tower.Tower;
@@ -73,7 +74,14 @@ public class NestLayingEnemy extends Enemy {
         if (isCloseToTarget()) {
             EnemyNest enemyNest = null;
 
-            enemyNest = nestFactory.build(0, targetNestLocation);
+            NestConfig nestConfig = new NestConfig();
+            nestConfig.setClassName(nestFactory.getClassName());
+            nestConfig.setDelayBeforeStart(0);
+            nestConfig.setNumWaves(1);
+            nestConfig.setDelayBetweenWaves(0);
+            nestConfig.setNumEnemiesPerWave(10);
+
+            enemyNest = nestFactory.build(nestConfig, targetNestLocation);
 
             parent.dropNest(enemyNest);
             killed = true;

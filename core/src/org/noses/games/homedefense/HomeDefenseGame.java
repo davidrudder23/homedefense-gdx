@@ -43,7 +43,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
     public HomeDefenseGame(Geolocator geolocator, Configuration configuration) {
         this.geolocator = geolocator;
         this.configuration = configuration;
-
     }
 
     public Point getGeolocation() {
@@ -105,6 +104,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     public int getScreenHeight() {
         return Gdx.graphics.getHeight();
+    }
+
+    public boolean isDebug() {
+        return configuration.isDebug();
     }
 
     @Override

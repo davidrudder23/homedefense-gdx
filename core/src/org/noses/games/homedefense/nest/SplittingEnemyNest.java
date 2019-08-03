@@ -5,12 +5,13 @@ import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.SplittingGroundEnemy;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.level.NestConfig;
 
 public class SplittingEnemyNest extends EnemyNest {
     SplittingGroundEnemy.SplittingGroundEnemyBuilder builder;
 
-    public SplittingEnemyNest(MapScreen parent, double delayBeforeStart, int numWaves, double longitude, double latitude) {
-        super (parent, "splitting", delayBeforeStart, numWaves, longitude, latitude);
+    public SplittingEnemyNest(MapScreen parent, NestConfig nestConfig, Point location) {
+        super(parent, nestConfig, location);
     }
 
     @Override
@@ -56,8 +57,15 @@ public class SplittingEnemyNest extends EnemyNest {
         }
 
         @Override
-        public SplittingEnemyNest build(double delayBeforeStart, Point location) {
-            enemyNest = new SplittingEnemyNest(parent, delayBeforeStart, numWaves, location.getLongitude(), location.getLatitude());
+        public String getClassName() {
+            return "splitting";
+        }
+
+        @Override
+        public SplittingEnemyNest build(NestConfig nestConfig, Point location) {
+            enemyNest = new SplittingEnemyNest(parent,
+                    nestConfig,
+                    location);
             started = true;
             return enemyNest;
         }
@@ -70,6 +78,5 @@ public class SplittingEnemyNest extends EnemyNest {
             return enemyNest.isKilled();
         }
     }
-
 
 }

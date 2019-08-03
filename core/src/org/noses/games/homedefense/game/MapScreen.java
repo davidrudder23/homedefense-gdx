@@ -172,7 +172,6 @@ public class MapScreen extends Screen implements InputProcessor {
         }
     }
 
-
     public int getScreenWidth() {
         return Gdx.graphics.getWidth();
     }
@@ -181,12 +180,15 @@ public class MapScreen extends Screen implements InputProcessor {
         return Gdx.graphics.getHeight();
     }
 
+    public boolean isDebug() {
+        return parent.isDebug();
+    }
+
     public void addClockTickHandler(ClockTickHandler clockTickHandler) {
         synchronized (clockTickHandlersToBeAdded) {
             clockTickHandlersToBeAdded.add(clockTickHandler);
         }
     }
-
 
     public void addClickHandler(MouseHandler mouseHandler) {
         synchronized (mouseHandlers) {
@@ -249,7 +251,7 @@ public class MapScreen extends Screen implements InputProcessor {
             mouseHandlers.sort(new Comparator<MouseHandler>() {
                 @Override
                 public int compare(MouseHandler a, MouseHandler b) {
-                    return b.getZ()-a.getZ();
+                    return b.getZ() - a.getZ();
                 }
             });
         }
@@ -265,7 +267,7 @@ public class MapScreen extends Screen implements InputProcessor {
                 }
             }
         } else if (Gdx.input.isButtonPressed(1)) {
-            for (int i = mouseHandlers.size()-1; i>=0; i++) {
+            for (int i = mouseHandlers.size() - 1; i >= 0; i++) {
                 MouseHandler mouseHandler = mouseHandlers.get(i);
                 if (!mouseHandler.onRightClick(x, y)) {
                     break;
@@ -379,7 +381,7 @@ public class MapScreen extends Screen implements InputProcessor {
 
         int count = 0;
 
-        while (count<1000) {
+        while (count < 1000) {
             count++;
             intersection = intersections.get((int) (Math.random() * intersections.size()));
 
@@ -426,8 +428,8 @@ public class MapScreen extends Screen implements InputProcessor {
     public Node getNodeForLocation(Point location) {
         double closestDistance = 99999;
         Node closestNode = null;
-        for (Way way: map.getWays()) {
-            for (Node node: way.getNodes()) {
+        for (Way way : map.getWays()) {
+            for (Node node : way.getNodes()) {
                 double distance = new Point(node.getLat(), node.getLon()).getDistanceFrom(location);
                 if (distance < closestDistance) {
                     closestDistance = distance;
@@ -458,7 +460,7 @@ public class MapScreen extends Screen implements InputProcessor {
 
         for (ClockTickHandler clockTickHandler : clockTickHandlers) {
             if (!clockTickHandler.isKilled()) {
-                clockTickHandler.clockTick((float)(1+(speedMultiplier/2))/10);
+                clockTickHandler.clockTick((float) (1 + (speedMultiplier / 2)) / 10);
             }
         }
 
@@ -509,11 +511,11 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public boolean isInsideMap(Point point) {
 
-        return isPointWithinBounds(point, new Point (map.getNorth(), map.getWest()),
-                new Point (map.getSouth(), map.getEast()));
+        return isPointWithinBounds(point, new Point(map.getNorth(), map.getWest()),
+                new Point(map.getSouth(), map.getEast()));
     }
 
-    public boolean isPointWithinBounds (Point point, Point upperLeft, Point lowerRight) {
+    public boolean isPointWithinBounds(Point point, Point upperLeft, Point lowerRight) {
 
         if (upperLeft.getLatitude() > lowerRight.getLatitude()) {
             if (point.getLatitude() > upperLeft.getLatitude()) {
@@ -582,7 +584,7 @@ public class MapScreen extends Screen implements InputProcessor {
 
         levelEngine.render(batch);
 
-        // render the nests
+        // render the nestConfigs
         for (org.noses.games.homedefense.nest.EnemyNest enemyNest : enemyNests) {
             if (!enemyNest.isKilled()) {
                 enemyNest.render(batch);
@@ -605,7 +607,7 @@ public class MapScreen extends Screen implements InputProcessor {
 
                     Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
 
-                    sprite.setScale((float)getSpriteScale(sprite, enemy.getScale()));
+                    sprite.setScale((float) getSpriteScale(sprite, enemy.getScale()));
 
                     sprite.setCenterY(convertLatToY(latitude));
                     sprite.setCenterX(convertLongToX(longitude));
@@ -618,11 +620,11 @@ public class MapScreen extends Screen implements InputProcessor {
         getHome().render(batch);
 
         // render the score and other text
-        font.draw(batch, "Health: " + getHome().getHealth(), 10, Gdx.graphics.getHeight() - (int)(Gdx.graphics.getHeight()*.1));
+        font.draw(batch, "Health: " + getHome().getHealth(), 10, Gdx.graphics.getHeight() - (int) (Gdx.graphics.getHeight() * .1));
 
-        font.draw(batch, "Money: " + getMoney(), 10, Gdx.graphics.getHeight() - (int)((Gdx.graphics.getHeight()*.1) + (font.getCapHeight()*2)));
+        font.draw(batch, "Money: " + getMoney(), 10, Gdx.graphics.getHeight() - (int) ((Gdx.graphics.getHeight() * .1) + (font.getCapHeight() * 2)));
 
-        font.draw(batch, "Speed: " + getSpeedMultiplier() + "x", 10, Gdx.graphics.getHeight() - (int)((Gdx.graphics.getHeight()*.1) + (font.getCapHeight()*4)));
+        font.draw(batch, "Speed: " + getSpeedMultiplier() + "x", 10, Gdx.graphics.getHeight() - (int) ((Gdx.graphics.getHeight() * .1) + (font.getCapHeight() * 4)));
 
         speedButton.render(batch);
 
@@ -653,7 +655,7 @@ public class MapScreen extends Screen implements InputProcessor {
     }
 
     public double getSpriteScale(Sprite sprite, double scale) {
-        return (parent.getScreenWidth()*scale)/sprite.getWidth();
+        return (parent.getScreenWidth() * scale) / sprite.getWidth();
     }
 
     public void hideMenus() {
@@ -710,6 +712,5 @@ public class MapScreen extends Screen implements InputProcessor {
     public double getPpcY() {
         return parent.getPpcY();
     }
-
 
 }
