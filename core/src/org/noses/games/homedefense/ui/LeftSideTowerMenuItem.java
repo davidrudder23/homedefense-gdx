@@ -7,6 +7,8 @@ import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.tower.Tower;
 import org.noses.games.homedefense.tower.TowerFactory;
 
+import java.util.List;
+
 public class LeftSideTowerMenuItem extends MenuItem {
 
     TowerFactory towerFactory;
@@ -14,6 +16,9 @@ public class LeftSideTowerMenuItem extends MenuItem {
     @Getter
     @Setter
     boolean mouseWithin;
+
+    @Getter
+    @Setter
     boolean closeToOthers;
 
     public LeftSideTowerMenuItem(MapScreen parent, int x, int y, int width, int height, String towerName, TowerFactory towerFactory) {
@@ -41,9 +46,33 @@ public class LeftSideTowerMenuItem extends MenuItem {
     }
 
     public Tower getTower(double longitude,double latitude) {
-        parent.subtractMoney(towerFactory.getCost());
         return towerFactory.createTower(parent, longitude, latitude);
     }
+
+    public boolean closeToOtherTowers(int clickX, int clickY) {
+        List<Tower> towers = parent.getTowers();
+
+        double longitude = parent.convertXToLong(clickX);
+        double latitude = parent.convertYToLat(parent.getScreenHeight()-clickY);
+
+        for (Tower tower: towers) {
+            double minDistanceOtherSquared = tower.minDistanceFromOtherTower()*tower.minDistanceFromOtherTower();
+            double minDistanceThisSquared = getTower(longitude, latitude).minDistanceFromOtherTower()*getTower(longitude, latitude).minDistanceFromOtherTower();
+            double actualDistanceSquared = ((tower.getLongitude()-longitude)*(tower.getLongitude()-longitude)) +
+                    ((tower.getLatitude()-latitude)*(tower.getLatitude()-latitude));
+
+            if (actualDistanceSquared < minDistanceOtherSquared) {
+                return true;
+            }
+            if (actualDistanceSquared < minDistanceThisSquared) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
 
     @Override
     public Sprite getSprite(int clickX, int clickY) {

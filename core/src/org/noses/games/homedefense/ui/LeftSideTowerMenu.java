@@ -78,6 +78,12 @@ public class LeftSideTowerMenu extends LeftSideMenu {
 
     @Override
     public boolean onClickUp(int x, int y) {
+
+        for (LeftSideTowerMenuItem menuItem: menuItems.values()) {
+            menuItem.setCloseToOthers(menuItem.closeToOtherTowers(x, y));
+        }
+
+
         if (hidden) {
             parent.hideMenus();
 
@@ -89,6 +95,7 @@ public class LeftSideTowerMenu extends LeftSideMenu {
                 if (menuItem.isMouseWithin()) {
                     Tower tower = menuItem.getTower(parent.convertXToLong(clickX), parent.convertYToLat(parent.getScreenHeight() - clickY));
                     parent.addClickHandler(tower);
+                    parent.subtractMoney(tower.getCost());
                     parent.addTower(tower);
                 }
             }
