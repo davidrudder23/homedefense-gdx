@@ -592,18 +592,8 @@ public class MapScreen extends Screen implements InputProcessor {
                     if (enemy.isKilled()) {
                         continue;
                     }
-                    Point location = enemy.getLocation();
 
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-
-                    Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
-
-                    sprite.setScale((float) getSpriteScale(sprite, enemy.getScale()));
-
-                    sprite.setCenterY(convertLatToY(latitude));
-                    sprite.setCenterX(convertLongToX(longitude));
-                    sprite.draw(batch);
+                    enemy.getSprite().draw(batch);
 
                 }
             }

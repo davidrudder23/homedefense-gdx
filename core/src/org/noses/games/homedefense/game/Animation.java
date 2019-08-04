@@ -40,6 +40,7 @@ public class Animation implements ClockTickHandler {
         this.tileHeight = tileHeight;
 
         animation = TextureRegion.split(avatarAnimationSheet, tileWidth, tileHeight);
+
     }
 
     public void kill() {

@@ -1,5 +1,6 @@
 package org.noses.games.homedefense.enemy;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
@@ -20,7 +21,7 @@ public class NestLayingEnemy extends Enemy {
     NestConfig nestConfig;
 
     public NestLayingEnemy(MapScreen parent, Point targetNestLocation, NestConfig nestConfig, NestFactory nestFactory) {
-        super(parent, "line64.png", parent.loadSound("normal_hit.mp3"), 32, 32, 0.06, 200);
+        super(parent, "enemy/nest_laying.png", parent.loadSound("normal_hit.mp3"), 111, 100, 0.06, 200);
 
         this.nestFactory = nestFactory;
         this.nestConfig = nestConfig;
@@ -72,6 +73,7 @@ public class NestLayingEnemy extends Enemy {
 
     @Override
     public void clockTick(double delta) {
+        super.clockTick(delta);
         progressAlong += HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * delta * 20000;
 
         if (isCloseToTarget()) {
@@ -83,6 +85,17 @@ public class NestLayingEnemy extends Enemy {
             killed = true;
         }
     }
+
+    @Override
+    public Sprite getSprite() {
+        Sprite sprite = super.getSprite();
+
+        if (currentLocation.getLongitude() > targetNestLocation.getLongitude()) {
+            sprite.flip(true, false);
+        }
+        return sprite;
+    }
+
 
     @Override
     public boolean canBeHitBy(Tower tower) {

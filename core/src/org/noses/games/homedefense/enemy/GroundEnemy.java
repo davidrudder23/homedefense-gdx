@@ -1,6 +1,7 @@
 package org.noses.games.homedefense.enemy;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -225,6 +226,24 @@ public class GroundEnemy extends Enemy {
                 putOnPathStep(pathSteps.get(currentPathStep));
             }
         }
+    }
+
+    @Override
+    public Sprite getSprite() {
+        Sprite sprite = super.getSprite();
+
+        Point firstPoint = way.firstPoint();
+        Point lastPoint = way.lastPoint();
+
+
+        if (direction==1 && firstPoint.getLongitude() > lastPoint.getLongitude()) {
+            sprite.flip(true, false);
+        }
+        if (direction==-1 && firstPoint.getLongitude() < lastPoint.getLongitude()) {
+            sprite.flip(true, false);
+        }
+
+        return sprite;
     }
 
     public static class GroundEnemyBuilder implements EnemyBuilder {
