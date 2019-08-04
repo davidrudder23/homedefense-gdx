@@ -62,6 +62,17 @@ public class LeftSideTowerMenu extends LeftSideMenu {
     public void renderMenu(Batch batch) {
         super.renderMenu(batch);
 
+        int radiusInPixels = 10;
+        float longPerPixel = (parent.getMap().getEast() - parent.getMap().getWest()) / (float) Gdx.graphics.getWidth();
+
+        for (LeftSideTowerMenuItem menuItem: menuItems.values()) {
+            if (menuItem.mouseWithin) {
+                Tower tower = menuItem.getTower(0,0);
+                int radius = (int)(tower.minDistanceFromOtherTower()/longPerPixel);
+                radiusInPixels = radius;
+            }
+        }
+
         batch.end();
 
         ShapeRenderer sr = new ShapeRenderer();
@@ -69,33 +80,47 @@ public class LeftSideTowerMenu extends LeftSideMenu {
         sr.begin(ShapeRenderer.ShapeType.Filled);
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        sr.circle(clickX, parent.getScreenHeight() - clickY, 10);
+        sr.circle(clickX, parent.getScreenHeight() - clickY, radiusInPixels);
         sr.end();
 
+
+        for (Tower tower : parent.getTowers()) {
+            int x = parent.convertLongToX(tower.getLocation().getLongitude());
+            int y = parent.convertLatToY(tower.getLocation().getLatitude());
+
+            int radius = (int)(tower.minDistanceFromOtherTower()/longPerPixel);
+
+
+            sr = new ShapeRenderer();
+            sr.setColor(new Color(1, 1, 0, 0.5f));
+            sr.begin(ShapeRenderer.ShapeType.Filled);
+            sr.circle(x, parent.getScreenHeight() - y, radius);
+            sr.end();
+        }
+
         batch.begin();
+
 
     }
 
     @Override
     public boolean onClickUp(int x, int y) {
-
-        for (LeftSideTowerMenuItem menuItem: menuItems.values()) {
-            menuItem.setCloseToOthers(menuItem.closeToOtherTowers(x, y));
-        }
-
-
+        
         if (hidden) {
             parent.hideMenus();
 
             clickX = x;
             clickY = y;
+
+            // update close-to-others
+            for (LeftSideTowerMenuItem menuItem: menuItems.values()) {
+                menuItem.setCloseToOthers(menuItem.closeToOtherTowers(x, y));
+            }
         } else {
             mouseMoved(x,y);
             for (LeftSideTowerMenuItem menuItem : menuItems.values()) {
                 if (menuItem.isMouseWithin()) {
                     Tower tower = menuItem.getTower(parent.convertXToLong(clickX), parent.convertYToLat(parent.getScreenHeight() - clickY));
-                    parent.addClickHandler(tower);
-                    parent.subtractMoney(tower.getCost());
                     parent.addTower(tower);
                 }
             }

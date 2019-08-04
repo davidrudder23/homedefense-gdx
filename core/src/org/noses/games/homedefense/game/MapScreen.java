@@ -235,6 +235,8 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public void addTower(Tower tower) {
         towers.add(tower);
+        subtractMoney(tower.getCost());
+        addClickHandler(tower);
         addClockTickHandler(tower);
     }
 
