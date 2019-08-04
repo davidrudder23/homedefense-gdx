@@ -18,16 +18,8 @@ public class SplitEnemyNest extends EnemyNest {
     List<Tower> towers;
     boolean servedOne;
 
-    public SplitEnemyNest(MapScreen parent, List<Tower> towers, Point nestLocation) {
-        super(parent,
-                NestConfig.builder()
-                .className("Splitting")
-                .delayBeforeStart(0)
-                .numWaves(1)
-                .numEnemiesPerWave(10)
-                .delayBetweenWaves(0)
-                .build(),
-                nestLocation);
+    public SplitEnemyNest(MapScreen parent, NestConfig nestConfig, List<Tower> towers, Point nestLocation) {
+        super(parent, nestConfig, nestLocation);
         this.towers = towers;
         servedOne = false;
     }
@@ -41,7 +33,7 @@ public class SplitEnemyNest extends EnemyNest {
     public void clockTick(double delta) {
         super.clockTick(delta);
         boolean nestStillAlive = false;
-        for (int g = enemyGroups.size()-1; g>=0; g--) {
+        for (int g = enemyGroups.size() - 1; g >= 0; g--) {
             EnemyGroup enemyGroup = enemyGroups.get(g);
             if (!enemyGroup.isEmpty()) {
                 nestStillAlive = true;
@@ -67,7 +59,7 @@ public class SplitEnemyNest extends EnemyNest {
 
         Node node = parent.getNodeForLocation(new Point(getLatitude(), getLongitude()));
         //Thread.dumpStack();
-        for (Tower tower: towers) {
+        for (Tower tower : towers) {
             Djikstra djikstra = new Djikstra(parent.getIntersectionsAsHashmap());
 
             PathStep pathStep = djikstra.getBestPath(node, parent.getNodeForLocation(tower.getLocation()));

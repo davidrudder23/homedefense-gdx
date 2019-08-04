@@ -99,7 +99,7 @@ public class GroundEnemy extends Enemy {
 
     @Override
     public int getValue() {
-        return 10;
+        return enemyConfig.getValue();
     }
 
     @Override

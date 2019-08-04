@@ -144,8 +144,6 @@ public class MapScreen extends Screen implements InputProcessor {
 
         startNewLevel();
 
-        setupSound();
-
         setupHero();
 
         Gdx.input.setInputProcessor(this);
@@ -501,12 +499,6 @@ public class MapScreen extends Screen implements InputProcessor {
         }
 
         return enemies;
-    }
-
-    public void setupSound() {
-        Sound backgroundLoop = loadSound("background.mp3");
-        backgroundLoop.loop();//0.2f);
-        backgroundLoop.play();
     }
 
     public boolean isInsideMap(Point point) {

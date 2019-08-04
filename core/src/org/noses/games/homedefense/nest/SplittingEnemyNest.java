@@ -25,7 +25,7 @@ public class SplittingEnemyNest extends EnemyNest {
         if (builder == null) {
             Node bestNode = getNode();
             if (bestNode != null) {
-                builder = new SplittingGroundEnemy.SplittingGroundEnemyBuilder(parent, nestConfig.getEnemyConfig(), bestNode);
+                builder = new SplittingGroundEnemy.SplittingGroundEnemyBuilder(parent, nestConfig, bestNode);
             }
         }
 
@@ -44,15 +44,13 @@ public class SplittingEnemyNest extends EnemyNest {
 
     public static class SplittingEnemyNestFactory implements NestFactory {
         MapScreen parent;
-        int numWaves;
 
         SplittingEnemyNest enemyNest;
 
         boolean started;
 
-        public SplittingEnemyNestFactory(MapScreen parent, Integer numWaves) {
+        public SplittingEnemyNestFactory(MapScreen parent) {
             this.parent = parent;
-            this.numWaves = numWaves;
 
             started = false;
         }

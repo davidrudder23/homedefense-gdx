@@ -16,7 +16,7 @@ public class NestLayingEnemyGroup extends EnemyGroup {
     }
 
     @Override
-    public double getDelay() {
+    public double getDelayBetweenEnemies() {
         return 0;
     }
 

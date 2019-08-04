@@ -10,6 +10,7 @@ public class LevelConfig {
 
     String name;
     List<NestConfig> nestConfigs;
+    String backgroundMusic;
 
 }
 

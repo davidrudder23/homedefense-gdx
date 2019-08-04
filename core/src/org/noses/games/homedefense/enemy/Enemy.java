@@ -30,7 +30,6 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
     }
 
     public void hit(int damage) {
-        System.out.println("Health is at "+health+", damage is "+damage);
         health -= damage;
         if (health<=0) {
             kill();

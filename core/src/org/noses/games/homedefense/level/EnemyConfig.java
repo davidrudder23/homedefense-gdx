@@ -13,5 +13,5 @@ public class EnemyConfig {
     int health;
     int speedMultiplier;
     int damage;
-
+    int value;
 }

@@ -72,7 +72,7 @@ public class NestLayingEnemy extends Enemy {
 
     @Override
     public void clockTick(double delta) {
-        progressAlong += HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * delta * 10000;
+        progressAlong += HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * delta * 20000;
 
         if (isCloseToTarget()) {
             EnemyNest enemyNest = null;

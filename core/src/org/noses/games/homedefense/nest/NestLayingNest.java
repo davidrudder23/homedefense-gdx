@@ -34,7 +34,7 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
         this.nestFactory = nestFactory;
 
         makingNest = false;
-        org.noses.games.homedefense.enemy.NestLayingEnemyGroup enemyGroup = new NestLayingEnemyGroup();
+        NestLayingEnemyGroup enemyGroup = new NestLayingEnemyGroup();
         enemyGroups = new ArrayList<>();
         enemyGroups.add(enemyGroup);
         //parent.addClockTickHandler(enemyGroups.get(0));

@@ -43,7 +43,7 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
 
         waveNum = 0;
 
-        timeSinceLastWave = delayBetweenWaves() - nestConfig.getDelayBeforeStart();
+        timeSinceLastWave = delayBetweenWaves();
 
         enemyGroups = new ArrayList<>();
     }
