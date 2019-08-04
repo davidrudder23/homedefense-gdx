@@ -1,0 +1,42 @@
+{
+
+  "name": "Level 1",
+  "nests": [
+    {
+       "delay": 0,
+       "className": "Armored",
+       "numWaves": 2,
+       "numEnemiesPerWave": 10
+    },
+    {
+       "delay": 10,
+       "className": "Armored",
+       "numWaves": 2,
+       "numEnemiesPerWave": 10
+    },
+    {
+       "delay": 20,
+       "className": "Armored",
+       "numWaves": 2,
+       "numEnemiesPerWave": 10
+    },
+    {
+       "delay": 30,
+       "className": "Armored",
+       "numWaves": 2,
+       "numEnemiesPerWave": 10
+    },
+    {
+       "delay": 40,
+       "className": "Armored",
+       "numWaves": 2,
+       "numEnemiesPerWave": 10
+    },
+    {
+       "delay": 50,
+       "className": "Armored",
+       "numWaves": 2,
+       "numEnemiesPerWave": 10
+    }
+  ]
+}

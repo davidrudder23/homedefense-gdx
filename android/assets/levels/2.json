@@ -1,0 +1,18 @@
+{
+  "name": "Level 2",
+  "nestConfigs": [
+    {
+      "className": "Ground",
+      "delayBeforeStart": 0,
+      "delayBetweenWaves": 0,
+      "delayBetweenEnemies": 2,
+      "numWaves": 2,
+      "numEnemiesPerWave": 10,
+      "enemyConfig": {
+        "health": 2000,
+        "speedMultiplier": 10,
+        "damage": 3
+      }
+    }
+  ]
+}
