@@ -1,6 +1,7 @@
 package org.noses.games.homedefense.level;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -38,6 +39,8 @@ public class LevelEngine implements ClockTickHandler {
 
     LevelConfig levelConfig;
 
+    Sound backgroundLoop;
+
     public LevelEngine(MapScreen parent, double delayBetweenNests) {
         this.parent = parent;
         this.delayBetweenNests = delayBetweenNests;
@@ -71,12 +74,26 @@ public class LevelEngine implements ClockTickHandler {
             //nestFactories.add(new ArmoredEnemyNest.ArmoredEnemyNestFactory(parent, 1));
 
             parent.addClockTickHandler(this);
+
+            playBackground(levelConfig.getBackgroundMusic());
         } catch (Exception anyExc) {
             anyExc.printStackTrace();
             return false;
         }
         return true;
     }
+
+    public void playBackground(String filename) {
+        if (backgroundLoop != null) {
+            backgroundLoop.stop();
+            backgroundLoop.dispose();
+        }
+        backgroundLoop = parent.loadSound("music/background/"+filename);
+        backgroundLoop.loop(0.2f);
+        backgroundLoop.play();
+    }
+
+
 
     private NestFactory getNestFactory(NestConfig nestConfig) {
         try {
@@ -144,7 +161,7 @@ public class LevelEngine implements ClockTickHandler {
 
             NestFactory nestFactory = getNestFactory(nestConfig);
             nestConfig.setNestFactory(nestFactory);
-            NestLayingNest nestLayingNest = new NestLayingNest(parent, nestFactory);
+            NestLayingNest nestLayingNest = new NestLayingNest(parent, nestConfig, nestFactory);
             nestConfig.setUsed(true);
 
             nestFactoryNumber++;

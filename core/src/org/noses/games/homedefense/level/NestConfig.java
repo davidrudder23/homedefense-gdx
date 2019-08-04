@@ -16,10 +16,12 @@ public class NestConfig {
     int numEnemiesPerWave;
     double delayBeforeStart;
     double delayBetweenWaves;
-    @Builder.Default()
-    boolean used = false;
+    double delayBetweenEnemies;
 
     NestFactory nestFactory;
 
     EnemyConfig enemyConfig;
+
+    @Builder.Default()
+    boolean used = false;
 }

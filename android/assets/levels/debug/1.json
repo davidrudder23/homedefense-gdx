@@ -1,0 +1,24 @@
+{
+
+  "name": "Level 1",
+  "nests": [
+    {
+       "delay": 0,
+       "className": "Ground",
+       "numWaves": 2,
+       "numEnemiesPerWave": 10
+    },
+    {
+       "delay": 25,
+       "className": "Armored",
+       "numWaves": 1,
+       "numEnemiesPerWave": 15
+    },
+    {
+       "delay": 15,
+       "className": "Splitting",
+       "numWaves": 1,
+       "numEnemiesPerWave": 10
+    }
+  ]
+}

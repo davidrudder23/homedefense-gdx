@@ -1,5 +1,7 @@
 package org.noses.games.homedefense.enemy;
 
+import org.noses.games.homedefense.level.NestConfig;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,7 @@ public class NestLayingEnemyGroup extends EnemyGroup {
     }
 
     @Override
-    public int getDelay() {
+    public double getDelayBetweenEnemies() {
         return 0;
     }
 

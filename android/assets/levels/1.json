@@ -1,0 +1,35 @@
+{
+  "name": "Level 1",
+  "backgroundMusic": "level1.mp3",
+  "nestConfigs": [
+    {
+      "className": "Ground",
+      "delayBeforeStart": 0,
+      "delayBetweenWaves": 20,
+      "delayBetweenEnemies": 2,
+      "numWaves": 4,
+      "numEnemiesPerWave": 4,
+      "enemyConfig": {
+        "health": 200,
+        "speedMultiplier": 10,
+        "damage": 3,
+        "value": 2
+      }
+    },
+    {
+      "className": "Ground",
+      "delayBeforeStart": 40,
+      "delayBetweenWaves": 20,
+      "delayBetweenEnemies": 1.5,
+      "numWaves": 2,
+      "numEnemiesPerWave": 10,
+      "enemyConfig": {
+        "health": 400,
+        "speedMultiplier": 10,
+        "damage": 3,
+        "value": 2
+      }
+    }
+
+  ]
+}

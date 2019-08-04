@@ -144,8 +144,6 @@ public class MapScreen extends Screen implements InputProcessor {
 
         startNewLevel();
 
-        setupSound();
-
         setupHero();
 
         Gdx.input.setInputProcessor(this);
@@ -503,12 +501,6 @@ public class MapScreen extends Screen implements InputProcessor {
         return enemies;
     }
 
-    public void setupSound() {
-        Sound backgroundLoop = loadSound("background.mp3");
-        backgroundLoop.loop();//0.2f);
-        backgroundLoop.play();
-    }
-
     public boolean isInsideMap(Point point) {
 
         return isPointWithinBounds(point, new Point(map.getNorth(), map.getWest()),
@@ -600,18 +592,8 @@ public class MapScreen extends Screen implements InputProcessor {
                     if (enemy.isKilled()) {
                         continue;
                     }
-                    Point location = enemy.getLocation();
 
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-
-                    Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
-
-                    sprite.setScale((float) getSpriteScale(sprite, enemy.getScale()));
-
-                    sprite.setCenterY(convertLatToY(latitude));
-                    sprite.setCenterX(convertLongToX(longitude));
-                    sprite.draw(batch);
+                    enemy.getSprite().draw(batch);
 
                 }
             }

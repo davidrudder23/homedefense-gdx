@@ -26,21 +26,15 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
 
     NestFactory nestFactory;
 
-    public NestLayingNest(MapScreen parent, NestFactory nestFactory) {
-        super(parent, NestConfig.builder()
-                        .className("Splitting")
-                        .delayBeforeStart(0)
-                        .numWaves(1)
-                        .numEnemiesPerWave(10)
-                        .delayBetweenWaves(0)
-                        .build(),
+    public NestLayingNest(MapScreen parent, NestConfig nestConfig, NestFactory nestFactory) {
+        super(parent, nestConfig,
                 new Point(0, 0)
         );
         this.parent = parent;
         this.nestFactory = nestFactory;
 
         makingNest = false;
-        org.noses.games.homedefense.enemy.NestLayingEnemyGroup enemyGroup = new NestLayingEnemyGroup();
+        NestLayingEnemyGroup enemyGroup = new NestLayingEnemyGroup();
         enemyGroups = new ArrayList<>();
         enemyGroups.add(enemyGroup);
         //parent.addClockTickHandler(enemyGroups.get(0));
@@ -55,7 +49,7 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
     }
 
     @Override
-    public EnemyGroup getNewEnemyGroup() {
+    public EnemyGroup getNewEnemyGroup(NestConfig nestConfig) {
         return null;
     }
 
@@ -97,7 +91,7 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
             foundIntersection = true;
         }
 
-        NestLayingEnemy nestLayingEnemy = new NestLayingEnemy(parent, new Point(intersection.getLatitude(), intersection.getLongitude()), nestFactory);
+        NestLayingEnemy nestLayingEnemy = new NestLayingEnemy(parent, new Point(intersection.getLatitude(), intersection.getLongitude()), nestConfig, nestFactory);
         parent.addClockTickHandler(nestLayingEnemy);
         enemyGroups.get(0).addEnemy(nestLayingEnemy);
     }

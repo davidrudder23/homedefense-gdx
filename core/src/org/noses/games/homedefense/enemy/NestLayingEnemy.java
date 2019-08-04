@@ -1,8 +1,10 @@
 package org.noses.games.homedefense.enemy;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.level.EnemyConfig;
 import org.noses.games.homedefense.level.NestConfig;
 import org.noses.games.homedefense.nest.EnemyNest;
 import org.noses.games.homedefense.nest.NestFactory;
@@ -16,11 +18,13 @@ public class NestLayingEnemy extends Enemy {
     boolean killed;
 
     NestFactory nestFactory;
+    NestConfig nestConfig;
 
-    public NestLayingEnemy(MapScreen parent, Point targetNestLocation, NestFactory nestFactory) {
-        super(parent, "line64.png", parent.loadSound("normal_hit.mp3"), 32, 32, 0.06, 200);
+    public NestLayingEnemy(MapScreen parent, Point targetNestLocation, NestConfig nestConfig, NestFactory nestFactory) {
+        super(parent, "enemy/nest_laying.png", parent.loadSound("normal_hit.mp3"), 111, 100, 0.06, 200);
 
         this.nestFactory = nestFactory;
+        this.nestConfig = nestConfig;
         this.targetNestLocation = targetNestLocation;
 
         progressAlong = 0;
@@ -69,17 +73,11 @@ public class NestLayingEnemy extends Enemy {
 
     @Override
     public void clockTick(double delta) {
-        progressAlong += HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * delta * 10000;
+        super.clockTick(delta);
+        progressAlong += HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * delta * 20000;
 
         if (isCloseToTarget()) {
             EnemyNest enemyNest = null;
-
-            NestConfig nestConfig = new NestConfig();
-            nestConfig.setClassName(nestFactory.getClassName());
-            nestConfig.setDelayBeforeStart(0);
-            nestConfig.setNumWaves(1);
-            nestConfig.setDelayBetweenWaves(0);
-            nestConfig.setNumEnemiesPerWave(10);
 
             enemyNest = nestFactory.build(nestConfig, targetNestLocation);
 
@@ -87,6 +85,17 @@ public class NestLayingEnemy extends Enemy {
             killed = true;
         }
     }
+
+    @Override
+    public Sprite getSprite() {
+        Sprite sprite = super.getSprite();
+
+        if (currentLocation.getLongitude() > targetNestLocation.getLongitude()) {
+            sprite.flip(true, false);
+        }
+        return sprite;
+    }
+
 
     @Override
     public boolean canBeHitBy(Tower tower) {
