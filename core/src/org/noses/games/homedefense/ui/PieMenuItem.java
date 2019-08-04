@@ -1,7 +1,5 @@
 package org.noses.games.homedefense.ui;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.noses.games.homedefense.game.MapScreen;
@@ -63,11 +61,8 @@ public class PieMenuItem extends MenuItem {
 
     public boolean mouseWithin(int clickX, int clickY, int dragX, int dragY) {
 
-        if ((dragX >= (clickX+x)) && (dragX<= (clickX+x+width)) &&
-                ((parent.getScreenHeight()-dragY) >= ((parent.getScreenHeight()-clickY)+y)) &&
-                ((parent.getScreenHeight()-dragY) <=((parent.getScreenHeight()-clickY)+y+height))) {
-            return true;
-        }
-        return false;
+        return (dragX >= (clickX + x)) && (dragX <= (clickX + x + width)) &&
+                ((parent.getScreenHeight() - dragY) >= ((parent.getScreenHeight() - clickY) + y)) &&
+                ((parent.getScreenHeight() - dragY) <= ((parent.getScreenHeight() - clickY) + y + height));
     }
 }

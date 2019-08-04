@@ -61,8 +61,6 @@ public abstract class MenuItem {
         sprite.setCenterY(parent.getScreenHeight()-clickY+y+(height/2));
         sprite.setScale(width/sprite.getWidth());
 
-        //System.out.println("Showing pieMenuItem "+getSpriteName()+" at "+(clickX+x+(width/2))+"x"+(clickY+y+(height/2))+" scale="+sprite.getPpcX());
-
         return sprite;
     }
 
@@ -70,12 +68,9 @@ public abstract class MenuItem {
 
     public boolean mouseWithin(int clickX, int clickY, int dragX, int dragY) {
 
-        if ((dragX >= (clickX+x)) && (dragX<= (clickX+x+width)) &&
-                ((parent.getScreenHeight()-dragY) >= ((parent.getScreenHeight()-clickY)+y)) &&
-                ((parent.getScreenHeight()-dragY) <=((parent.getScreenHeight()-clickY)+y+height))) {
-            return true;
-        }
-        return false;
+        return (dragX >= (clickX + x)) && (dragX <= (clickX + x + width)) &&
+                ((parent.getScreenHeight() - dragY) >= ((parent.getScreenHeight() - clickY) + y)) &&
+                ((parent.getScreenHeight() - dragY) <= ((parent.getScreenHeight() - clickY) + y + height));
     }
 
     protected Sprite getNormalSprite() {

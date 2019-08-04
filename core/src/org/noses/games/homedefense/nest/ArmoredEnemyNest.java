@@ -6,16 +6,12 @@ import org.noses.games.homedefense.enemy.ArmoredGroundEnemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.level.NestConfig;
 
 public class ArmoredEnemyNest extends EnemyNest {
 
-    public ArmoredEnemyNest(MapScreen parent, double delayBeforeStart, int numWaves, double longitude, double latitude) {
-        super (parent, "armored", delayBeforeStart, numWaves, longitude, latitude);
-    }
-
-    @Override
-    public double delayBetweenWaves() {
-        return 10;
+    public ArmoredEnemyNest(MapScreen parent, NestConfig nestConfig, Point location) {
+        super(parent, nestConfig, location);
     }
 
     @Override
@@ -33,8 +29,6 @@ public class ArmoredEnemyNest extends EnemyNest {
             }
         }
 
-        System.out.println("bestNode="+bestNode);
-
         if (bestNode == null) {
             return null;
         }
@@ -50,17 +44,20 @@ public class ArmoredEnemyNest extends EnemyNest {
 
     public static class ArmoredEnemyNestFactory implements NestFactory {
         MapScreen parent;
-        int numWaves;
         ArmoredEnemyNest enemyNest;
 
-        public ArmoredEnemyNestFactory(MapScreen parent, Integer numWaves) {
+        public ArmoredEnemyNestFactory(MapScreen parent) {
             this.parent = parent;
-            this.numWaves = numWaves;
         }
 
         @Override
-        public ArmoredEnemyNest build(double delayBeforeStart, Point location) {
-            enemyNest = new ArmoredEnemyNest(parent, delayBeforeStart, numWaves, location.getLongitude(), location.getLatitude());
+        public String getClassName() {
+            return "armored";
+        }
+
+        @Override
+        public ArmoredEnemyNest build(NestConfig nestConfig, Point location) {
+            enemyNest = new ArmoredEnemyNest(parent,nestConfig, location);
             return  enemyNest;
         }
 

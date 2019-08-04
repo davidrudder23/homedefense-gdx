@@ -1,10 +1,13 @@
 package org.noses.games.homedefense.nest;
 
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.level.NestConfig;
 
 public interface NestFactory {
 
-    public EnemyNest build(double delayBeforeStart, Point location);
+    public String getClassName();
 
-    public boolean isKilled();
+    EnemyNest build(NestConfig nestConfig, Point location);
+
+    boolean isKilled();
 }

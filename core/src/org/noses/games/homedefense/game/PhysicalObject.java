@@ -2,7 +2,7 @@ package org.noses.games.homedefense.game;
 
 public interface PhysicalObject {
 
-    public double getLatitude();
+    double getLatitude();
 
-    public double getLongitude();
+    double getLongitude();
 }

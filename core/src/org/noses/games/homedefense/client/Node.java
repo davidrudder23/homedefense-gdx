@@ -35,11 +35,7 @@ public class Node {
             return false;
         }
 
-        if (((Node) other).getLat() != getLat()) {
-            return false;
-        }
-
-        return true;
+        return ((Node) other).getLat() == getLat();
     }
 
     public double distanceFrom(Node other) {

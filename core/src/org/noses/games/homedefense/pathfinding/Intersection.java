@@ -29,7 +29,6 @@ public class Intersection {
         for (Way way : map.getWays()) {
             for (Node node: way.getNodes()) {
                 String key = node.getLat()+"_"+node.getLon();
-                //System.out.println("key="+key);
 
                 Intersection intersection = intersections.get(key);
                 if (intersection == null) {
@@ -89,16 +88,10 @@ public class Intersection {
 
     public boolean closeTo(float x, float y) {
         Node node = getNode();
-        //System.out.println ("Comparing closeTo "+x+" vs "+node.getLatitude()+", "+y+" vs "+node.getLongitude());
         if (Math.abs(x - node.getLat()) > 0.0001) { // todo - this fails to get a good point for home.  we should choose the closest, not just find one within an arbitrary distance
-            //System.out.println (node.getLat()+"x"+node.getLon()+" is not close to "+x+"x"+y);
             return false;
         }
-        if (Math.abs(y - node.getLon()) > 0.0001) {
-            return false;
-        }
-        //System.out.println (node.getLat()+"x"+node.getLon()+" is not close to "+x+"x"+y);
-        return true;
+        return !(Math.abs(y - node.getLon()) > 0.0001);
     }
 
     public boolean equals(Object other) {

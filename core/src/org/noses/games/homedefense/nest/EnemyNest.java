@@ -11,14 +11,17 @@ import org.noses.games.homedefense.game.Animation;
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.game.PhysicalObject;
+import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.level.NestConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class EnemyNest extends Animation implements PhysicalObject, ClockTickHandler {
 
-    double longitude;
-    double latitude;
+    @Getter
+    NestConfig nestConfig;
+    Point location;
 
     boolean killed;
 
@@ -29,33 +32,33 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
 
     double timeSinceLastWave;
 
-    int numWaves;
     int waveNum;
 
-    public EnemyNest(MapScreen parent, String nestName, double delayBeforeStart, int numWaves, double longitude, double latitude) {
-        super(parent, "nest/" + nestName + ".png", 199, 199, 0.08, true);
-        this.longitude = longitude;
-        this.latitude = latitude;
+    public EnemyNest(MapScreen parent, NestConfig nestConfig, Point location) {
+        super(parent, "nest/" + nestConfig.getClassName().toLowerCase()+ ".png", 199, 199, 0.08, true);
+        this.nestConfig = nestConfig;
+        this.location = location;
         killed = false;
 
-        this.numWaves = numWaves;
         waveNum = 0;
 
-        timeSinceLastWave = delayBetweenWaves() - delayBeforeStart;
+        timeSinceLastWave = delayBetweenWaves() - nestConfig.getDelayBeforeStart();
 
         enemyGroups = new ArrayList<>();
     }
 
-    public abstract double delayBetweenWaves();
+    public double delayBetweenWaves() {
+        return nestConfig.getDelayBetweenWaves();
+    }
 
     @Override
     public double getLatitude() {
-        return latitude;
+        return location.getLatitude();
     }
 
     @Override
     public double getLongitude() {
-        return longitude;
+        return location.getLongitude();
     }
 
     public abstract EnemyGroup getNewEnemyGroup();
@@ -63,7 +66,7 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
     @Override
     public void clockTick(double delta) {
 
-        if (waveNum >= numWaves) {
+        if (waveNum >= nestConfig.getNumWaves()) {
             return;
         }
 
@@ -110,14 +113,12 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
 
     @Override
     public boolean isKilled() {
-        if (waveNum < numWaves) {
-            //System.out.println("EnemyNest not killed because waveNum<numWaves, "+waveNum+"<"+numWaves);
+        if (waveNum < nestConfig.getNumWaves()) {
             return false;
         }
 
         for (EnemyGroup enemyGroup: enemyGroups) {
             if (!enemyGroup.isKilled()) {
-                //System.out.println("EnemyNest not killed because "+enemyGroup+" is not killed");
                 return false;
             }
         }
@@ -150,8 +151,6 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
                 }
             }
         }
-
-        System.out.println("bestNode=" + bestNode);
 
         if (bestNode == null) {
             return null;

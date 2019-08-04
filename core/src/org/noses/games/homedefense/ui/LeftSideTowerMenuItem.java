@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.tower.Tower;
 import org.noses.games.homedefense.tower.TowerFactory;
-import org.noses.games.homedefense.tower.TowerUpgrader;
 
 public class LeftSideTowerMenuItem extends MenuItem {
 
@@ -37,11 +36,8 @@ public class LeftSideTowerMenuItem extends MenuItem {
 
         int adjustedY = parent.getScreenHeight() - moveY;
 
-        if ((moveX >= x) && (moveX <= (x + width)) &&
-                (adjustedY >= y) && (adjustedY <= (y + height))) {
-            return true;
-        }
-        return false;
+        return (moveX >= x) && (moveX <= (x + width)) &&
+                (adjustedY >= y) && (adjustedY <= (y + height));
     }
 
     public Tower getTower(double longitude,double latitude) {

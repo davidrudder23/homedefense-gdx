@@ -15,16 +15,20 @@ import lombok.Getter;
 import lombok.Setter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.*;
-import org.noses.games.homedefense.enemy.*;
-import org.noses.games.homedefense.level.LevelEngine;
+import org.noses.games.homedefense.enemy.Enemy;
+import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.hero.Hero;
 import org.noses.games.homedefense.home.Home;
+import org.noses.games.homedefense.level.LevelEngine;
 import org.noses.games.homedefense.nest.EnemyNest;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.Intersection;
 import org.noses.games.homedefense.tower.Tower;
-import org.noses.games.homedefense.ui.*;
+import org.noses.games.homedefense.ui.LeftSideTowerMenu;
+import org.noses.games.homedefense.ui.LeftSideUpgradeMenu;
+import org.noses.games.homedefense.ui.MouseHandler;
+import org.noses.games.homedefense.ui.SpeedButton;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -168,7 +172,6 @@ public class MapScreen extends Screen implements InputProcessor {
         }
     }
 
-
     public int getScreenWidth() {
         return Gdx.graphics.getWidth();
     }
@@ -177,12 +180,15 @@ public class MapScreen extends Screen implements InputProcessor {
         return Gdx.graphics.getHeight();
     }
 
+    public boolean isDebug() {
+        return parent.isDebug();
+    }
+
     public void addClockTickHandler(ClockTickHandler clockTickHandler) {
         synchronized (clockTickHandlersToBeAdded) {
             clockTickHandlersToBeAdded.add(clockTickHandler);
         }
     }
-
 
     public void addClickHandler(MouseHandler mouseHandler) {
         synchronized (mouseHandlers) {
@@ -213,22 +219,9 @@ public class MapScreen extends Screen implements InputProcessor {
     public void speedUp() {
         speedMultiplier += 1;
 
-        if ((speedMultiplier > 3) || (speedMultiplier < 1)) {
+        if ((speedMultiplier > 5) || (speedMultiplier < 1)) {
             speedMultiplier = 1;
         }
-
-        System.out.println("Speed multiplier=" + speedMultiplier);
-
-        /*timer.cancel();
-        timer = Timer.schedule(new Timer.Task() {
-                                   @Override
-                                   public void run() {
-                                       clockTick(1 / 10.0f);
-                                   }
-                               }
-                , 0f, 1 / (10.0f * speedMultiplier));
-
-         */
 
     }
 
@@ -258,7 +251,7 @@ public class MapScreen extends Screen implements InputProcessor {
             mouseHandlers.sort(new Comparator<MouseHandler>() {
                 @Override
                 public int compare(MouseHandler a, MouseHandler b) {
-                    return b.getZ()-a.getZ();
+                    return b.getZ() - a.getZ();
                 }
             });
         }
@@ -274,7 +267,7 @@ public class MapScreen extends Screen implements InputProcessor {
                 }
             }
         } else if (Gdx.input.isButtonPressed(1)) {
-            for (int i = mouseHandlers.size()-1; i>=0; i++) {
+            for (int i = mouseHandlers.size() - 1; i >= 0; i++) {
                 MouseHandler mouseHandler = mouseHandlers.get(i);
                 if (!mouseHandler.onRightClick(x, y)) {
                     break;
@@ -346,12 +339,8 @@ public class MapScreen extends Screen implements InputProcessor {
                     location.getLatitude() - 0.0075,
                     location.getLongitude() + 0.015,
                     location.getLongitude() - 0.015);
-            //map = mapClient.getMap(account, denverLatitude + 0.0075, denverLatitude - 0.0075, denverLongitude + 0.015, denverLongitude - 0.015);
-            //map = mapClient.getMap(account, denverLatitude+0.03, denverLatitude-0.013, denverLongitude+0.06, denverLongitude-0.06);
-            //System.out.println(map);
         } catch (IOException ioExc) {
             ioExc.printStackTrace();
-            ;
         }
 
         for (Way way : map.getWays()) {
@@ -381,10 +370,7 @@ public class MapScreen extends Screen implements InputProcessor {
             return false;
         }
 
-        if (!isInsideMap(nodePoint)) {
-            return false;
-        }
-        return true;
+        return isInsideMap(nodePoint);
     }
 
     public Node findGoodPlaceForNest() {
@@ -395,13 +381,11 @@ public class MapScreen extends Screen implements InputProcessor {
 
         int count = 0;
 
-        while (count<1000) {
+        while (count < 1000) {
             count++;
             intersection = intersections.get((int) (Math.random() * intersections.size()));
-            System.out.println("Testing intersection "+intersection);
 
             if (!isGoodLocationForNest(intersection.getNode())) {
-                System.out.println(intersection+" is bad");
                 continue;
             }
 
@@ -412,7 +396,6 @@ public class MapScreen extends Screen implements InputProcessor {
     }
 
     public void startNewLevel() {
-        System.out.println("Starting a new levelEngine");
         if (levelEngine == null) {
             levelEngine = new LevelEngine(this, 10);
             addClockTickHandler(levelEngine);
@@ -445,8 +428,8 @@ public class MapScreen extends Screen implements InputProcessor {
     public Node getNodeForLocation(Point location) {
         double closestDistance = 99999;
         Node closestNode = null;
-        for (Way way: map.getWays()) {
-            for (Node node: way.getNodes()) {
+        for (Way way : map.getWays()) {
+            for (Node node : way.getNodes()) {
                 double distance = new Point(node.getLat(), node.getLon()).getDistanceFrom(location);
                 if (distance < closestDistance) {
                     closestDistance = distance;
@@ -476,16 +459,14 @@ public class MapScreen extends Screen implements InputProcessor {
         }
 
         for (ClockTickHandler clockTickHandler : clockTickHandlers) {
-            //System.out.println ("Clock ticking "+clockTickHandler+" iskilled="+clockTickHandler.isKilled());
             if (!clockTickHandler.isKilled()) {
-                clockTickHandler.clockTick((float)(1+(speedMultiplier/2))/10);
+                clockTickHandler.clockTick((float) (1 + (speedMultiplier / 2)) / 10);
             }
         }
 
     }
 
     public void hitHome(int damage) {
-        System.out.println("Home hit for " + damage + " health=" + home.getHealth());
         home.hit(damage);
         if (home.isKilled()) {
             die();
@@ -530,11 +511,11 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public boolean isInsideMap(Point point) {
 
-        return isPointWithinBounds(point, new Point (map.getNorth(), map.getWest()),
-                new Point (map.getSouth(), map.getEast()));
+        return isPointWithinBounds(point, new Point(map.getNorth(), map.getWest()),
+                new Point(map.getSouth(), map.getEast()));
     }
 
-    public boolean isPointWithinBounds (Point point, Point upperLeft, Point lowerRight) {
+    public boolean isPointWithinBounds(Point point, Point upperLeft, Point lowerRight) {
 
         if (upperLeft.getLatitude() > lowerRight.getLatitude()) {
             if (point.getLatitude() > upperLeft.getLatitude()) {
@@ -568,7 +549,6 @@ public class MapScreen extends Screen implements InputProcessor {
             }
         }
 
-        System.out.println ("Is "+point+" within "+upperLeft+" and "+lowerRight+"? TRUE");
         return true;
     }
 
@@ -592,8 +572,6 @@ public class MapScreen extends Screen implements InputProcessor {
             Node prevNode = null;
             for (Node node : way.getNodes()) {
                 if (prevNode != null) {
-                    //System.out.println("Writing line starting at "+prevNode.getLat()+"x"+prevNode.getLon()+" - "+
-                    //              convertLatToY(prevNode.getLat())+"x"+convertLongToX(prevNode.getLon()));
                     sr.line(convertLongToX(prevNode.getLon()), convertLatToY(prevNode.getLat()),
                             convertLongToX(node.getLon()), convertLatToY(node.getLat()));
                 }
@@ -606,7 +584,7 @@ public class MapScreen extends Screen implements InputProcessor {
 
         levelEngine.render(batch);
 
-        // render the nests
+        // render the nestConfigs
         for (org.noses.games.homedefense.nest.EnemyNest enemyNest : enemyNests) {
             if (!enemyNest.isKilled()) {
                 enemyNest.render(batch);
@@ -627,13 +605,9 @@ public class MapScreen extends Screen implements InputProcessor {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
 
-                    //if(enemy instanceof NestLayingEnemy) {
-                     //   System.out.println("Rendering nest layer at "+convertLatToY(latitude)+"x"+convertLongToX(longitude));
-                    //}
-
                     Sprite sprite = new Sprite(enemy.getFrameTextureRegion());
 
-                    sprite.setScale((float)getSpriteScale(sprite, enemy.getScale()));
+                    sprite.setScale((float) getSpriteScale(sprite, enemy.getScale()));
 
                     sprite.setCenterY(convertLatToY(latitude));
                     sprite.setCenterX(convertLongToX(longitude));
@@ -646,11 +620,11 @@ public class MapScreen extends Screen implements InputProcessor {
         getHome().render(batch);
 
         // render the score and other text
-        font.draw(batch, "Health: " + getHome().getHealth(), 10, Gdx.graphics.getHeight() - (int)(Gdx.graphics.getHeight()*.1));
+        font.draw(batch, "Health: " + getHome().getHealth(), 10, Gdx.graphics.getHeight() - (int) (Gdx.graphics.getHeight() * .1));
 
-        font.draw(batch, "Money: " + getMoney(), 10, Gdx.graphics.getHeight() - (int)((Gdx.graphics.getHeight()*.1) + (font.getCapHeight()*2)));
+        font.draw(batch, "Money: " + getMoney(), 10, Gdx.graphics.getHeight() - (int) ((Gdx.graphics.getHeight() * .1) + (font.getCapHeight() * 2)));
 
-        font.draw(batch, "Speed: " + getSpeedMultiplier() + "x", 10, Gdx.graphics.getHeight() - (int)((Gdx.graphics.getHeight()*.1) + (font.getCapHeight()*4)));
+        font.draw(batch, "Speed: " + getSpeedMultiplier() + "x", 10, Gdx.graphics.getHeight() - (int) ((Gdx.graphics.getHeight() * .1) + (font.getCapHeight() * 4)));
 
         speedButton.render(batch);
 
@@ -681,7 +655,7 @@ public class MapScreen extends Screen implements InputProcessor {
     }
 
     public double getSpriteScale(Sprite sprite, double scale) {
-        return (parent.getScreenWidth()*scale)/sprite.getWidth();
+        return (parent.getScreenWidth() * scale) / sprite.getWidth();
     }
 
     public void hideMenus() {
@@ -738,6 +712,5 @@ public class MapScreen extends Screen implements InputProcessor {
     public double getPpcY() {
         return parent.getPpcY();
     }
-
 
 }

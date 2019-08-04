@@ -88,11 +88,7 @@ public class Way {
             return false;
         }
 
-        if (otherWay.lastPoint().getLongitude() != lastPoint().getLongitude()) {
-            return false;
-        }
-
-        return true;
+        return otherWay.lastPoint().getLongitude() == lastPoint().getLongitude();
 
     }
 

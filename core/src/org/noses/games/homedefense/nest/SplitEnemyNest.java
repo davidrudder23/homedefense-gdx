@@ -6,6 +6,7 @@ import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.GroundEnemy;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.level.NestConfig;
 import org.noses.games.homedefense.pathfinding.Djikstra;
 import org.noses.games.homedefense.pathfinding.PathStep;
 import org.noses.games.homedefense.tower.Tower;
@@ -18,7 +19,15 @@ public class SplitEnemyNest extends EnemyNest {
     boolean servedOne;
 
     public SplitEnemyNest(MapScreen parent, List<Tower> towers, Point nestLocation) {
-        super(parent, "splitting", 0, 1, nestLocation.getLongitude(), nestLocation.getLatitude());
+        super(parent,
+                NestConfig.builder()
+                .className("Splitting")
+                .delayBeforeStart(0)
+                .numWaves(1)
+                .numEnemiesPerWave(10)
+                .delayBetweenWaves(0)
+                .build(),
+                nestLocation);
         this.towers = towers;
         servedOne = false;
     }
@@ -64,7 +73,6 @@ public class SplitEnemyNest extends EnemyNest {
             PathStep pathStep = djikstra.getBestPath(node, parent.getNodeForLocation(tower.getLocation()));
 
             if (pathStep == null) {
-                System.out.println("Couldn't find pathstep for tower at "+tower.getLocation());
                 continue;
             }
 

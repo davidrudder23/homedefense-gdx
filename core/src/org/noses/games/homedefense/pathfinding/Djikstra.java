@@ -3,7 +3,9 @@ package org.noses.games.homedefense.pathfinding;
 import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.client.Way;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Djikstra {
     private List<Intersection> unvisitedIntersections;
@@ -89,10 +91,6 @@ public class Djikstra {
                     seen.put(intersection.getLatitude()+"_"+intersection.getLongitude(), Boolean.TRUE);
                 }
             }
-
-            /*System.out.println("Unvisited intersections has " + unvisitedIntersections.size());
-            System.out.println("Visited intersections has " + visitedIntersections.size());
-            System.out.println("Current PathStep=" + pathStep);*/
         }
 
         if ((destination == null) || (destination.getPathStep() == null)){

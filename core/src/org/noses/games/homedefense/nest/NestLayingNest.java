@@ -4,12 +4,11 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.NestLayingEnemy;
 import org.noses.games.homedefense.enemy.NestLayingEnemyGroup;
-import org.noses.games.homedefense.nest.EnemyNest;
-import org.noses.games.homedefense.nest.NestFactory;
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.home.Home;
+import org.noses.games.homedefense.level.NestConfig;
 import org.noses.games.homedefense.pathfinding.Intersection;
 
 import java.util.ArrayList;
@@ -28,7 +27,15 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
     NestFactory nestFactory;
 
     public NestLayingNest(MapScreen parent, NestFactory nestFactory) {
-        super(parent, "splitting", 0, 1, 0, 0);
+        super(parent, NestConfig.builder()
+                        .className("Splitting")
+                        .delayBeforeStart(0)
+                        .numWaves(1)
+                        .numEnemiesPerWave(10)
+                        .delayBetweenWaves(0)
+                        .build(),
+                new Point(0, 0)
+        );
         this.parent = parent;
         this.nestFactory = nestFactory;
 
@@ -82,7 +89,6 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
 
         while (!foundIntersection) {
             intersection = intersections.get((int) (Math.random() * intersections.size()));
-            System.out.println("Testing intersection " + intersection);
 
             if (!parent.isGoodLocationForNest(intersection.getNode())) {
                 continue;
@@ -91,7 +97,6 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
             foundIntersection = true;
         }
 
-        //System.out.println("Targetting nest at "+intersection);
         NestLayingEnemy nestLayingEnemy = new NestLayingEnemy(parent, new Point(intersection.getLatitude(), intersection.getLongitude()), nestFactory);
         parent.addClockTickHandler(nestLayingEnemy);
         enemyGroups.get(0).addEnemy(nestLayingEnemy);

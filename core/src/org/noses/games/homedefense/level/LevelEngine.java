@@ -8,12 +8,10 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.MapScreen;
-import org.noses.games.homedefense.geometry.Point;
-import org.noses.games.homedefense.nest.*;
+import org.noses.games.homedefense.nest.NestFactory;
+import org.noses.games.homedefense.nest.NestLayingNest;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LevelEngine implements ClockTickHandler {
 
@@ -30,15 +28,15 @@ public class LevelEngine implements ClockTickHandler {
 
     int levelNum;
 
-    public static final int STATE_LEVEL_INTRO=0;
-    public static final int STATE_LEVEL_GAMEPLAY=1;
-    public static final int STATE_LEVEL_OUTRO=2;
+    public static final int STATE_LEVEL_INTRO = 0;
+    public static final int STATE_LEVEL_GAMEPLAY = 1;
+    public static final int STATE_LEVEL_OUTRO = 2;
 
     double clockTick;
 
     FreeTypeFontGenerator generator;
 
-    Level level;
+    LevelConfig levelConfig;
 
     public LevelEngine(MapScreen parent, double delayBetweenNests) {
         this.parent = parent;
@@ -65,7 +63,9 @@ public class LevelEngine implements ClockTickHandler {
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            level = objectMapper.readValue(Gdx.files.internal("levels/" + levelNum + ".json").reader(), Level.class);
+
+            String debug = parent.isDebug() ? "debug/" : "";
+            levelConfig = objectMapper.readValue(Gdx.files.internal("levels/" + debug + levelNum + ".json").reader(), LevelConfig.class);
 
             //nestFactories.add(new GroundEnemyNest.GroundEnemyNestFactory(parent, 1));
             //nestFactories.add(new ArmoredEnemyNest.ArmoredEnemyNestFactory(parent, 1));
@@ -78,11 +78,11 @@ public class LevelEngine implements ClockTickHandler {
         return true;
     }
 
-    private NestFactory getNestFactory(Nest nest)  {
+    private NestFactory getNestFactory(NestConfig nestConfig) {
         try {
-            Class<?> cl = Class.forName("org.noses.games.homedefense.nest." + nest.className + "EnemyNest" + "$" + nest.className + "EnemyNestFactory");
-            Constructor<?> cons = cl.getConstructor(MapScreen.class, Integer.class);
-            return (NestFactory) cons.newInstance(parent, nest.numWaves);
+            Class<?> cl = Class.forName("org.noses.games.homedefense.nest." + nestConfig.className + "EnemyNest" + "$" + nestConfig.className + "EnemyNestFactory");
+            Constructor<?> cons = cl.getConstructor(MapScreen.class);
+            return (NestFactory) cons.newInstance(parent);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -106,47 +106,46 @@ public class LevelEngine implements ClockTickHandler {
 
     public void clockTickIntro(double delta) {
 
-        if (clockTick>10) {
+        if (clockTick > 10) {
             clockTick = 0;
             state = STATE_LEVEL_GAMEPLAY;
             return;
         }
 
-        clockTick+= delta;
+        clockTick += delta;
     }
 
     public void clockTickGamePlay(double delta) {
 
-        if (level == null) {
+        if (levelConfig == null) {
             return;
         }
 
-        if (level.getNests() == null) {
+        if (levelConfig.getNestConfigs() == null) {
             return;
         }
 
-        if (nestFactoryNumber >= level.getNests().size()) {
+        if (nestFactoryNumber >= levelConfig.getNestConfigs().size()) {
             return;
         }
 
         time += delta;
 
-        for (Nest nest: level.getNests()) {
-            if (nest.isUsed()) {
+        for (NestConfig nestConfig : levelConfig.getNestConfigs()) {
+            if (nestConfig.isUsed()) {
                 continue;
             }
 
-            if (nest.getDelay() > time) {
+            if (nestConfig.getDelayBeforeStart() > time) {
                 continue;
             }
 
-            System.out.println("Laying new NestLayingNest with factory(" + nestFactoryNumber + ")=" + level.getNests().get(nestFactoryNumber));
             time = 0;
 
-            NestFactory nestFactory = getNestFactory(nest);
-            nest.setNestFactory(nestFactory);
+            NestFactory nestFactory = getNestFactory(nestConfig);
+            nestConfig.setNestFactory(nestFactory);
             NestLayingNest nestLayingNest = new NestLayingNest(parent, nestFactory);
-            nest.setUsed(true);
+            nestConfig.setUsed(true);
 
             nestFactoryNumber++;
             parent.dropNest(nestLayingNest);
@@ -155,7 +154,7 @@ public class LevelEngine implements ClockTickHandler {
     }
 
     public void clockTickOutro(double delta) {
-        if (clockTick>10) {
+        if (clockTick > 10) {
             isKilled = true;
             //parent.clockTick(0);
             parent.startNewLevel();
@@ -179,9 +178,9 @@ public class LevelEngine implements ClockTickHandler {
         parameter.size = 128;
         parameter.color = Color.BLACK;
         BitmapFont font = generator.generateFont(parameter); // font size 12 pixels
-        font.getData().scale((float)clockTick/10);
+        font.getData().scale((float) clockTick / 10);
 
-        font.draw(batch, "Level "+levelNum, 100, 300);
+        font.draw(batch, "Level " + levelNum, 100, 300);
     }
 
     public void renderGamePlay(Batch batch) {
@@ -197,8 +196,6 @@ public class LevelEngine implements ClockTickHandler {
 
         font.draw(batch, "Success", 100, 300);
     }
-
-
 
     @Override
     public void kill() {
@@ -216,19 +213,19 @@ public class LevelEngine implements ClockTickHandler {
     }
 
     public boolean isLevelDone() {
-        if (level == null) {
+        if (levelConfig == null) {
             return false;
         }
 
-        if (level.getNests() == null) {
+        if (levelConfig.getNestConfigs() == null) {
             return false;
         }
 
-        for (Nest nest: level.getNests()) {
-            if (!nest.isUsed()) {
+        for (NestConfig nestConfig : levelConfig.getNestConfigs()) {
+            if (!nestConfig.isUsed()) {
                 return false;
             }
-            NestFactory nestFactory = nest.getNestFactory();
+            NestFactory nestFactory = nestConfig.getNestFactory();
             if (nestFactory == null) {
                 return false;
             }

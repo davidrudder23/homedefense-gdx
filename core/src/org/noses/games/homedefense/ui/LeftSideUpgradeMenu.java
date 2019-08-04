@@ -1,12 +1,7 @@
 package org.noses.games.homedefense.ui;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import lombok.Getter;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.tower.NormalTowerUpgrader;
-import org.noses.games.homedefense.tower.RifleTower;
 import org.noses.games.homedefense.tower.Tower;
 
 import java.util.HashMap;

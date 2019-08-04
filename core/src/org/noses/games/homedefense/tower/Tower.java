@@ -2,13 +2,11 @@ package org.noses.games.homedefense.tower;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Data;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.game.*;
 import org.noses.games.homedefense.geometry.Point;
-import org.noses.games.homedefense.ui.LeftSideTowerMenu;
 import org.noses.games.homedefense.ui.MouseHandler;
 
 import java.util.ArrayList;
@@ -72,8 +70,6 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
         if (level >= animations.size()) {
             level = animations.size() - 1;
         }
-
-        System.out.println("Tower " + getTowerName() + " is upgraded to " + level);
     }
 
     public double getLatitude() {
@@ -121,8 +117,6 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
     public void damage(int points) {
         health -= points;
 
-        System.out.println(this + " was damaged with " + points + " now at " + health);
-
         if (health <= 0) {
             kill();
         }
@@ -144,19 +138,15 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
         int width = (int) (sprite.getWidth() * sprite.getScaleX());
         int height = (int) (sprite.getHeight() * sprite.getScaleY());
 
-        int upperLeftX = parent.convertLongToX(getLongitude()) - (int) (width / 2);
-        int upperLeftY = parent.convertLatToY(getLatitude()) - (int) (height / 2);
+        int upperLeftX = parent.convertLongToX(getLongitude()) - (width / 2);
+        int upperLeftY = parent.convertLatToY(getLatitude()) - (height / 2);
 
         int lowerRightX = upperLeftX + width;
         int lowerRightY = upperLeftY + height;
 
-        if (parent.isPointWithinBounds(new Point(x, parent.getScreenHeight() - y),
+        return parent.isPointWithinBounds(new Point(x, parent.getScreenHeight() - y),
                 new Point(upperLeftX, upperLeftY),
-                new Point(lowerRightX, lowerRightY))) {
-            return true;
-        }
-
-        return false;
+                new Point(lowerRightX, lowerRightY));
     }
 
     @Override
