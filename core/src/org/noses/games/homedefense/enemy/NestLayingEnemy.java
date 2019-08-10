@@ -21,7 +21,7 @@ public class NestLayingEnemy extends Enemy {
     NestConfig nestConfig;
 
     public NestLayingEnemy(MapScreen parent, Point targetNestLocation, NestConfig nestConfig, NestFactory nestFactory) {
-        super(parent, "enemy/nest_laying.png", parent.loadSound("normal_hit.mp3"), 111, 100, 0.06, 200);
+        super(parent, "enemy/nest_laying.png", parent.loadSound("normal_hit.mp3"), 900, 900, 0.06, 200);
 
         this.nestFactory = nestFactory;
         this.nestConfig = nestConfig;

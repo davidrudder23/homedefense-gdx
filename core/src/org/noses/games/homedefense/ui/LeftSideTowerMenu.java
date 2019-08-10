@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.tower.*;
 
@@ -75,26 +76,33 @@ public class LeftSideTowerMenu extends LeftSideMenu {
 
         batch.end();
 
+        Circle towerCircle = new Circle(clickX, parent.getScreenHeight() - clickY, radiusInPixels);
         ShapeRenderer sr = new ShapeRenderer();
         sr.setColor(new Color(1, 1, 0, 0.5f));
         sr.begin(ShapeRenderer.ShapeType.Filled);
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        sr.circle(clickX, parent.getScreenHeight() - clickY, radiusInPixels);
+        sr.circle(towerCircle.x, towerCircle.y, towerCircle.radius);
         sr.end();
 
 
         for (Tower tower : parent.getTowers()) {
             int x = parent.convertLongToX(tower.getLocation().getLongitude());
-            int y = parent.convertLatToY(tower.getLocation().getLatitude());
+            int y = parent.getScreenHeight() - parent.convertLatToY(tower.getLocation().getLatitude());
 
             int radius = (int)(tower.minDistanceFromOtherTower()/longPerPixel);
 
-
             sr = new ShapeRenderer();
-            sr.setColor(new Color(1, 1, 0, 0.5f));
+            Circle circle = new Circle(x, parent.getScreenHeight() - y, radius);
+
             sr.begin(ShapeRenderer.ShapeType.Filled);
-            sr.circle(x, parent.getScreenHeight() - y, radius);
+            if (circle.overlaps(towerCircle)) {
+                sr.setColor(new Color(1, 0, 0, 0.5f));
+                sr.circle(towerCircle.x, towerCircle.y, towerCircle.radius);
+            } else {
+                sr.setColor(new Color(1, 1, 0, 0.5f));
+            }
+            sr.circle(circle.x, circle.y, circle.radius);
             sr.end();
         }
 
@@ -105,7 +113,7 @@ public class LeftSideTowerMenu extends LeftSideMenu {
 
     @Override
     public boolean onClickUp(int x, int y) {
-        
+
         if (hidden) {
             parent.hideMenus();
 

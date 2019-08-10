@@ -125,6 +125,7 @@ public abstract class Shooter implements PhysicalObject, ClockTickHandler {
             if (bullet.isKilled()) {
                 continue;
             }
+
             TextureRegion textureRegion = bullet.getFrameTextureRegion();
             Sprite bulletSprite = new Sprite(textureRegion);
 

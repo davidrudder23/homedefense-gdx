@@ -585,6 +585,11 @@ public class MapScreen extends Screen implements InputProcessor {
             }
         }
 
+        // render the towers
+        for (Tower tower : getTowers()) {
+            tower.render(batch);
+        }
+
         // render the enemies
 
         for (EnemyNest enemyNest : enemyNests) {
@@ -611,11 +616,6 @@ public class MapScreen extends Screen implements InputProcessor {
         font.draw(batch, "Speed: " + getSpeedMultiplier() + "x", 10, Gdx.graphics.getHeight() - (int) ((Gdx.graphics.getHeight() * .1) + (font.getCapHeight() * 4)));
 
         speedButton.render(batch);
-
-        // render the towers
-        for (Tower tower : getTowers()) {
-            tower.render(batch);
-        }
 
         // render the pie menu
 
