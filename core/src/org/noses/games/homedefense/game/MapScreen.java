@@ -235,6 +235,8 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public void addTower(Tower tower) {
         towers.add(tower);
+        subtractMoney(tower.getCost());
+        addClickHandler(tower);
         addClockTickHandler(tower);
     }
 
@@ -583,6 +585,11 @@ public class MapScreen extends Screen implements InputProcessor {
             }
         }
 
+        // render the towers
+        for (Tower tower : getTowers()) {
+            tower.render(batch);
+        }
+
         // render the enemies
 
         for (EnemyNest enemyNest : enemyNests) {
@@ -610,11 +617,6 @@ public class MapScreen extends Screen implements InputProcessor {
 
         speedButton.render(batch);
 
-        // render the towers
-        for (Tower tower : getTowers()) {
-            tower.render(batch);
-        }
-
         // render the pie menu
 
         if (!towerChoiceMenu.isHidden()) {
@@ -638,6 +640,10 @@ public class MapScreen extends Screen implements InputProcessor {
 
     public double getSpriteScale(Sprite sprite, double scale) {
         return (parent.getScreenWidth() * scale) / sprite.getWidth();
+    }
+
+    public double getScaledPixels(int spriteWidth, double scale) {
+        return (parent.getScreenWidth() * scale) / spriteWidth;
     }
 
     public void hideMenus() {

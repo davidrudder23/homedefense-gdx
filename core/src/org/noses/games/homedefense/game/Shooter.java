@@ -22,7 +22,7 @@ public abstract class Shooter implements PhysicalObject, ClockTickHandler {
 
     double timeSinceLastFired = 0;
 
-    final int maxOnScreen = 15;
+    final int maxOnScreen = 1500;
 
     @Getter
     @Setter
@@ -125,6 +125,7 @@ public abstract class Shooter implements PhysicalObject, ClockTickHandler {
             if (bullet.isKilled()) {
                 continue;
             }
+
             TextureRegion textureRegion = bullet.getFrameTextureRegion();
             Sprite bulletSprite = new Sprite(textureRegion);
 

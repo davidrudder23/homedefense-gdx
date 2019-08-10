@@ -78,8 +78,8 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
     }
 
     public Rectangle getBoundingBox() {
-        double halfWidth = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileWidth / 2;
-        double halfHeight = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileHeight / 2;
+        double halfWidth = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileWidth * parent.getScaledPixels(tileWidth, getScale()) / 2;
+        double halfHeight = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileHeight * parent.getScaledPixels(tileWidth, getScale()) / 2;
 
         Rectangle boundingBox = new Rectangle(getLocation().getLatitude()-halfWidth,
                 getLocation().getLongitude()-halfHeight,
