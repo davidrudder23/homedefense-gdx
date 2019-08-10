@@ -123,7 +123,7 @@ public class LevelEngine implements ClockTickHandler {
 
     public void clockTickIntro(double delta) {
 
-        if (clockTick > 10) {
+        if (clockTick > 5) {
             clockTick = 0;
             state = STATE_LEVEL_GAMEPLAY;
             return;
@@ -195,7 +195,7 @@ public class LevelEngine implements ClockTickHandler {
         parameter.size = 128;
         parameter.color = Color.BLACK;
         BitmapFont font = generator.generateFont(parameter); // font size 12 pixels
-        font.getData().scale((float) clockTick / 10);
+        font.getData().scale((float) clockTick / 5);
 
         font.draw(batch, "Level " + levelNum, 100, 300);
     }

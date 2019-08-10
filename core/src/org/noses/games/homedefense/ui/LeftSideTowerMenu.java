@@ -63,7 +63,7 @@ public class LeftSideTowerMenu extends LeftSideMenu {
     public void renderMenu(Batch batch) {
         super.renderMenu(batch);
 
-        int radiusInPixels = 10;
+        /*int radiusInPixels = 10;
         float longPerPixel = (parent.getMap().getEast() - parent.getMap().getWest()) / (float) Gdx.graphics.getWidth();
 
         for (LeftSideTowerMenuItem menuItem: menuItems.values()) {
@@ -108,7 +108,7 @@ public class LeftSideTowerMenu extends LeftSideMenu {
 
         batch.begin();
 
-
+*/
     }
 
     @Override

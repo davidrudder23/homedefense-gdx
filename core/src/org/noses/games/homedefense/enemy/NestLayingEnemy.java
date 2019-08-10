@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.geometry.Rectangle;
 import org.noses.games.homedefense.level.EnemyConfig;
 import org.noses.games.homedefense.level.NestConfig;
 import org.noses.games.homedefense.nest.EnemyNest;
@@ -54,6 +55,11 @@ public class NestLayingEnemy extends Enemy {
                 currentLocation = new Point(parent.getHome().getLatitude(), parent.getMap().getWest());
             }
         }
+    }
+
+    @Override
+    public Rectangle getBoundingBox() {
+        return new Rectangle(0,0,0,0);
     }
 
     @Override
