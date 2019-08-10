@@ -99,6 +99,10 @@ public abstract class Bullet extends Animation {
         Rectangle boundingBox = new Rectangle(currentLatitude -halfRadius, currentLongitude -halfRadius, currentLatitude + halfRadius, currentLongitude + halfRadius);
 
         for (Enemy enemy : parent.getEnemies()) {
+            if (enemy.isKilled()) {
+                continue;
+            }
+            
             if (enemy.getBoundingBox().doBoundsOverlap(boundingBox)) {
                 enemy.hit(getDamage());
                 this.kill();

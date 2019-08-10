@@ -63,7 +63,7 @@ public class LeftSideTowerMenu extends LeftSideMenu {
     public void renderMenu(Batch batch) {
         super.renderMenu(batch);
 
-        /*int radiusInPixels = 10;
+        int radiusInPixels = 10;
         float longPerPixel = (parent.getMap().getEast() - parent.getMap().getWest()) / (float) Gdx.graphics.getWidth();
 
         for (LeftSideTowerMenuItem menuItem: menuItems.values()) {
@@ -107,8 +107,6 @@ public class LeftSideTowerMenu extends LeftSideMenu {
         }
 
         batch.begin();
-
-*/
     }
 
     @Override
@@ -127,7 +125,7 @@ public class LeftSideTowerMenu extends LeftSideMenu {
         } else {
             mouseMoved(x,y);
             for (LeftSideTowerMenuItem menuItem : menuItems.values()) {
-                if (menuItem.isMouseWithin()) {
+                if (menuItem.isMouseWithin() && !menuItem.closeToOthers) {
                     Tower tower = menuItem.getTower(parent.convertXToLong(clickX), parent.convertYToLat(parent.getScreenHeight() - clickY));
                     parent.addTower(tower);
                 }

@@ -57,10 +57,10 @@ public class NestLayingEnemy extends Enemy {
         }
     }
 
-    @Override
+    /*@Override
     public Rectangle getBoundingBox() {
         return new Rectangle(0,0,0,0);
-    }
+    }*/
 
     @Override
     public int getDamage() {

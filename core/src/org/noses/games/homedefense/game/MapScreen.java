@@ -642,6 +642,10 @@ public class MapScreen extends Screen implements InputProcessor {
         return (parent.getScreenWidth() * scale) / sprite.getWidth();
     }
 
+    public double getScaledPixels(int spriteWidth, double scale) {
+        return (parent.getScreenWidth() * scale) / spriteWidth;
+    }
+
     public void hideMenus() {
         towerChoiceMenu.setHidden(true);
         hideUpgradeMenu();
