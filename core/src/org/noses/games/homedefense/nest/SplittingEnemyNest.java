@@ -3,6 +3,7 @@ package org.noses.games.homedefense.nest;
 import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.SplittingGroundEnemy;
+import org.noses.games.homedefense.game.BattleScreen;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.level.EnemyConfig;
@@ -10,9 +11,11 @@ import org.noses.games.homedefense.level.NestConfig;
 
 public class SplittingEnemyNest extends EnemyNest {
     SplittingGroundEnemy.SplittingGroundEnemyBuilder builder;
+    BattleScreen parent;
 
-    public SplittingEnemyNest(MapScreen parent, NestConfig nestConfig, Point location) {
+    public SplittingEnemyNest(BattleScreen parent, NestConfig nestConfig, Point location) {
         super(parent, nestConfig, location);
+        this.parent = parent;
     }
 
     @Override
@@ -43,13 +46,13 @@ public class SplittingEnemyNest extends EnemyNest {
     }
 
     public static class SplittingEnemyNestFactory implements NestFactory {
-        MapScreen parent;
+        BattleScreen parent;
 
         SplittingEnemyNest enemyNest;
 
         boolean started;
 
-        public SplittingEnemyNestFactory(MapScreen parent) {
+        public SplittingEnemyNestFactory(BattleScreen parent) {
             this.parent = parent;
 
             started = false;

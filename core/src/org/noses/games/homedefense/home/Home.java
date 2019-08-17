@@ -10,6 +10,7 @@ import org.noses.games.homedefense.bullet.Bullet;
 import org.noses.games.homedefense.bullet.NormalBullet;
 import org.noses.games.homedefense.enemy.Enemy;
 import org.noses.games.homedefense.game.Aimer;
+import org.noses.games.homedefense.game.BattleScreen;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.game.PhysicalObject;
 import org.noses.games.homedefense.geometry.Point;
@@ -44,7 +45,7 @@ public class Home extends Enemy implements PhysicalObject {
 
     boolean paused;
 
-    public Home(MapScreen parent, double latitude, double longitude) {
+    public Home(BattleScreen parent, double latitude, double longitude) {
         super(parent, "home.png", parent.loadSound("home_hit.mp3"), 64, 64, .08, 100);
         this.latitude = latitude;
         this.longitude = longitude;

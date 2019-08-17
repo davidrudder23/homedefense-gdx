@@ -16,11 +16,11 @@ public class Hero extends Animation implements PhysicalObject, ClockTickHandler,
     @Getter
     double latitude;
 
-    public Hero(MapScreen parent) {
+    public Hero(MapScreen parent, Point location) {
         super(parent, "hero/Healer-M-01.png", 24, 32, 0.03, true);
 
-        longitude = parent.getHome().getLongitude();
-        latitude = parent.getHome().getLatitude();
+        longitude = location.getLongitude();
+        latitude = location.getLatitude();
     }
 
     @Override

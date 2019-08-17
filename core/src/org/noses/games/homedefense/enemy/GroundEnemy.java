@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.client.Way;
+import org.noses.games.homedefense.game.BattleScreen;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.level.EnemyConfig;
@@ -35,13 +36,16 @@ public class GroundEnemy extends Enemy {
     private Way way;
     private EnemyConfig enemyConfig;
 
-    public GroundEnemy(MapScreen parent, EnemyConfig enemyConfig, PathStep pathStep) {
+    BattleScreen parent;
+
+    public GroundEnemy(BattleScreen parent, EnemyConfig enemyConfig, PathStep pathStep) {
         this(parent, enemyConfig, pathStep, "enemy/ground.png", 96, 96, 10);
     }
 
-    protected GroundEnemy(MapScreen parent, EnemyConfig enemyConfig, PathStep pathStep, String spriteFilename, int tileWidth, int tileHeight, int startingHealth) {
+    protected GroundEnemy(BattleScreen parent, EnemyConfig enemyConfig, PathStep pathStep, String spriteFilename, int tileWidth, int tileHeight, int startingHealth) {
         super(parent, spriteFilename, parent.loadSound("normal_hit.mp3"), tileWidth, tileHeight, 0.06, enemyConfig.getHealth());
 
+        this.parent = parent;
         this.enemyConfig = enemyConfig;
 
         progressAlong = 0;
@@ -247,20 +251,20 @@ public class GroundEnemy extends Enemy {
     }
 
     public static class GroundEnemyBuilder implements EnemyBuilder {
-        MapScreen parent;
+        BattleScreen parent;
 
         PathStep pathStep;
         EnemyConfig enemyConfig;
 
-        public GroundEnemyBuilder(MapScreen parent, EnemyConfig enemyConfig, Node startingNode) {
+        public GroundEnemyBuilder(BattleScreen parent, EnemyConfig enemyConfig, Node startingNode) {
             this(parent, enemyConfig, startingNode, parent.getHome().getLocation());
         }
 
-        public GroundEnemyBuilder(MapScreen parent, EnemyConfig enemyConfig, Node startingNode, Point target) {
+        public GroundEnemyBuilder(BattleScreen parent, EnemyConfig enemyConfig, Node startingNode, Point target) {
             this (parent, enemyConfig, startingNode, parent.getNodeForLocation(target));
         }
 
-        public GroundEnemyBuilder(MapScreen parent, EnemyConfig enemyConfig, Node startingNode, Node target) {
+        public GroundEnemyBuilder(BattleScreen parent, EnemyConfig enemyConfig, Node startingNode, Node target) {
 
             this.parent = parent;
             this.enemyConfig = enemyConfig;

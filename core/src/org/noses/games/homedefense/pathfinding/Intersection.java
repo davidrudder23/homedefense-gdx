@@ -50,6 +50,15 @@ public class Intersection {
         return intersections;
     }
 
+    public double getWeight() {
+        if (pathStep == null) {
+            return 999;
+        }
+
+        return pathStep.getWeight();
+    }
+
+    // todo: could this be more efficient?
     public Node getNode() {
         if (node == null) {
             for (Way way: getWayList()) {
@@ -57,7 +66,7 @@ public class Intersection {
                     if ((wayNode.getLat() == getLatitude()) &&
                             (wayNode.getLon() == getLongitude())) {
                         node = wayNode;
-                        break;
+                        return node;
                     }
                 }
             }

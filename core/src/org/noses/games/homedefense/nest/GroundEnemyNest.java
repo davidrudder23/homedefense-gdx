@@ -3,15 +3,18 @@ package org.noses.games.homedefense.nest;
 import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.GroundEnemy;
+import org.noses.games.homedefense.game.BattleScreen;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.level.NestConfig;
 
 public class GroundEnemyNest extends EnemyNest {
     GroundEnemy.GroundEnemyBuilder builder;
+    BattleScreen parent;
 
-    public GroundEnemyNest(MapScreen parent, NestConfig nestConfig, Point location) {
+    public GroundEnemyNest(BattleScreen parent, NestConfig nestConfig, Point location) {
         super(parent, nestConfig, location);
+        this.parent = parent;
     }
 
     @Override
@@ -42,11 +45,11 @@ public class GroundEnemyNest extends EnemyNest {
     }
 
     public static class GroundEnemyNestFactory implements NestFactory {
-        MapScreen parent;
+        BattleScreen parent;
 
         GroundEnemyNest enemyNest;
 
-        public GroundEnemyNestFactory(MapScreen parent) {
+        public GroundEnemyNestFactory(BattleScreen parent) {
             this.parent = parent;
         }
 

@@ -4,10 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
-import org.noses.games.homedefense.game.Animation;
-import org.noses.games.homedefense.game.ClockTickHandler;
-import org.noses.games.homedefense.game.MapScreen;
-import org.noses.games.homedefense.game.PhysicalObject;
+import org.noses.games.homedefense.game.*;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.geometry.Rectangle;
 import org.noses.games.homedefense.tower.Tower;
@@ -23,7 +20,7 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
 
     double upgradePercentage;
 
-    protected Enemy(MapScreen parent, String spriteFilename, Sound hitSound, int tileWidth, int tileHeight, double scale, int startingHealth) {
+    protected Enemy(BattleScreen parent, String spriteFilename, Sound hitSound, int tileWidth, int tileHeight, double scale, int startingHealth) {
         super(parent, spriteFilename, tileWidth, tileHeight, scale, true);
         this.health = startingHealth;
         this.hitSound = hitSound;

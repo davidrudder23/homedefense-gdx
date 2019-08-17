@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.noses.games.homedefense.game.BattleScreen;
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.nest.NestFactory;
@@ -17,7 +18,7 @@ import java.lang.reflect.Constructor;
 public class LevelEngine implements ClockTickHandler {
 
     double delayBetweenNests;
-    MapScreen parent;
+    BattleScreen parent;
 
     boolean isKilled;
 
@@ -41,7 +42,7 @@ public class LevelEngine implements ClockTickHandler {
 
     Sound backgroundLoop;
 
-    public LevelEngine(MapScreen parent, double delayBetweenNests) {
+    public LevelEngine(BattleScreen parent, double delayBetweenNests) {
         this.parent = parent;
         this.delayBetweenNests = delayBetweenNests;
         this.time = delayBetweenNests;
@@ -98,7 +99,7 @@ public class LevelEngine implements ClockTickHandler {
     private NestFactory getNestFactory(NestConfig nestConfig) {
         try {
             Class<?> cl = Class.forName("org.noses.games.homedefense.nest." + nestConfig.className + "EnemyNest" + "$" + nestConfig.className + "EnemyNestFactory");
-            Constructor<?> cons = cl.getConstructor(MapScreen.class);
+            Constructor<?> cons = cl.getConstructor(BattleScreen.class);
             return (NestFactory) cons.newInstance(parent);
         } catch (Exception e) {
             e.printStackTrace();
@@ -161,6 +162,7 @@ public class LevelEngine implements ClockTickHandler {
 
             NestFactory nestFactory = getNestFactory(nestConfig);
             nestConfig.setNestFactory(nestFactory);
+
             NestLayingNest nestLayingNest = new NestLayingNest(parent, nestConfig, nestFactory);
             nestConfig.setUsed(true);
 

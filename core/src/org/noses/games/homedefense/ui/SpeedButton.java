@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import org.noses.games.homedefense.game.BattleScreen;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 
@@ -14,9 +15,9 @@ public class SpeedButton implements MouseHandler {
 
     protected TextureRegion[][] icons;
 
-    MapScreen parent;
+    BattleScreen parent;
 
-    public SpeedButton(MapScreen parent, int x, int y) {
+    public SpeedButton(BattleScreen parent, int x, int y) {
         this.parent = parent;
         this.x = x;
         this.y = y;

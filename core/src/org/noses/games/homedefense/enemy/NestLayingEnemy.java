@@ -2,6 +2,7 @@ package org.noses.games.homedefense.enemy;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.game.BattleScreen;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.geometry.Rectangle;
@@ -21,8 +22,12 @@ public class NestLayingEnemy extends Enemy {
     NestFactory nestFactory;
     NestConfig nestConfig;
 
-    public NestLayingEnemy(MapScreen parent, Point targetNestLocation, NestConfig nestConfig, NestFactory nestFactory) {
+    BattleScreen parent;
+
+    public NestLayingEnemy(BattleScreen parent, Point targetNestLocation, NestConfig nestConfig, NestFactory nestFactory) {
         super(parent, "enemy/nest_laying.png", parent.loadSound("normal_hit.mp3"), 900, 900, 0.06, 200);
+
+        this.parent = parent;
 
         this.nestFactory = nestFactory;
         this.nestConfig = nestConfig;

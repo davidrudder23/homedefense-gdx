@@ -4,6 +4,7 @@ import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.enemy.ArmoredGroundEnemy;
 import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.GroundEnemy;
+import org.noses.games.homedefense.game.BattleScreen;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.level.NestConfig;
@@ -17,9 +18,11 @@ public class SplitEnemyNest extends EnemyNest {
 
     List<Tower> towers;
     boolean servedOne;
+    BattleScreen parent;
 
-    public SplitEnemyNest(MapScreen parent, NestConfig nestConfig, List<Tower> towers, Point nestLocation) {
+    public SplitEnemyNest(BattleScreen parent, NestConfig nestConfig, List<Tower> towers, Point nestLocation) {
         super(parent, nestConfig, nestLocation);
+        this.parent = parent;
         this.towers = towers;
         servedOne = false;
     }

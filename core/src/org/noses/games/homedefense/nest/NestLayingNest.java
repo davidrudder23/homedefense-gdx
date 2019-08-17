@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import org.noses.games.homedefense.enemy.EnemyGroup;
 import org.noses.games.homedefense.enemy.NestLayingEnemy;
 import org.noses.games.homedefense.enemy.NestLayingEnemyGroup;
+import org.noses.games.homedefense.game.BattleScreen;
 import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
@@ -16,7 +17,7 @@ import java.util.List;
 
 // Not actually a "nest". but something that generates nest layers
 public class NestLayingNest extends EnemyNest implements ClockTickHandler {
-    MapScreen parent;
+    BattleScreen parent;
 
     boolean makingNest;
 
@@ -26,7 +27,7 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
 
     NestFactory nestFactory;
 
-    public NestLayingNest(MapScreen parent, NestConfig nestConfig, NestFactory nestFactory) {
+    public NestLayingNest(BattleScreen parent, NestConfig nestConfig, NestFactory nestFactory) {
         super(parent, nestConfig,
                 new Point(0, 0)
         );
