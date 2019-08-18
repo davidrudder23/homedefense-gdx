@@ -26,13 +26,13 @@ public class MainScreen extends Screen {
 
     Image backgroundImage;
 
-    Button startButton;
+    Button explorationButton, destinationButton;
 
     List<Destination> destinations;
 
-    SelectBox<String> destinationSelect;
+    SelectBox<String> explorationSelect, destinationSelect;
 
-    Label destinationLabel;
+    Label explorationLabel, destinationLabel;
 
     public MainScreen(HomeDefenseGame parent) {
         this.parent = parent;
@@ -50,7 +50,7 @@ public class MainScreen extends Screen {
 
         Texture backgroundTexture = new Texture("background.png");
 
-        backgroundImage = new Image (backgroundTexture);
+        backgroundImage = new Image(backgroundTexture);
         backgroundImage.setX(0);
         backgroundImage.setY(0);
         backgroundImage.setFillParent(true);
@@ -59,23 +59,32 @@ public class MainScreen extends Screen {
 
         Skin skin = new Skin(Gdx.files.internal("skin/comic/skin/comic-ui.json"));
 
-        startButton = new TextButton("Start", skin);
-
-        startButton.setX((float)(stage.getWidth()*.8));
-
-        startButton.setY((float)(stage.getHeight()*.1));
-        startButton.setScale((float)(parent.getScreenWidth()*.6)/startButton.getWidth());
-        stage.addActor(startButton);
-
-        startButton.addListener(new ChangeListener() {
+        destinationButton = new TextButton("Start", skin);
+        destinationButton.setX((float) (stage.getWidth() * .8));
+        destinationButton.setY((float) (stage.getHeight() * .1));
+        destinationButton.setScale((float) (parent.getScreenWidth() * .6) / destinationButton.getWidth());
+        stage.addActor(destinationButton);
+        destinationButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 startButtonClicked();
             }
         });
 
+        explorationButton = new TextButton("Explore", skin);
+        explorationButton.setScale((float) (parent.getScreenWidth() * .6) / explorationButton.getWidth());
+        explorationButton.setX((float) (stage.getWidth() * .5 - (explorationButton.getWidth() / 2)));
+        explorationButton.setY((float) (stage.getHeight() * .23));
+        stage.addActor(explorationButton);
+        explorationButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                explorationButtonClicked();
+            }
+        });
+
         SelectBox.SelectBoxStyle selectBoxStyle = skin.get(SelectBox.SelectBoxStyle.class);
-        selectBoxStyle.font.getData().setScale(3f,3f);
+        selectBoxStyle.font.getData().setScale(3f, 3f);
 
         destinationSelect = new SelectBox<String>(selectBoxStyle);
 
@@ -85,7 +94,7 @@ public class MainScreen extends Screen {
             destinations.add(new Destination("C", currentLocation.getLatitude(), currentLocation.getLongitude(), "Current Location", "Current Location"));
         }
 
-        for (Destination destination: destinations) {
+        for (Destination destination : destinations) {
             destinationNameArray.add(destination.getName());
         }
         destinationSelect.setItems(destinationNameArray);
@@ -96,9 +105,9 @@ public class MainScreen extends Screen {
             destinationSelect.setSelectedIndex(0);
         }
 
-        destinationSelect.setX((float)(stage.getWidth()*.05));
-        destinationSelect.setY((float)(stage.getHeight()*.1));
-        destinationSelect.setWidth((float)(stage.getWidth() * .7));
+        destinationSelect.setX((float) (stage.getWidth() * .05));
+        destinationSelect.setY((float) (stage.getHeight() * .1));
+        destinationSelect.setWidth((float) (stage.getWidth() * .7));
 
         stage.addActor(destinationSelect);
 
@@ -108,9 +117,16 @@ public class MainScreen extends Screen {
         labelStyle.font.getData().scale(2);
         labelStyle.fontColor = Color.WHITE;
 
+        explorationLabel = new Label("Explore for Power Ups", labelStyle);
+        explorationLabel.setX((float) (stage.getWidth() * .3));
+        explorationLabel.setY((float) (stage.getHeight() * .1) + (destinationSelect.getHeight() * 3));
+        explorationLabel.setWidth(destinationSelect.getWidth());
+        explorationLabel.setHeight(destinationSelect.getHeight());
+        stage.addActor(explorationLabel);
+
         destinationLabel = new Label("Choose where to defend", labelStyle);
-        destinationLabel.setX((float)(stage.getWidth()*.3));
-        destinationLabel.setY((float)(stage.getHeight()*.1)+destinationSelect.getHeight());
+        destinationLabel.setX((float) (stage.getWidth() * .3));
+        destinationLabel.setY((float) (stage.getHeight() * .1) + destinationSelect.getHeight());
         destinationLabel.setWidth(destinationSelect.getWidth());
         destinationLabel.setHeight(destinationSelect.getHeight());
         stage.addActor(destinationLabel);
@@ -119,7 +135,7 @@ public class MainScreen extends Screen {
     public void startButtonClicked() {
         Point location = null;
 
-        for (Destination destination: destinations) {
+        for (Destination destination : destinations) {
             if (destination.getName().equals(destinationSelect.getSelected())) {
                 location = new Point(destination.getLat(), destination.getLon());
             }
@@ -132,11 +148,17 @@ public class MainScreen extends Screen {
         }
 
         if (location == null) {
-            location = new Point(9.7392,-104.9874);
+            location = new Point(9.7392, -104.9874);
         }
         parent.startGame(location);
     }
 
+    public void explorationButtonClicked() {
+        Point currentLocation = parent.getGeolocation();
+        System.out.println("current locatin="+currentLocation);
+        parent.setUsingCurrentAddress(true);
+        parent.startExploration(currentLocation);
+    }
 
     @Override
     public void render(Batch batch) {

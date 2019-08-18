@@ -280,14 +280,6 @@ public class BattleScreen extends MapScreen {
             towerChoiceMenu.renderMenu(batch);
         }
 
-        if (parent.hasLiveGeolocation()) {
-            Sprite heroSprite = new Sprite(hero.getFrameTextureRegion());
-            heroSprite.setScale((float) ((parent.getScreenWidth() * hero.getScale()) / heroSprite.getWidth()));
-            heroSprite.setCenterX(convertLongToX(hero.getLongitude()));
-            heroSprite.setCenterY(convertLatToY(hero.getLatitude()));
-            heroSprite.draw(batch);
-        }
-
         if ((upgradeMenu != null) && (!upgradeMenu.isHidden())) {
             upgradeMenu.renderMenu(batch);
         }

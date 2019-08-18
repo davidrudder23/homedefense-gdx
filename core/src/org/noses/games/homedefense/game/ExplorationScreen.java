@@ -37,19 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ExplorationScreen extends MapScreen {
-    HomeDefenseGame parent;
-
-    @Getter
-    Map map = null;
-
-    HashMap<String, Intersection> intersections;
-
     @Getter
     Home home;
-
-    @Getter
-    @Setter
-    private int money;
 
     BitmapFont font;
 
@@ -107,6 +96,7 @@ public class ExplorationScreen extends MapScreen {
                                    @Override
                                    public void run() {
                                        clockTick(1 / 10.0f);
+                                       parent.updateGeolocator();
                                    }
                                }
                 , 0f, 1 / 10.0f);
@@ -163,21 +153,13 @@ public class ExplorationScreen extends MapScreen {
 
     public void initializeMap(Point location) {
         try {
-            float denverLatitude = 39.7392f;
-            float denverLongitude = -104.9874f;
-
-            float austinLatitude = 30.2746f;
-            float austinLongitude = -97.7404f;
-
             MapClient mapClient = new MapClient(parent.getConfiguration().getBaseURL());
 
             Account account = mapClient.register("drig1",
                     "drig1@noses.org",
                     "test1",
-                    denverLatitude,
-                    denverLongitude);
-            //austinLatitude,
-            //austinLongitude);
+                    (float)location.getLatitude(),
+                    (float)location.getLongitude());
 
             map = mapClient.getMap(account, location.getLatitude() + 0.0075,
                     location.getLatitude() - 0.0075,
@@ -351,8 +333,6 @@ public class ExplorationScreen extends MapScreen {
         for (Tower tower : getTowers()) {
             tower.render(batch);
         }
-
-        getHome().render(batch);
 
         font.draw(batch, "Money: " + getMoney(), 10, Gdx.graphics.getHeight() - (int) ((Gdx.graphics.getHeight() * .1) + (font.getCapHeight() * 2)));
 

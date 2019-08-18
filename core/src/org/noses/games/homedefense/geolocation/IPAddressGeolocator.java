@@ -1,10 +1,12 @@
 package org.noses.games.homedefense.geolocation;
 
+import com.badlogic.gdx.utils.Timer;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.geometry.Point;
 
 import java.io.BufferedReader;
@@ -33,7 +35,7 @@ public class IPAddressGeolocator extends Geolocator {
 
     @Override
     public boolean hasLiveGeolocation() {
-        return false;
+        return true;
     }
 
     @Override

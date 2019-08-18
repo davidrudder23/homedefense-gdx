@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.Timer;
 import lombok.Getter;
 import lombok.Setter;
 import org.noses.games.homedefense.game.*;
@@ -43,6 +44,12 @@ public class HomeDefenseGame extends ApplicationAdapter {
     public HomeDefenseGame(Geolocator geolocator, Configuration configuration) {
         this.geolocator = geolocator;
         this.configuration = configuration;
+
+    }
+
+    public void updateGeolocator() {
+        System.out.println("Updating geo");
+        geolocator.getGeolocation().setLatitude(geolocator.getGeolocation().getLatitude() + HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph);
     }
 
     public Point getGeolocation() {
@@ -69,6 +76,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     public void startGame(Point location) {
         currentScreen = new BattleScreen(this, location);
+    }
+
+    public void startExploration(Point location) {
+        currentScreen = new ExplorationScreen(this, location);
     }
 
     public void die() {

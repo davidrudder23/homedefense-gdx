@@ -38,7 +38,7 @@ public abstract class MapScreen extends Screen implements InputProcessor {
 
     @Getter
     @Setter
-    private int money;
+    protected int money;
 
     @Getter
     private List<Tower> towers;
@@ -48,8 +48,6 @@ public abstract class MapScreen extends Screen implements InputProcessor {
 
     private List<ClockTickHandler> clockTickHandlers;
     private List<ClockTickHandler> clockTickHandlersToBeAdded;
-
-    BitmapFont font;
 
     Timer.Task timer;
 

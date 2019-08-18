@@ -3,12 +3,10 @@ package org.noses.games.homedefense.pathfinding;
 import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.client.Way;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Djikstra {
-    private List<Intersection> unvisitedIntersections;
+    private SortedSet<Intersection> unvisitedIntersections;
     private HashMap<String, Intersection>  allIntersections;
     private HashMap<String, Boolean> seen;
 
@@ -17,7 +15,7 @@ public class Djikstra {
     public Djikstra(HashMap<String, Intersection> intersections) {
         allIntersections = intersections;
 
-        unvisitedIntersections = new ArrayList<>();
+        unvisitedIntersections = new TreeSet<Intersection>(Comparator.comparing(Intersection::getWeight));
 
         seen = new HashMap<>();
     }
@@ -46,7 +44,7 @@ public class Djikstra {
         seen.put(from.getLatitude()+"_"+from.getLongitude(), Boolean.TRUE);
 
         while (unvisitedIntersections.size() > 0) {
-            from = unvisitedIntersections.get(0);
+            from = unvisitedIntersections.first();
             if (from.getNode().equals(finishNode)) {
                 if (destination == null) {
                     destination = from;
@@ -54,9 +52,12 @@ public class Djikstra {
                 if (destination.getPathStep().getWeight() > from.getPathStep().getWeight()) {
                     destination.setPathStep(from.getPathStep());
                 }
+                long endTime = System.currentTimeMillis();
+                System.out.println("Djikstra took " + (endTime - startTime) + " millis and found a pathstep "+(pathStep!=null));
+                return destination.getPathStep();
             }
 
-            unvisitedIntersections.remove(0);
+            unvisitedIntersections.remove(unvisitedIntersections.first());
             seen.put(from.getLatitude()+"_"+from.getLongitude(), Boolean.TRUE);
 
             for (Way way : from.getWayList()) {
