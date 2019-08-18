@@ -1,0 +1,42 @@
+{
+
+  "name": "Level 1",
+  "nests": [
+    {
+       "delay": 0,
+       "className": "Ground",
+       "numWaves": 2,
+       "numEnemiesPerWave": 10
+    },
+    {
+       "delay": 10,
+       "className": "Ground",
+       "numWaves": 2,
+       "numEnemiesPerWave": 10
+    },
+    {
+       "delay": 20,
+       "className": "Ground",
+       "numWaves": 2,
+       "numEnemiesPerWave": 10
+    },
+    {
+       "delay": 30,
+       "className": "Ground",
+       "numWaves": 2,
+       "numEnemiesPerWave": 10
+    },
+    {
+       "delay": 40,
+       "className": "Ground",
+       "numWaves": 2,
+       "numEnemiesPerWave": 10
+    },
+    {
+       "delay": 50,
+       "className": "Ground",
+       "numWaves": 2,
+       "numEnemiesPerWave": 10
+    }
+  ]
+}

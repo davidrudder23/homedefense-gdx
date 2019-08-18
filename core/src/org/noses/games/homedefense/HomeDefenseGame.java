@@ -4,15 +4,10 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import lombok.Getter;
 import lombok.Setter;
-import org.noses.games.homedefense.client.Map;
 import org.noses.games.homedefense.game.*;
-import com.badlogic.gdx.math.Matrix4;
-import org.noses.games.homedefense.game.DeathScreen;
-import org.noses.games.homedefense.game.MainScreen;
-import org.noses.games.homedefense.game.MapScreen;
-import org.noses.games.homedefense.game.Screen;
 import org.noses.games.homedefense.geolocation.GeolocationListener;
 import org.noses.games.homedefense.geolocation.Geolocator;
 import org.noses.games.homedefense.geometry.Point;
@@ -48,7 +43,6 @@ public class HomeDefenseGame extends ApplicationAdapter {
     public HomeDefenseGame(Geolocator geolocator, Configuration configuration) {
         this.geolocator = geolocator;
         this.configuration = configuration;
-
     }
 
     public Point getGeolocation() {
@@ -81,6 +75,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
         currentScreen = new DeathScreen(this);
     }
 
+    public void win() {
+        currentScreen = new WinScreen(this);
+    }
+
     public void endGame() {
         Gdx.app.exit();
     }
@@ -106,6 +104,10 @@ public class HomeDefenseGame extends ApplicationAdapter {
 
     public int getScreenHeight() {
         return Gdx.graphics.getHeight();
+    }
+
+    public boolean isDebug() {
+        return configuration.isDebug();
     }
 
     @Override

@@ -1,12 +1,15 @@
 package org.noses.games.homedefense.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import lombok.Getter;
 import lombok.Setter;
 import org.noses.games.homedefense.game.MapScreen;
+import org.noses.games.homedefense.tower.Tower;
 
 import java.util.HashMap;
 
@@ -49,7 +52,6 @@ public abstract class LeftSideMenu implements MouseHandler {
         }
     }
 
-
     public void renderMenu(Batch batch) {
         if (isHidden()) {
             return;
@@ -60,7 +62,6 @@ public abstract class LeftSideMenu implements MouseHandler {
             sprite.setScale((float) ((parent.getScreenWidth() * 0.08) / sprite.getWidth()));
             sprite.draw(batch);
         }
-
     }
 
     @Override

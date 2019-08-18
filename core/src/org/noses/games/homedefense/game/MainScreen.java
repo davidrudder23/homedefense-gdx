@@ -4,13 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.noses.games.homedefense.HomeDefenseGame;
@@ -20,7 +17,6 @@ import org.noses.games.homedefense.geometry.Point;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainScreen extends Screen {
@@ -90,7 +86,6 @@ public class MainScreen extends Screen {
         }
 
         for (Destination destination: destinations) {
-            System.out.println(destination.getName()+" "+destination.getLat()+","+destination.getLon());
             destinationNameArray.add(destination.getName());
         }
         destinationSelect.setItems(destinationNameArray);
@@ -118,7 +113,6 @@ public class MainScreen extends Screen {
         destinationLabel.setY((float)(stage.getHeight()*.1)+destinationSelect.getHeight());
         destinationLabel.setWidth(destinationSelect.getWidth());
         destinationLabel.setHeight(destinationSelect.getHeight());
-        System.out.println(destinationLabel.getX()+","+destinationLabel.getY()+" +"+destinationLabel.getWidth()+"+"+destinationLabel.getHeight());
         stage.addActor(destinationLabel);
     }
 

@@ -9,20 +9,20 @@ import java.util.List;
 public class EnemyGroup implements ClockTickHandler {
 
     @Getter
-    int delay;
+    double delayBetweenEnemies;
 
     @Getter
     List<Enemy> enemies;
 
     private List<Enemy> upcomingEnemies;
 
-    private int count;
+    private double count;
 
-    protected EnemyGroup(int delay) {
+    public EnemyGroup(double delayBetweenEnemies) {
         enemies = new ArrayList<>();
         upcomingEnemies = new ArrayList<>();
 
-        this.delay = delay;
+        this.delayBetweenEnemies = delayBetweenEnemies;
     }
 
     public void addEnemy(Enemy enemy) {
@@ -34,8 +34,8 @@ public class EnemyGroup implements ClockTickHandler {
     }
 
     public void clockTick(double delta) {
-        count++;
-        if (count > delay) {
+        count += delta;
+        if (count > delayBetweenEnemies) {
             count = 0;
             if (upcomingEnemies.size() > 0) {
                 Enemy upcomingEnemy = upcomingEnemies.get(0);

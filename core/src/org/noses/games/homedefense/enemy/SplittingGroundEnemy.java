@@ -1,18 +1,21 @@
 package org.noses.games.homedefense.enemy;
 
-import lombok.Setter;
 import org.noses.games.homedefense.client.Node;
-import org.noses.games.homedefense.client.Way;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
+import org.noses.games.homedefense.level.EnemyConfig;
+import org.noses.games.homedefense.level.NestConfig;
+import org.noses.games.homedefense.nest.SplitEnemyNest;
 import org.noses.games.homedefense.pathfinding.PathStep;
 
 import java.util.Optional;
 
 public class SplittingGroundEnemy extends GroundEnemy {
+    NestConfig nestConfig;
 
-    public SplittingGroundEnemy(MapScreen parent, PathStep pathStep) {
-        super(parent, pathStep, "enemy/splitting.png", 10, 96, 96, 20);
+    public SplittingGroundEnemy(MapScreen parent, NestConfig nestConfig, PathStep pathStep) {
+        super(parent, nestConfig.getEnemyConfig(), pathStep, "enemy/splitting.png", 96, 96, 20);
+        this.nestConfig = nestConfig;
     }
 
     @Override
@@ -27,20 +30,22 @@ public class SplittingGroundEnemy extends GroundEnemy {
             return;
         }
 
-        SplitEnemyNest splitEnemyNest = new SplitEnemyNest(parent, parent.getTowers(), getLocation());
+        SplitEnemyNest splitEnemyNest = new SplitEnemyNest(parent, nestConfig, parent.getTowers(), getLocation());
         parent.addClockTickHandler(splitEnemyNest);
 
         parent.getEnemyNests().add(splitEnemyNest);
     }
 
     public static class SplittingGroundEnemyBuilder extends GroundEnemyBuilder {
-        public SplittingGroundEnemyBuilder(MapScreen parent, Node startingNode) {
-            super(parent, startingNode);
+        NestConfig nestConfig;
+        public SplittingGroundEnemyBuilder(MapScreen parent, NestConfig nestConfig, Node startingNode) {
+            super(parent, nestConfig.getEnemyConfig(), startingNode);
+            this.nestConfig = nestConfig;
         }
 
         @Override
         public Enemy build() {
-            SplittingGroundEnemy enemy = new SplittingGroundEnemy(game, pathStep);
+            SplittingGroundEnemy enemy = new SplittingGroundEnemy(parent, nestConfig, pathStep);
 
             return enemy;
         }

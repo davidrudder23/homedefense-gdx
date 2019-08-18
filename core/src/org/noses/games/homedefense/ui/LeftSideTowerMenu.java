@@ -3,14 +3,11 @@ package org.noses.games.homedefense.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import lombok.Getter;
-import lombok.Setter;
+import com.badlogic.gdx.math.Circle;
 import org.noses.games.homedefense.game.MapScreen;
-import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.tower.*;
 
 import java.util.HashMap;
@@ -66,34 +63,70 @@ public class LeftSideTowerMenu extends LeftSideMenu {
     public void renderMenu(Batch batch) {
         super.renderMenu(batch);
 
+        int radiusInPixels = 10;
+        float longPerPixel = (parent.getMap().getEast() - parent.getMap().getWest()) / (float) Gdx.graphics.getWidth();
+
+        for (LeftSideTowerMenuItem menuItem: menuItems.values()) {
+            if (menuItem.mouseWithin) {
+                Tower tower = menuItem.getTower(0,0);
+                int radius = (int)(tower.minDistanceFromOtherTower()/longPerPixel);
+                radiusInPixels = radius;
+            }
+        }
+
         batch.end();
 
+        Circle towerCircle = new Circle(clickX, parent.getScreenHeight() - clickY, radiusInPixels);
         ShapeRenderer sr = new ShapeRenderer();
         sr.setColor(new Color(1, 1, 0, 0.5f));
         sr.begin(ShapeRenderer.ShapeType.Filled);
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        sr.circle(clickX, parent.getScreenHeight() - clickY, 10);
+        sr.circle(towerCircle.x, towerCircle.y, towerCircle.radius);
         sr.end();
 
-        batch.begin();
 
+        for (Tower tower : parent.getTowers()) {
+            int x = parent.convertLongToX(tower.getLocation().getLongitude());
+            int y = parent.getScreenHeight() - parent.convertLatToY(tower.getLocation().getLatitude());
+
+            int radius = (int)(tower.minDistanceFromOtherTower()/longPerPixel);
+
+            sr = new ShapeRenderer();
+            Circle circle = new Circle(x, parent.getScreenHeight() - y, radius);
+
+            sr.begin(ShapeRenderer.ShapeType.Filled);
+            if (circle.overlaps(towerCircle)) {
+                sr.setColor(new Color(1, 0, 0, 0.5f));
+                sr.circle(towerCircle.x, towerCircle.y, towerCircle.radius);
+            } else {
+                sr.setColor(new Color(1, 1, 0, 0.5f));
+            }
+            sr.circle(circle.x, circle.y, circle.radius);
+            sr.end();
+        }
+
+        batch.begin();
     }
 
     @Override
     public boolean onClickUp(int x, int y) {
-        System.out.println("Left tower menu Onclick="+new Point(x,y));
+
         if (hidden) {
             parent.hideMenus();
 
             clickX = x;
             clickY = y;
+
+            // update close-to-others
+            for (LeftSideTowerMenuItem menuItem: menuItems.values()) {
+                menuItem.setCloseToOthers(menuItem.closeToOtherTowers(x, y));
+            }
         } else {
             mouseMoved(x,y);
             for (LeftSideTowerMenuItem menuItem : menuItems.values()) {
-                if (menuItem.isMouseWithin()) {
+                if (menuItem.isMouseWithin() && !menuItem.closeToOthers) {
                     Tower tower = menuItem.getTower(parent.convertXToLong(clickX), parent.convertYToLat(parent.getScreenHeight() - clickY));
-                    parent.addClickHandler(tower);
                     parent.addTower(tower);
                 }
             }

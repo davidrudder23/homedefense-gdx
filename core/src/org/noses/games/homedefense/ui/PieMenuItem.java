@@ -1,8 +1,7 @@
 package org.noses.games.homedefense.ui;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.tower.Tower;
 import org.noses.games.homedefense.tower.TowerFactory;
@@ -10,6 +9,7 @@ import org.noses.games.homedefense.tower.TowerFactory;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class PieMenuItem extends MenuItem {
 
     TowerFactory towerFactory;
@@ -61,11 +61,8 @@ public class PieMenuItem extends MenuItem {
 
     public boolean mouseWithin(int clickX, int clickY, int dragX, int dragY) {
 
-        if ((dragX >= (clickX+x)) && (dragX<= (clickX+x+width)) &&
-                ((parent.getScreenHeight()-dragY) >= ((parent.getScreenHeight()-clickY)+y)) &&
-                ((parent.getScreenHeight()-dragY) <=((parent.getScreenHeight()-clickY)+y+height))) {
-            return true;
-        }
-        return false;
+        return (dragX >= (clickX + x)) && (dragX <= (clickX + x + width)) &&
+                ((parent.getScreenHeight() - dragY) >= ((parent.getScreenHeight() - clickY) + y)) &&
+                ((parent.getScreenHeight() - dragY) <= ((parent.getScreenHeight() - clickY) + y + height));
     }
 }

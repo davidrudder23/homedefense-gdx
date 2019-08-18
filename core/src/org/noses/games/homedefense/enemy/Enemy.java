@@ -1,6 +1,7 @@
 package org.noses.games.homedefense.enemy;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import lombok.Getter;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.game.Animation;
@@ -65,15 +66,25 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
 
     public abstract boolean canBeHitByHome();
 
+    public Sprite getSprite() {
+        Sprite sprite = new Sprite(getFrameTextureRegion());
+
+        sprite.setScale((float) parent.getSpriteScale(sprite, getScale()));
+
+        sprite.setCenterY(parent.convertLatToY(getLocation().getLatitude()));
+        sprite.setCenterX(parent.convertLongToX(getLocation().getLongitude()));
+
+        return sprite;
+    }
+
     public Rectangle getBoundingBox() {
-        double halfWidth = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileWidth / 2;
-        double halfHeight = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileHeight / 2;
+        double halfWidth = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileWidth * parent.getScaledPixels(tileWidth, getScale()) / 2;
+        double halfHeight = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileHeight * parent.getScaledPixels(tileWidth, getScale()) / 2;
 
         Rectangle boundingBox = new Rectangle(getLocation().getLatitude()-halfWidth,
                 getLocation().getLongitude()-halfHeight,
                 getLocation().getLatitude()+halfWidth,
                 getLocation().getLongitude()+halfHeight);
-        //System.out.println ("boundingBox="+boundingBox+" height="+tileHeight);
         return boundingBox;
     }
 }

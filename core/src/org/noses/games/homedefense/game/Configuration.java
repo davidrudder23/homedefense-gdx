@@ -9,6 +9,8 @@ public class Configuration {
     int height = 480;
     String baseURL = "http://homedefense.noses.org:8080/";
 
+    boolean debug = false;
+
     public String getBaseURL() {
         if ((baseURL == null) || (baseURL.length()==0)) {
             return "http://homedefense.noses.org:8080/";
