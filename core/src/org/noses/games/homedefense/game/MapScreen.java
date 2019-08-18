@@ -146,6 +146,8 @@ public class MapScreen extends Screen implements InputProcessor {
 
         setupHero();
 
+        setupHero();
+
         Gdx.input.setInputProcessor(this);
 
         towerChoiceMenu = new LeftSideTowerMenu(this);
@@ -217,7 +219,7 @@ public class MapScreen extends Screen implements InputProcessor {
     public void speedUp() {
         speedMultiplier += 1;
 
-        if ((speedMultiplier > 5) || (speedMultiplier < 1)) {
+        if ((speedMultiplier > 3) || (speedMultiplier < 1)) {
             speedMultiplier = 1;
         }
 

@@ -4,5 +4,5 @@ import org.noses.games.homedefense.geometry.Point;
 
 public interface GeolocationListener {
 
-    void updateLocation(Point point);
+    public void updateLocation(Point point);
 }
