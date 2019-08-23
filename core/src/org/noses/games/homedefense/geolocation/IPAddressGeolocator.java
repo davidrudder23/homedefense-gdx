@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.geometry.Point;
 
 import java.io.BufferedReader;
