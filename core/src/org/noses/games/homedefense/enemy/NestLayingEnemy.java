@@ -13,8 +13,11 @@ import org.noses.games.homedefense.tower.Tower;
 
 public class NestLayingEnemy extends Enemy {
     Point targetNestLocation;
+    Point startingNestLocation;
     Point currentLocation;
     double progressAlong;
+
+    double distance;
 
     boolean killed;
 
@@ -40,6 +43,7 @@ public class NestLayingEnemy extends Enemy {
         if (topOrBottom == 0) {
             double distanceFromTop = Math.abs(targetNestLocation.getLatitude() - parent.getMap().getNorth());
             double distanceFromBottom = Math.abs(targetNestLocation.getLatitude() - parent.getMap().getSouth());
+
             if (distanceFromTop > distanceFromBottom) {
                 currentLocation = new Point(parent.getMap().getNorth(), parent.getHome().getLongitude());
             } else {
@@ -55,6 +59,10 @@ public class NestLayingEnemy extends Enemy {
                 currentLocation = new Point(parent.getHome().getLatitude(), parent.getMap().getWest());
             }
         }
+
+        startingNestLocation = currentLocation;
+
+        distance = currentLocation.getDistanceFrom(targetNestLocation);
     }
 
     /*@Override
@@ -82,7 +90,7 @@ public class NestLayingEnemy extends Enemy {
         super.clockTick(delta);
         progressAlong += HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * delta * 20000;
 
-        if (isCloseToTarget()) {
+        if (getLocation().getDistanceFrom(startingNestLocation) > distance) {
             EnemyNest enemyNest = null;
 
             enemyNest = nestFactory.build(nestConfig, targetNestLocation);
