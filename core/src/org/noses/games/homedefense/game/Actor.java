@@ -16,6 +16,8 @@ public abstract class Actor implements ClockTickHandler {
 
     ActorState currentState;
 
+    ActorState nextState;
+
     public Actor(MapScreen parent) {
         this.parent = parent;
 
@@ -43,8 +45,16 @@ public abstract class Actor implements ClockTickHandler {
         currentState = getState(identifier);
     }
 
+    public void setNextState(String identifier) {
+        nextState = getState(identifier);
+    }
+
+    public void advanceToNextState() {
+        setCurrentState(nextState.getName());
+    }
+
     public void addState(String stateName, boolean isDefault, String spriteFilename, int tileWidth, int tileHeight, double scale, boolean loop) {
-        Animation animation = new Animation(spriteFilename, tileWidth, tileHeight, scale, loop);
+        Animation animation = new Animation(this, spriteFilename, tileWidth, tileHeight, scale, loop);
         ActorState attackState = new ActorState();
         attackState.setName(stateName);
         attackState.setAnimation(animation);

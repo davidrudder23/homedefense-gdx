@@ -19,7 +19,9 @@ public final class Animation implements ClockTickHandler {
     @Getter
     double scale;
 
-    public Animation(String spriteFilename, int tileWidth, int tileHeight, double scale, boolean loop) {
+    Actor actor;
+
+    public Animation(Actor actor, String spriteFilename, int tileWidth, int tileHeight, double scale, boolean loop) {
 
         killed = false;
         this.loop = loop;
@@ -39,10 +41,13 @@ public final class Animation implements ClockTickHandler {
 
         animation = TextureRegion.split(avatarAnimationSheet, tileWidth, tileHeight);
 
+        this.actor = actor;
+
     }
 
     public void kill() {
         killed = true;
+        actor.advanceToNextState();
     }
 
     @Override
@@ -65,7 +70,8 @@ public final class Animation implements ClockTickHandler {
             if (loop) {
                 frameNumber = 0;
             } else {
-                killed = true;
+                frameNumber = 0;
+                kill();
             }
         }
 

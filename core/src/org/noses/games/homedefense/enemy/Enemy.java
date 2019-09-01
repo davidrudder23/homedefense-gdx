@@ -24,6 +24,9 @@ public abstract class Enemy extends Actor implements ClockTickHandler, PhysicalO
         super(parent);
 
         addState("attack", true, spriteFilename, tileWidth, tileHeight, scale, true);
+        addState("hit", true, "enemy/hit.png", 40, 48, scale, false);
+        setCurrentState("attack");
+
 
         this.health = startingHealth;
         this.hitSound = hitSound;
@@ -31,6 +34,8 @@ public abstract class Enemy extends Actor implements ClockTickHandler, PhysicalO
     }
 
     public void hit(int damage) {
+        setNextState("attack");
+        setCurrentState("hit");
         health -= damage;
         if (health<=0) {
             kill();
