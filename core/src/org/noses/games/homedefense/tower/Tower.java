@@ -51,7 +51,7 @@ public abstract class Tower implements ClockTickHandler, PhysicalObject, MouseHa
         animations = new ArrayList<>();
 
         for (int i = 1; i <= 4; i++) {
-            Animation animation = new Animation(parent, "tower/" + towerName + "_lvl_" + i + ".png", 0, 0, scale, true);
+            Animation animation = new Animation( "tower/" + towerName + "_lvl_" + i + ".png", 0, 0, scale, true);
             animations.add(animation);
             parent.addClockTickHandler(animation);
         }

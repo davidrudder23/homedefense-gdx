@@ -6,8 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 
 @Data
-public class Animation implements ClockTickHandler {
-    protected MapScreen parent;
+public final class Animation implements ClockTickHandler {
     protected int frameNumber = 0;
     protected TextureRegion[][] animation;
 
@@ -20,8 +19,7 @@ public class Animation implements ClockTickHandler {
     @Getter
     double scale;
 
-    public Animation(MapScreen parent, String spriteFilename, int tileWidth, int tileHeight, double scale, boolean loop) {
-        this.parent = parent;
+    public Animation(String spriteFilename, int tileWidth, int tileHeight, double scale, boolean loop) {
 
         killed = false;
         this.loop = loop;
