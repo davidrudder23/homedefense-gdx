@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 public abstract class Actor implements ClockTickHandler {
     protected MapScreen parent;
@@ -16,10 +17,14 @@ public abstract class Actor implements ClockTickHandler {
 
     ActorState currentState;
 
-    ActorState nextState;
+    boolean killed;
+
+    Runnable runNext;
 
     public Actor(MapScreen parent) {
         this.parent = parent;
+
+        killed = false;
 
         states = new HashMap<>();
     }
@@ -45,12 +50,8 @@ public abstract class Actor implements ClockTickHandler {
         currentState = getState(identifier);
     }
 
-    public void setNextState(String identifier) {
-        nextState = getState(identifier);
-    }
-
-    public void advanceToNextState() {
-        setCurrentState(nextState.getName());
+    public void finishState() {
+        runNext.run();
     }
 
     public void addState(String stateName, boolean isDefault, String spriteFilename, int tileWidth, int tileHeight, double scale, boolean loop) {
@@ -81,12 +82,16 @@ public abstract class Actor implements ClockTickHandler {
 
     @Override
     public void kill() {
-        getState().getAnimation().kill();
+        killed = true;
     }
 
     @Override
     public boolean isKilled() {
-        return getState().getAnimation().isKilled();
+        return killed;
+    }
+
+    public void runNext(Runnable runnable) {
+        this.runNext = runnable;
     }
 
     @Getter
