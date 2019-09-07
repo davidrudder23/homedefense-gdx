@@ -9,7 +9,7 @@ import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.geometry.Rectangle;
 import org.noses.games.homedefense.tower.Tower;
 
-public abstract class Enemy extends Animation implements ClockTickHandler, PhysicalObject {
+public abstract class Enemy extends Actor implements ClockTickHandler, PhysicalObject {
 
     @Getter
     private int health;
@@ -21,13 +21,26 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
     double upgradePercentage;
 
     protected Enemy(BattleScreen parent, String spriteFilename, Sound hitSound, int tileWidth, int tileHeight, double scale, int startingHealth) {
-        super(parent, spriteFilename, tileWidth, tileHeight, scale, true);
+        super(parent);
+
+        addState("attack", true, spriteFilename, tileWidth, tileHeight, scale, true);
+        addState("hit", false, "enemy/hit.png", 512, 512, scale, false);
+        addState("die", false, "enemy/die.png", 576, 561, scale, false);
+        setCurrentState("attack");
+
         this.health = startingHealth;
         this.hitSound = hitSound;
         this.upgradePercentage = 0;
     }
 
     public void hit(int damage) {
+        if (dying || killed) {
+            return;
+        }
+        runNext(() -> {
+            setCurrentState("attack");
+        });
+        setCurrentState("hit");
         health -= damage;
         if (health<=0) {
             kill();
@@ -45,7 +58,12 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
     }
 
     public void kill() {
-        this.killed = true;
+        runNext(() -> {
+            killed = true;
+            dying = false;
+        });
+        dying = true;
+        setCurrentState("die");
         parent.addMoney(getValue());
     }
 
@@ -64,9 +82,10 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
     public abstract boolean canBeHitByHome();
 
     public Sprite getSprite() {
-        Sprite sprite = new Sprite(getFrameTextureRegion());
+        Animation animation = getAnimation();
+        Sprite sprite = new Sprite(animation.getFrameTextureRegion());
 
-        sprite.setScale((float) parent.getSpriteScale(sprite, getScale()));
+        sprite.setScale((float) parent.getSpriteScale(sprite, animation.getScale()));
 
         sprite.setCenterY(parent.convertLatToY(getLocation().getLatitude()));
         sprite.setCenterX(parent.convertLongToX(getLocation().getLongitude()));
@@ -75,8 +94,9 @@ public abstract class Enemy extends Animation implements ClockTickHandler, Physi
     }
 
     public Rectangle getBoundingBox() {
-        double halfWidth = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileWidth * parent.getScaledPixels(tileWidth, getScale()) / 2;
-        double halfHeight = HomeDefenseGame.ONE_PIXEL_IN_LATLON * tileHeight * parent.getScaledPixels(tileWidth, getScale()) / 2;
+        Animation animation = getAnimation();
+        double halfWidth = HomeDefenseGame.ONE_PIXEL_IN_LATLON * animation.getTileWidth()* parent.getScaledPixels(animation.getTileWidth(), animation.getScale()) / 2;
+        double halfHeight = HomeDefenseGame.ONE_PIXEL_IN_LATLON * animation.getTileHeight() * parent.getScaledPixels(animation.getTileWidth(), animation.getScale()) / 2;
 
         Rectangle boundingBox = new Rectangle(getLocation().getLatitude()-halfWidth,
                 getLocation().getLongitude()-halfHeight,

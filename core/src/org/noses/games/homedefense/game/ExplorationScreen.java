@@ -337,8 +337,8 @@ public class ExplorationScreen extends MapScreen {
         font.draw(batch, "Money: " + getMoney(), 10, Gdx.graphics.getHeight() - (int) ((Gdx.graphics.getHeight() * .1) + (font.getCapHeight() * 2)));
 
         if (parent.hasLiveGeolocation()) {
-            Sprite heroSprite = new Sprite(hero.getFrameTextureRegion());
-            heroSprite.setScale((float) ((parent.getScreenWidth() * hero.getScale()) / heroSprite.getWidth()));
+            Sprite heroSprite = new Sprite(hero.getAnimation().getFrameTextureRegion());
+            heroSprite.setScale((float) ((parent.getScreenWidth() * hero.getAnimation().getScale()) / heroSprite.getWidth()));
             heroSprite.setCenterX(convertLongToX(hero.getLongitude()));
             heroSprite.setCenterY(convertLatToY(hero.getLatitude()));
             heroSprite.draw(batch);

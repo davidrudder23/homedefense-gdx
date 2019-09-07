@@ -7,10 +7,7 @@ import lombok.Getter;
 import org.noses.games.homedefense.client.Node;
 import org.noses.games.homedefense.client.Way;
 import org.noses.games.homedefense.enemy.EnemyGroup;
-import org.noses.games.homedefense.game.Animation;
-import org.noses.games.homedefense.game.ClockTickHandler;
-import org.noses.games.homedefense.game.MapScreen;
-import org.noses.games.homedefense.game.PhysicalObject;
+import org.noses.games.homedefense.game.*;
 import org.noses.games.homedefense.geometry.Point;
 import org.noses.games.homedefense.level.EnemyConfig;
 import org.noses.games.homedefense.level.NestConfig;
@@ -18,7 +15,7 @@ import org.noses.games.homedefense.level.NestConfig;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class EnemyNest extends Animation implements PhysicalObject, ClockTickHandler {
+public abstract class EnemyNest extends Actor implements PhysicalObject, ClockTickHandler {
 
     @Getter
     NestConfig nestConfig;
@@ -36,7 +33,10 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
     int waveNum;
 
     public EnemyNest(MapScreen parent, NestConfig nestConfig, Point location) {
-        super(parent, "nest/" + nestConfig.getClassName().toLowerCase()+ ".png", 199, 199, 0.08, true);
+        super(parent);
+
+        addState("attack", true, "nest/" + nestConfig.getClassName().toLowerCase()+ ".png", 199, 199, 0.08, true);
+
         this.nestConfig = nestConfig;
         this.location = location;
         killed = false;
@@ -129,11 +129,12 @@ public abstract class EnemyNest extends Animation implements PhysicalObject, Clo
     }
 
     public void render(Batch batch) {
-        Sprite sprite = new Sprite(getFrameTextureRegion());
+        Animation animation = getAnimation();
+        Sprite sprite = new Sprite(animation.getFrameTextureRegion());
 
         sprite.setCenterX(parent.convertLongToX(getLongitude()));
         sprite.setCenterY(parent.convertLatToY(getLatitude()));
-        sprite.setScale((float) parent.getSpriteScale(sprite, getScale()));
+        sprite.setScale((float) parent.getSpriteScale(sprite, animation.getScale()));
         sprite.draw(batch);
     }
 

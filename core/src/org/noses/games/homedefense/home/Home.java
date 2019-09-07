@@ -149,7 +149,7 @@ public class Home extends Enemy implements PhysicalObject {
     public void render(Batch batch) {
 
         Sprite homeSprite = getSprite();
-        homeSprite.setScale((float)((parent.getScreenWidth()/homeSprite.getWidth())*getScale()));
+        homeSprite.setScale((float)((parent.getScreenWidth()/homeSprite.getWidth())*getAnimation().getScale()));
         homeSprite.setCenterX(parent.convertLongToX(longitude));
         homeSprite.setCenterY(parent.convertLatToY(latitude));
 
@@ -159,7 +159,7 @@ public class Home extends Enemy implements PhysicalObject {
             if (bullet.isKilled()) {
                 continue;
             }
-            TextureRegion textureRegion = bullet.getFrameTextureRegion();
+            TextureRegion textureRegion = bullet.getAnimation().getFrameTextureRegion();
             Sprite bulletSprite = new Sprite(textureRegion);
 
             bulletSprite.setX(parent.convertLongToX(bullet.getLongitude()));
@@ -170,7 +170,7 @@ public class Home extends Enemy implements PhysicalObject {
     }
 
     public Sprite getSprite() {
-        Texture frame = animation[0][frameNumber].getTexture();
+        Texture frame = getAnimation().getFrameTextureRegion().getTexture();
 
         Sprite sprite = new Sprite(frame);
 

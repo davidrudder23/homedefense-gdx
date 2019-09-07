@@ -4,6 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import org.noses.games.homedefense.HomeDefenseGame;
 import org.noses.games.homedefense.client.Map;
 import org.noses.games.homedefense.enemy.Enemy;
+import org.noses.games.homedefense.game.Actor;
 import org.noses.games.homedefense.game.Animation;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.geometry.Point;
@@ -12,7 +13,7 @@ import org.noses.games.homedefense.geometry.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Bullet extends Animation {
+public abstract class Bullet extends Actor {
 
     protected double originalLatitude;
     protected double originalLongitude;
@@ -31,7 +32,9 @@ public abstract class Bullet extends Animation {
     boolean dead;
 
     public Bullet(MapScreen parent, String spriteFilename, Sound shotSound, int tileWidth, int tileHeight, double scale, double angle) {
-        super(parent, spriteFilename, tileWidth, tileHeight, scale, true);
+        super(parent);
+
+        addState("attack", true, spriteFilename, tileWidth, tileHeight, scale, true);
 
         this.shotSound = shotSound;
         this.angle = angle;

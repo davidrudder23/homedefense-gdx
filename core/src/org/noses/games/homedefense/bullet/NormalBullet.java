@@ -21,7 +21,7 @@ public class NormalBullet extends Bullet {
     }
 
     public double getRadius() {
-        return tileWidth/2;
+        return getAnimation().getTileWidth()/2;
     }
 
     @Override
