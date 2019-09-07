@@ -1,14 +1,11 @@
 package org.noses.games.homedefense.hero;
 
 import lombok.Getter;
-import org.noses.games.homedefense.game.Animation;
-import org.noses.games.homedefense.game.ClockTickHandler;
-import org.noses.games.homedefense.game.MapScreen;
-import org.noses.games.homedefense.game.PhysicalObject;
+import org.noses.games.homedefense.game.*;
 import org.noses.games.homedefense.geolocation.GeolocationListener;
 import org.noses.games.homedefense.geometry.Point;
 
-public class Hero extends Animation implements PhysicalObject, ClockTickHandler, GeolocationListener {
+public class Hero extends Actor implements PhysicalObject, GeolocationListener {
 
     @Getter
     double longitude;
@@ -17,7 +14,9 @@ public class Hero extends Animation implements PhysicalObject, ClockTickHandler,
     double latitude;
 
     public Hero(MapScreen parent) {
-        super(parent, "hero/Healer-M-01.png", 24, 32, 0.03, true);
+        super(parent);
+
+        addState("attack", true, "hero/Healer-M-01.png", 24, 32, 0.03, true);
 
         longitude = parent.getHome().getLongitude();
         latitude = parent.getHome().getLatitude();

@@ -6,24 +6,22 @@ import lombok.Data;
 import lombok.Getter;
 
 @Data
-public class Animation implements ClockTickHandler {
-    protected MapScreen parent;
+public final class Animation {
     protected int frameNumber = 0;
     protected TextureRegion[][] animation;
 
     protected int tileWidth;
     protected int tileHeight;
 
-    boolean killed;
     boolean loop;
 
     @Getter
     double scale;
 
-    public Animation(MapScreen parent, String spriteFilename, int tileWidth, int tileHeight, double scale, boolean loop) {
-        this.parent = parent;
+    Actor actor;
 
-        killed = false;
+    public Animation(Actor actor, String spriteFilename, int tileWidth, int tileHeight, double scale, boolean loop) {
+
         this.loop = loop;
         this.scale = scale;
 
@@ -41,33 +39,28 @@ public class Animation implements ClockTickHandler {
 
         animation = TextureRegion.split(avatarAnimationSheet, tileWidth, tileHeight);
 
+        this.actor = actor;
+
     }
 
     public void kill() {
-        killed = true;
+        frameNumber = 0;
+        actor.finishState();
     }
 
-    @Override
     public void clockTick(double delta) {
-        if (killed) {
-            return;
-        }
-
         advanceAnimation();
     }
 
     protected void advanceAnimation() {
-        if (killed) {
-            return;
-        }
-
         frameNumber++;
 
         if (frameNumber >= animation[0].length) {
             if (loop) {
                 frameNumber = 0;
             } else {
-                killed = true;
+                frameNumber = 0;
+                kill();
             }
         }
 

@@ -146,8 +146,6 @@ public class MapScreen extends Screen implements InputProcessor {
 
         setupHero();
 
-        setupHero();
-
         Gdx.input.setInputProcessor(this);
 
         towerChoiceMenu = new LeftSideTowerMenu(this);
@@ -626,8 +624,8 @@ public class MapScreen extends Screen implements InputProcessor {
         }
 
         if (parent.hasLiveGeolocation()) {
-            Sprite heroSprite = new Sprite(hero.getFrameTextureRegion());
-            heroSprite.setScale((float) ((parent.getScreenWidth() * hero.getScale()) / heroSprite.getWidth()));
+            Sprite heroSprite = new Sprite(hero.getAnimation().getFrameTextureRegion());
+            heroSprite.setScale((float) ((parent.getScreenWidth() * hero.getAnimation().getScale()) / heroSprite.getWidth()));
             heroSprite.setCenterX(convertLongToX(hero.getLongitude()));
             heroSprite.setCenterY(convertLatToY(hero.getLatitude()));
             heroSprite.draw(batch);
