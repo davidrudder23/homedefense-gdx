@@ -89,8 +89,8 @@ public class LevelEngine implements ClockTickHandler {
             backgroundLoop.dispose();
         }
         backgroundLoop = parent.loadSound("music/background/"+filename);
-        backgroundLoop.loop(0.2f);
-        backgroundLoop.play();
+        backgroundLoop.loop(0.01f);
+        //backgroundLoop.play();
     }
 
 

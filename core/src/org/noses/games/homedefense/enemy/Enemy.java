@@ -35,6 +35,9 @@ public abstract class Enemy extends Actor implements ClockTickHandler, PhysicalO
     }
 
     public void hit(int damage) {
+        if (dying || killed) {
+            return;
+        }
         runNext(() -> {
             setCurrentState("attack");
         });
@@ -58,7 +61,9 @@ public abstract class Enemy extends Actor implements ClockTickHandler, PhysicalO
     public void kill() {
         runNext(() -> {
             killed = true;
+            dying = false;
         });
+        dying = true;
         setCurrentState("die");
         parent.addMoney(getValue());
     }

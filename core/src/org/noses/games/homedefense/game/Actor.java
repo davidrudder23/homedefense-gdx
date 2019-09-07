@@ -21,10 +21,14 @@ public abstract class Actor implements ClockTickHandler {
 
     Runnable runNext;
 
+    protected boolean dying;
+
+
     public Actor(MapScreen parent) {
         this.parent = parent;
 
         killed = false;
+        dying = false;
 
         states = new HashMap<>();
     }

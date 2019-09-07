@@ -146,8 +146,6 @@ public class MapScreen extends Screen implements InputProcessor {
 
         setupHero();
 
-        setupHero();
-
         Gdx.input.setInputProcessor(this);
 
         towerChoiceMenu = new LeftSideTowerMenu(this);
