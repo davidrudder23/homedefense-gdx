@@ -96,7 +96,6 @@ public class ExplorationScreen extends MapScreen {
                                    @Override
                                    public void run() {
                                        clockTick(1 / 10.0f);
-                                       parent.updateGeolocator();
                                    }
                                }
                 , 0f, 1 / 10.0f);
@@ -149,39 +148,6 @@ public class ExplorationScreen extends MapScreen {
         subtractMoney(tower.getCost());
         addClickHandler(tower);
         addClockTickHandler(tower);
-    }
-
-    public void initializeMap(Point location) {
-        try {
-            MapClient mapClient = new MapClient(parent.getConfiguration().getBaseURL());
-
-            Account account = mapClient.register("drig1",
-                    "drig1@noses.org",
-                    "test1",
-                    (float)location.getLatitude(),
-                    (float)location.getLongitude());
-
-            map = mapClient.getMap(account, location.getLatitude() + 0.0075,
-                    location.getLatitude() - 0.0075,
-                    location.getLongitude() + 0.015,
-                    location.getLongitude() - 0.015);
-        } catch (IOException ioExc) {
-            ioExc.printStackTrace();
-        }
-
-        for (Way way : map.getWays()) {
-            for (Node node : way.getNodes()) {
-
-                double length = way.firstNode().distanceFrom(way.lastNode());
-
-                if (length == 0) {
-                    node.setProgress(0);
-                } else {
-                    double delta = way.firstNode().distanceFrom(node);
-                    node.setProgress(delta);
-                }
-            }
-        }
     }
 
     public boolean isGoodLocationForNest(Node node) {

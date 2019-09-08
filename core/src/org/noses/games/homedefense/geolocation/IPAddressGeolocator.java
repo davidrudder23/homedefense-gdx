@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class IPAddressGeolocator extends Geolocator {
+public class IPAddressGeolocator extends Geolocator implements ClockTickHandler {
     private String apiKey;
     OkHttpClient client;
 
@@ -33,6 +33,28 @@ public class IPAddressGeolocator extends Geolocator {
         geoLocation = getGeoFromIP();
 
     }
+
+    @Override
+    public void clockTick(double delta) {
+        updateGeolocator();
+    }
+
+    @Override
+    public void kill() {
+
+    }
+
+    @Override
+    public boolean isKilled() {
+        return false;
+    }
+
+    public void updateGeolocator() {
+        System.out.println("Updating geo");
+        getGeolocation().setLatitude(getGeolocation().getLatitude() + HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph);
+        updateLocation();
+    }
+
 
     @Override
     public boolean hasLiveGeolocation() {

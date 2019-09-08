@@ -1,6 +1,8 @@
 package org.noses.games.homedefense.hero;
 
 import lombok.Getter;
+import org.noses.games.homedefense.HomeDefenseGame;
+import org.noses.games.homedefense.client.Map;
 import org.noses.games.homedefense.game.*;
 import org.noses.games.homedefense.geolocation.GeolocationListener;
 import org.noses.games.homedefense.geometry.Point;
@@ -25,5 +27,9 @@ public class Hero extends Actor implements PhysicalObject, GeolocationListener {
     public void updateLocation(Point newLocation) {
         longitude = newLocation.getLongitude();
         latitude = newLocation.getLatitude();
+
+        if ((parent.getCenter() != null) && (newLocation.getDistanceFrom(parent.getCenter()) > HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph*50)) {
+            parent.recenterMap(newLocation);
+        }
     }
 }

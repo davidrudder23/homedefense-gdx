@@ -31,6 +31,9 @@ public class DesktopLauncher {
         config.height = gameConfig.getHeight();
 
         // TODO Get api key from props
-        new LwjglApplication(new HomeDefenseGame(new IPAddressGeolocator("00a4da2c55a1d6b04c9dc8abe8a9474d"), gameConfig), config);
+        IPAddressGeolocator geolocator = new IPAddressGeolocator("00a4da2c55a1d6b04c9dc8abe8a9474d");
+        HomeDefenseGame game = new HomeDefenseGame(geolocator, gameConfig);
+
+        new LwjglApplication(game, config);
     }
 }

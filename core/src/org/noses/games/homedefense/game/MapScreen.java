@@ -58,6 +58,9 @@ public abstract class MapScreen extends Screen implements InputProcessor {
     LeftSideTowerMenu towerChoiceMenu;
 
     @Getter
+    Point center;
+
+    @Getter
     Hero hero;
 
     public MapScreen(HomeDefenseGame parent, Point location) {
@@ -72,9 +75,9 @@ public abstract class MapScreen extends Screen implements InputProcessor {
         clockTickHandlersToBeAdded = new ArrayList<>();
 
         initializeMap(location);
-        HomeDefenseGame.ONE_PIXEL_IN_LATLON = (map.getEast() - map.getWest()) / Gdx.graphics.getWidth();
         intersections = Intersection.buildIntersectionsFromMap(map);
 
+        HomeDefenseGame.ONE_PIXEL_IN_LATLON = (map.getEast() - map.getWest()) / Gdx.graphics.getWidth();
         HashMap<String, Intersection> startingIntersections = new HashMap<>();
 
         for (String intersectionName : intersections.keySet()) {
@@ -96,6 +99,12 @@ public abstract class MapScreen extends Screen implements InputProcessor {
                                    }
                                }
                 , 0f, 1 / 60.0f);
+    }
+
+    public void recenterMap(Point location) {
+        initializeMap(location);
+        intersections = Intersection.buildIntersectionsFromMap(map);
+
     }
 
     public void setupHero() {
@@ -247,6 +256,7 @@ public abstract class MapScreen extends Screen implements InputProcessor {
 
     public void initializeMap(Point location) {
         try {
+            center = new Point(location.getLatitude(), location.getLongitude());
             MapClient mapClient = new MapClient(parent.getConfiguration().getBaseURL());
 
             Account account = mapClient.register("drig1",
@@ -261,6 +271,7 @@ public abstract class MapScreen extends Screen implements InputProcessor {
                     location.getLatitude() - 0.0075,
                     location.getLongitude() + 0.015,
                     location.getLongitude() - 0.015);
+
         } catch (IOException ioExc) {
             ioExc.printStackTrace();
         }
