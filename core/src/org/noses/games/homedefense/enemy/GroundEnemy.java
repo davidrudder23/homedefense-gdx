@@ -170,7 +170,7 @@ public class GroundEnemy extends Enemy {
             }
         }
 
-        if (location.getDistanceFrom(parent.getHome().getLocation()) < HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph * 100) {
+        if (location.getDistanceFrom(parent.getHome().getLocation()) < HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph *100) {
             parent.hitHome(getDamage());
             kill();
         }

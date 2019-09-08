@@ -44,6 +44,11 @@ public class IPAddressGeolocator extends Geolocator {
         return geoLocation;
     }
 
+    public void setGeoLocation(Point point) {
+        this.geoLocation = point;
+        updateLocation();
+    }
+
     private Point getGeoFromIP() {
         try {
             URL whatismyip = new URL("http://checkip.amazonaws.com");

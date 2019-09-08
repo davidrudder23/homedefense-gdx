@@ -41,6 +41,9 @@ public abstract class MapScreen extends Screen implements InputProcessor {
     protected int money;
 
     @Getter
+    int speedMultiplier;
+
+    @Getter
     private List<Tower> towers;
 
     private List<MouseHandler> mouseHandlers;
@@ -327,7 +330,7 @@ public abstract class MapScreen extends Screen implements InputProcessor {
         for (ClockTickHandler clockTickHandler : clockTickHandlers) {
             //System.out.println(clockTickHandler+" is killed="+clockTickHandler.isKilled());
             if (!clockTickHandler.isKilled()) {
-                clockTickHandler.clockTick(1/60.0f);
+                clockTickHandler.clockTick(1/60.0f * speedMultiplier);
             }
         }
 

@@ -59,6 +59,7 @@ public abstract class Enemy extends Actor implements ClockTickHandler, PhysicalO
 
     public void kill() {
         runNext(() -> {
+            System.out.println("Dying done, killed=true");
             killed = true;
             dying = false;
         });

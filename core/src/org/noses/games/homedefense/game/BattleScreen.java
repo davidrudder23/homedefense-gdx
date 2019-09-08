@@ -54,9 +54,6 @@ public class BattleScreen extends MapScreen {
     @Getter
     List<EnemyNest> enemyNests;
 
-    @Getter
-    int speedMultiplier;
-
     SpeedButton speedButton;
 
     Timer.Task timer;

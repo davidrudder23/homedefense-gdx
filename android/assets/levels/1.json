@@ -10,8 +10,8 @@
       "numWaves": 4,
       "numEnemiesPerWave": 4,
       "enemyConfig": {
-        "health": 400,
-        "speedMultiplier": 10,
+        "health": 1000,
+        "speedMultiplier": 20,
         "damage": 3,
         "value": 2
       }

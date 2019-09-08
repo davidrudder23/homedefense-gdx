@@ -53,6 +53,7 @@ public class AndroidLauncher extends AndroidApplication {
 
         try {
             Location location = service.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            androidGeolocator.setLive(true);
             if (location != null) {
                 androidGeolocator.setGeoLocation(new Point(location.getLatitude(), location.getLongitude()));
             }
@@ -69,9 +70,7 @@ public class AndroidLauncher extends AndroidApplication {
         }
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        //Point location = new AndroidGeolocator().getGeolocation();
         initialize(new HomeDefenseGame(androidGeolocator, gameConfig), config);
-        //initialize(new HomeDefenseGame(new IPAddressGeolocator("00a4da2c55a1d6b04c9dc8abe8a9474d"), gameConfig), config);
     }
 }
 

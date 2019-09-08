@@ -48,8 +48,9 @@ public class HomeDefenseGame extends ApplicationAdapter {
     }
 
     public void updateGeolocator() {
-        System.out.println("Updating geo");
-        geolocator.getGeolocation().setLatitude(geolocator.getGeolocation().getLatitude() + HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph);
+        System.out.println("Updating geo - "+geolocator.hasLiveGeolocation());
+        geolocator.getGeolocation().setLatitude(geolocator.getGeolocation().getLatitude() + (HomeDefenseGame.LATLON_MOVED_IN_1ms_1mph*10));
+        geolocator.updateLocation();
     }
 
     public Point getGeolocation() {
