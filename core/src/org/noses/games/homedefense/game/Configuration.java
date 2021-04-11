@@ -7,7 +7,7 @@ public class Configuration {
 
     int width = 640;
     int height = 480;
-    String baseURL = "http://homedefense.noses.org:8080/";
+    String baseURL = "http://192.168.86.46:8080/";
 
     boolean debug = false;
 

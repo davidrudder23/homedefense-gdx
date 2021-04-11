@@ -105,7 +105,7 @@ public class MapScreen extends Screen implements InputProcessor {
 
         speedMultiplier = 1;
 
-        money = 0;
+        money = 100;
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/score.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
