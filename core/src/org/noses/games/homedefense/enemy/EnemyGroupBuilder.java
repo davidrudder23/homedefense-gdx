@@ -5,15 +5,9 @@ import org.noses.games.homedefense.pathfinding.Intersection;
 import java.util.HashMap;
 
 public class EnemyGroupBuilder {
-    HashMap<String, Intersection> intersections;
     int numEnemies;
     double delay;
     EnemyBuilder enemyBuilder;
-
-    public EnemyGroupBuilder intersections(HashMap<String, Intersection> intersections) {
-        this.intersections = intersections;
-        return this;
-    }
 
     public EnemyGroupBuilder numEnemies(int numEnemies) {
         this.numEnemies = numEnemies;

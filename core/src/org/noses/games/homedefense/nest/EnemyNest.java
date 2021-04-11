@@ -35,7 +35,7 @@ public abstract class EnemyNest extends Actor implements PhysicalObject, ClockTi
     public EnemyNest(MapScreen parent, NestConfig nestConfig, Point location) {
         super(parent);
 
-        addState("attack", true, "nest/" + nestConfig.getClassName().toLowerCase()+ ".png", 199, 199, 0.08, true);
+        addState("attack", true, "nest/" + nestConfig.getClassName().toLowerCase() + ".png", 199, 199, 0.08, true);
 
         this.nestConfig = nestConfig;
         this.location = location;
@@ -75,27 +75,15 @@ public abstract class EnemyNest extends Actor implements PhysicalObject, ClockTi
         if (timeSinceLastWave > delayBetweenWaves()) {
             timeSinceLastWave = 0;
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    // do something important here, asynchronously to the rendering thread
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
+            EnemyGroup enemyGroup = getNewEnemyGroup(nestConfig);
 
-                            EnemyGroup enemyGroup = getNewEnemyGroup(nestConfig);
-
-                            if (enemyGroup != null) {
-                                enemyGroups.add(enemyGroup);
-                            }
-                        }
-                    });
-                }
-            }).start();
+            if (enemyGroup != null) {
+                enemyGroups.add(enemyGroup);
+            }
 
             synchronized (enemyGroups) {
                 for (int i = enemyGroups.size() - 1; i >= 0; i--) {
-                    EnemyGroup enemyGroup = enemyGroups.get(i);
+                    enemyGroup = enemyGroups.get(i);
                     if (enemyGroup.isEmpty()) {
                         enemyGroup.kill();
                         enemyGroups.remove(enemyGroup);
@@ -118,7 +106,7 @@ public abstract class EnemyNest extends Actor implements PhysicalObject, ClockTi
             return false;
         }
 
-        for (EnemyGroup enemyGroup: enemyGroups) {
+        for (EnemyGroup enemyGroup : enemyGroups) {
             if (!enemyGroup.isKilled()) {
                 return false;
             }

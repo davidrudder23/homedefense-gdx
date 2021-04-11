@@ -100,6 +100,7 @@ public class Djikstra {
 
         long endTime = System.currentTimeMillis();
         System.out.println("Djikstra took " + (endTime - startTime) + " millis and found a pathstep "+(pathStep!=null));
+        Thread.dumpStack();
         return destination.getPathStep();
     }
 

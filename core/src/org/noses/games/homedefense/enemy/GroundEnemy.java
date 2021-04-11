@@ -35,11 +35,11 @@ public class GroundEnemy extends Enemy {
     private Way way;
     private EnemyConfig enemyConfig;
 
-    public GroundEnemy(MapScreen parent, EnemyConfig enemyConfig, PathStep pathStep) {
-        this(parent, enemyConfig, pathStep, "enemy/ground.png", 96, 96, 10);
+    public GroundEnemy(MapScreen parent, EnemyConfig enemyConfig) {
+        this(parent, enemyConfig, "enemy/ground.png", 96, 96, 10);
     }
 
-    protected GroundEnemy(MapScreen parent, EnemyConfig enemyConfig, PathStep pathStep, String spriteFilename, int tileWidth, int tileHeight, int startingHealth) {
+    protected GroundEnemy(MapScreen parent, EnemyConfig enemyConfig, String spriteFilename, int tileWidth, int tileHeight, int startingHealth) {
         super(parent, spriteFilename, parent.loadSound("normal_hit.mp3"), tileWidth, tileHeight, 0.06, enemyConfig.getHealth());
 
         this.enemyConfig = enemyConfig;
@@ -47,7 +47,6 @@ public class GroundEnemy extends Enemy {
         progressAlong = 0;
         direction = 1;
 
-        setPath(pathStep);
     }
 
     @Override
@@ -249,8 +248,9 @@ public class GroundEnemy extends Enemy {
     public static class GroundEnemyBuilder implements EnemyBuilder {
         MapScreen parent;
 
-        PathStep pathStep;
         EnemyConfig enemyConfig;
+
+        Node startingNode, target;
 
         public GroundEnemyBuilder(MapScreen parent, EnemyConfig enemyConfig, Node startingNode) {
             this(parent, enemyConfig, startingNode, parent.getHome().getLocation());
@@ -264,25 +264,31 @@ public class GroundEnemy extends Enemy {
 
             this.parent = parent;
             this.enemyConfig = enemyConfig;
-
-            HashMap<String, Intersection> intersections = Intersection.buildIntersectionsFromMap(parent.getMap());
-
-            SecureRandom random = new SecureRandom();
-            random.setSeed(System.currentTimeMillis());
-
-            pathStep = null;
-
-            while (pathStep == null) {
-                Djikstra djikstra = new Djikstra(intersections);
-                Intersection intersection = djikstra.getIntersectionForNode(intersections, startingNode);
-
-                pathStep = djikstra.getBestPath(intersection, target);
-            }
+            this.startingNode = startingNode;
+            this.target = target;
         }
 
         @Override
         public Enemy build() {
-            GroundEnemy enemy = new GroundEnemy(parent, enemyConfig, pathStep);
+            GroundEnemy enemy = new GroundEnemy(parent, enemyConfig);
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    PathStep pathStep = null;
+
+                    HashMap<String, Intersection> intersections = Intersection.buildIntersectionsFromMap(parent.getMap());
+
+                    while (pathStep == null) {
+                        Djikstra djikstra = new Djikstra(intersections);
+                        Intersection intersection = djikstra.getIntersectionForNode(intersections, startingNode);
+
+                        pathStep = djikstra.getBestPath(intersection, target);
+                        enemy.setPath(pathStep);
+                    }
+
+                }
+            }).start();
             return enemy;
         }
     }

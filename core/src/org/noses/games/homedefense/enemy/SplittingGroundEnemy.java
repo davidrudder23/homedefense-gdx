@@ -13,8 +13,8 @@ import java.util.Optional;
 public class SplittingGroundEnemy extends GroundEnemy {
     NestConfig nestConfig;
 
-    public SplittingGroundEnemy(MapScreen parent, NestConfig nestConfig, PathStep pathStep) {
-        super(parent, nestConfig.getEnemyConfig(), pathStep, "enemy/splitting.png", 96, 96, 20);
+    public SplittingGroundEnemy(MapScreen parent, NestConfig nestConfig) {
+        super(parent, nestConfig.getEnemyConfig(), "enemy/splitting.png", 96, 96, 20);
         this.nestConfig = nestConfig;
     }
 
@@ -45,7 +45,7 @@ public class SplittingGroundEnemy extends GroundEnemy {
 
         @Override
         public Enemy build() {
-            SplittingGroundEnemy enemy = new SplittingGroundEnemy(parent, nestConfig, pathStep);
+            SplittingGroundEnemy enemy = new SplittingGroundEnemy(parent, nestConfig);
 
             return enemy;
         }

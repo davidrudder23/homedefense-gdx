@@ -62,17 +62,25 @@ public class SplitEnemyNest extends EnemyNest {
         for (Tower tower : towers) {
             Djikstra djikstra = new Djikstra(parent.getIntersectionsAsHashmap());
 
-            PathStep pathStep = djikstra.getBestPath(node, parent.getNodeForLocation(tower.getLocation()));
-
-            if (pathStep == null) {
-                continue;
-            }
-
-            GroundEnemy armoredEnemy = new ArmoredGroundEnemy(parent, nestConfig.getEnemyConfig(), pathStep);
+            GroundEnemy armoredEnemy = new ArmoredGroundEnemy(parent, nestConfig.getEnemyConfig());
             enemyGroup.addEnemy(armoredEnemy);
 
-            GroundEnemy enemy = new GroundEnemy(parent, nestConfig.getEnemyConfig(), pathStep);
+            GroundEnemy enemy = new GroundEnemy(parent, nestConfig.getEnemyConfig());
             enemyGroup.addEnemy(enemy);
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    PathStep pathStep = djikstra.getBestPath(node, parent.getNodeForLocation(tower.getLocation()));
+
+                    if (pathStep == null) {
+                        System.out.println ("PathStep null when getting new enemy group in split enemy nest");
+                    }
+
+                    armoredEnemy.setPath(pathStep);
+                    enemy.setPath(pathStep);
+                }
+            }).start();
         }
         parent.addClockTickHandler(enemyGroup);
 

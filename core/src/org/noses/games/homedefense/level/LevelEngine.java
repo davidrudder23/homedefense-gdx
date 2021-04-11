@@ -11,6 +11,7 @@ import org.noses.games.homedefense.game.ClockTickHandler;
 import org.noses.games.homedefense.game.MapScreen;
 import org.noses.games.homedefense.nest.NestFactory;
 import org.noses.games.homedefense.nest.NestLayingNest;
+import org.noses.games.homedefense.pathfinding.Intersection;
 
 import java.lang.reflect.Constructor;
 
@@ -161,12 +162,26 @@ public class LevelEngine implements ClockTickHandler {
 
             NestFactory nestFactory = getNestFactory(nestConfig);
             nestConfig.setNestFactory(nestFactory);
-            NestLayingNest nestLayingNest = new NestLayingNest(parent, nestConfig, nestFactory);
             nestConfig.setUsed(true);
-
             nestFactoryNumber++;
+
+            NestLayingNest nestLayingNest = new NestLayingNest(parent, nestConfig, nestFactory);
             parent.dropNest(nestLayingNest);
             parent.addClockTickHandler(nestLayingNest);
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Intersection intersection = nestLayingNest.getIntersection();
+
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            nestLayingNest.makeNest(intersection);
+                        }
+                    });
+                }
+            }).start();
         }
     }
 

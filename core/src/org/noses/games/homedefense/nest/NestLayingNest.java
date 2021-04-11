@@ -40,7 +40,6 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
         //parent.addClockTickHandler(enemyGroups.get(0));
         killed = false;
 
-        makeNest();
     }
 
     @Override
@@ -67,7 +66,7 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
     public void clockTick(double delta) {
     }
 
-    public void makeNest() {
+    public Intersection getIntersection() {
         double latitude = 0;
         double longitude = 0;
 
@@ -91,9 +90,23 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
             foundIntersection = true;
         }
 
+        return intersection;
+    }
+
+    public void makeNest(Intersection intersection) {
+        long start = System.currentTimeMillis();
         NestLayingEnemy nestLayingEnemy = new NestLayingEnemy(parent, new Point(intersection.getLatitude(), intersection.getLongitude()), nestConfig, nestFactory);
+        long end = System.currentTimeMillis();
+        System.out.println("Make nest 1 took "+(end-start)+" millis");
+
         parent.addClockTickHandler(nestLayingEnemy);
+        end = System.currentTimeMillis();
+        System.out.println("Make nest 2 took "+(end-start)+" millis");
+
         enemyGroups.get(0).addEnemy(nestLayingEnemy);
+        end = System.currentTimeMillis();
+
+        System.out.println("Make nest took "+(end-start)+" millis");
     }
 
     @Override

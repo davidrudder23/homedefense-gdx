@@ -7,8 +7,8 @@ import org.noses.games.homedefense.pathfinding.PathStep;
 
 public class ArmoredGroundEnemy extends GroundEnemy {
 
-    public ArmoredGroundEnemy(MapScreen parent, EnemyConfig enemyConfig, PathStep pathStep) {
-        super(parent, enemyConfig, pathStep, "enemy/armored.png", 96, 96, 20);
+    public ArmoredGroundEnemy(MapScreen parent, EnemyConfig enemyConfig) {
+        super(parent, enemyConfig, "enemy/armored.png", 96, 96, 20);
 
     }
 
@@ -19,8 +19,7 @@ public class ArmoredGroundEnemy extends GroundEnemy {
 
         @Override
         public Enemy build() {
-            ArmoredGroundEnemy enemy = new ArmoredGroundEnemy(parent, enemyConfig, pathStep);
-            enemy.setPath(pathStep);
+            ArmoredGroundEnemy enemy = new ArmoredGroundEnemy(parent, enemyConfig);
 
             return enemy;
         }
