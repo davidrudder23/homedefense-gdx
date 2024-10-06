@@ -38,7 +38,7 @@ public final class Animation {
             avatarAnimationSheet = new Texture(spriteFilename);
             spriteCache.put(spriteFilename, avatarAnimationSheet);
         }
-        
+
         if (tileHeight <= 0) {
             tileHeight = avatarAnimationSheet.getHeight();
         }

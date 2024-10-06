@@ -83,6 +83,10 @@ public class NestLayingNest extends EnemyNest implements ClockTickHandler {
         while (!foundIntersection) {
             intersection = intersections.get((int) (Math.random() * intersections.size()));
 
+            if (intersection == null) {
+                continue;
+            }
+
             if (!parent.isGoodLocationForNest(intersection.getNode())) {
                 continue;
             }
